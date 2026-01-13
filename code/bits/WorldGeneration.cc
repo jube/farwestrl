@@ -1194,7 +1194,7 @@ namespace ffw {
         queue.emplace(position);
         status(position) = Status::Visited;
 
-        WorldRegion region;
+        WorldRegion region = {};
 
         while (!queue.empty()) {
           const gf::Vec2I current = queue.front();

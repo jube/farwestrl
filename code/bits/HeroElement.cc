@@ -121,7 +121,7 @@ namespace ffw {
     ++position.y;
 
     if (hero.weapon.data) {
-      console.print(position, gf::ConsoleAlignment::Left, m_game->style(), hero.weapon.data->label.tag);
+      console.print(position, gf::ConsoleAlignment::Left, m_game->style(), "{}", hero.weapon.data->label.tag);
     } else {
       console.print(position, gf::ConsoleAlignment::Left, m_game->style(), "-");
     }

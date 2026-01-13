@@ -34,7 +34,7 @@ namespace ffw {
       }
     }
 
-    console.print_area(MessageBox, gf::ConsoleAlignment::Left, m_game->style(), log);
+    console.print_area(MessageBox, gf::ConsoleAlignment::Left, m_game->style(), "{}", log);
   }
 
 }

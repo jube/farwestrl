@@ -38,7 +38,7 @@ namespace ffw {
     m_console.draw_frame(gf::RectI::from_size(SaveConsoleSize), style);
 
     const std::size_t dots = std::size_t(m_time.as_seconds() * DotsPerSeconds) % 4;
-    m_console.print({ 2, 1 }, gf::ConsoleAlignment::Left, style, "Saving the adventure before leaving" + std::string(dots, '.'));
+    m_console.print({ 2, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Saving the adventure before leaving" + std::string(dots, '.'));
 
     const gf::Vec2I padding = console.size() - m_console.size();
     const gf::Vec2I save_position = padding / 2;
