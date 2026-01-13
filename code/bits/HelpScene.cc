@@ -9,14 +9,18 @@ namespace ffw {
 
   namespace {
 
-    constexpr gf::RectI MoveHelpBox = gf::RectI::from_position_size({ 1, 1 }, { 47, 17 });
+    constexpr gf::RectI MoveHelpBox = gf::RectI::from_position_size({ 1, 1 }, { 47, 21 });
 
     constexpr std::string_view MoveHelpText = R"help(
 <style=context>With the arrow keys</>:
+<style=key>shift + ←</>: Go south-west
 <style=key>↓</>: Go south
+<style=key>shift+ →</>: Go south-east
 <style=key>←</>: Go west
 <style=key>→</>: Go east
+<style=key>ctrl + ←</>: Go north-west
 <style=key>↑</>: Go north
+<style=key>ctrl+ →</>: Go north-east
 <style=context>With the numpad keys</>:
 <style=key>1</>: Go south-west
 <style=key>2</>: Go south
@@ -29,7 +33,7 @@ namespace ffw {
 <style=key>9</>: Go north-east
 )help";
 
-    constexpr gf::RectI ActionHelpBox = gf::RectI::from_position_size({ 1, 18 }, { 47, 35 });
+    constexpr gf::RectI ActionHelpBox = gf::RectI::from_position_size({ 1, 22 }, { 47, 31 });
 
     constexpr std::string_view ActionHelpText = R"help(
 <style=key>M</>: Mount/Dismount an animal

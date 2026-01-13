@@ -22,18 +22,19 @@ namespace ffw {
       gf::Orientation orientation;
       gf::Scancode key;
       gf::Scancode alt_key;
+      gf::Modifier alt_mod;
     };
 
     constexpr IdMoveAction MoveActions[] {
-      { "go_south_west"_id, gf::Orientation::SouthWest, gf::Scancode::Numpad1, gf::Scancode::Unknown },
-      { "go_south"_id,      gf::Orientation::South,     gf::Scancode::Numpad2, gf::Scancode::Down },
-      { "go_south_east"_id, gf::Orientation::SouthEast, gf::Scancode::Numpad3, gf::Scancode::Unknown },
-      { "go_west"_id,       gf::Orientation::West,      gf::Scancode::Numpad4, gf::Scancode::Left },
-      { "idle"_id,          gf::Orientation::Center,    gf::Scancode::Numpad5, gf::Scancode::Unknown },
-      { "go_east"_id,       gf::Orientation::East,      gf::Scancode::Numpad6, gf::Scancode::Right },
-      { "go_north_west"_id, gf::Orientation::NorthWest, gf::Scancode::Numpad7, gf::Scancode::Unknown },
-      { "go_north"_id,      gf::Orientation::North,     gf::Scancode::Numpad8, gf::Scancode::Up },
-      { "go_north_east"_id, gf::Orientation::NorthEast, gf::Scancode::Numpad9, gf::Scancode::Unknown },
+      { "go_south_west"_id, gf::Orientation::SouthWest, gf::Scancode::Numpad1, gf::Scancode::Left, gf::Modifier::LeftCtrl },
+      { "go_south"_id,      gf::Orientation::South,     gf::Scancode::Numpad2, gf::Scancode::Down, gf::Modifier::None },
+      { "go_south_east"_id, gf::Orientation::SouthEast, gf::Scancode::Numpad3, gf::Scancode::Right, gf::Modifier::LeftCtrl },
+      { "go_west"_id,       gf::Orientation::West,      gf::Scancode::Numpad4, gf::Scancode::Left, gf::Modifier::None },
+      { "idle"_id,          gf::Orientation::Center,    gf::Scancode::Numpad5, gf::Scancode::Unknown, gf::Modifier::None }, // TODO
+      { "go_east"_id,       gf::Orientation::East,      gf::Scancode::Numpad6, gf::Scancode::Right, gf::Modifier::None },
+      { "go_north_west"_id, gf::Orientation::NorthWest, gf::Scancode::Numpad7, gf::Scancode::Left, gf::Modifier::LeftShift },
+      { "go_north"_id,      gf::Orientation::North,     gf::Scancode::Numpad8, gf::Scancode::Up, gf::Modifier::None },
+      { "go_north_east"_id, gf::Orientation::NorthEast, gf::Scancode::Numpad9, gf::Scancode::Right, gf::Modifier::LeftShift },
     };
 
   }
@@ -69,7 +70,7 @@ namespace ffw {
       gf::ActionSettings action = gf::instantaneous_action().add_scancode_control(move_action.key);
 
       if (move_action.alt_key != gf::Scancode::Unknown) {
-        action.add_scancode_control(move_action.alt_key);
+        action.add_scancode_control(move_action.alt_key, move_action.alt_mod);
       }
 
       settings.actions.emplace(move_action.id, std::move(action));
