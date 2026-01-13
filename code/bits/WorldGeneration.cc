@@ -1080,7 +1080,7 @@ namespace ffw {
         gf::Vec2I current = position;
 
         while (blocks.contains(current)) {
-          assert(town(current) != Building::Empty);
+          assert(town(current).type != BuildingType::Empty);
 
           if (town(current).type != BuildingType::None) {
             std::swap(town(current), town(position));
