@@ -42,12 +42,10 @@ namespace ffw {
     FloorUp,
     Herb,
 
-
     // not walkable and transparent
 
     Cactus = 0x4000,
     Tree,
-
 
     // not walkable and not transparent
 

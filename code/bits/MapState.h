@@ -11,7 +11,7 @@
 #include "MapFloor.h"
 
 namespace ffw {
-  enum class Building : uint8_t {
+  enum class BuildingType : uint8_t {
     Empty,
     None,
     // actual buildings
@@ -30,6 +30,17 @@ namespace ffw {
     School,
     WeaponShop,
   };
+
+  struct Building {
+    BuildingType type;
+    gf::Direction direction = gf::Direction::Up;
+  };
+
+  template<typename Archive>
+  Archive& operator|(Archive& ar, gf::MaybeConst<Building, Archive>& building)
+  {
+    return ar | building.type | building.direction;
+  }
 
   constexpr std::size_t TownsCount = 5;
   constexpr int32_t TownsBlockSize = 6;

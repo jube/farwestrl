@@ -22,6 +22,7 @@
 #include "ActorState.h"
 #include "Colors.h"
 #include "Date.h"
+#include "MapBuilding.h"
 #include "MapCell.h"
 #include "MapState.h"
 #include "Names.h"
@@ -1007,34 +1008,34 @@ namespace ffw {
 
     void generate_towns(MapState& map, const WorldPlaces& places, gf::Random* random)
     {
-      std::array<Building, 20> buildings = {
-        Building::Bank,
-        Building::Casino,
-        Building::Church,
-        Building::ClothShop,
-        Building::FoodShop,
-        Building::Hotel,
-        Building::House1,
-        Building::House2,
-        Building::House3,
-        Building::MarshalOffice,
-        Building::Restaurant,
-        Building::Saloon,
-        Building::School,
-        Building::WeaponShop,
+      std::array<BuildingType, 20> buildings = {
+        BuildingType::Bank,
+        BuildingType::Casino,
+        BuildingType::Church,
+        BuildingType::ClothShop,
+        BuildingType::FoodShop,
+        BuildingType::Hotel,
+        BuildingType::House1,
+        BuildingType::House2,
+        BuildingType::House3,
+        BuildingType::MarshalOffice,
+        BuildingType::Restaurant,
+        BuildingType::Saloon,
+        BuildingType::School,
+        BuildingType::WeaponShop,
 
-        Building::None,
-        Building::None,
-        Building::None,
-        Building::None,
-        Building::None,
-        Building::None,
+        BuildingType::None,
+        BuildingType::None,
+        BuildingType::None,
+        BuildingType::None,
+        BuildingType::None,
+        BuildingType::None,
       };
 
       std::size_t building_index = 0;
 
-      auto generate_building = [&](Building& building) {
-        if (building == Building::Empty) {
+      auto generate_building = [&](BuildingType& building) {
+        if (building == BuildingType::Empty) {
           assert(building_index < buildings.size());
           building = buildings[building_index++];
         }
@@ -1057,13 +1058,13 @@ namespace ffw {
         building_index = 0;
 
         for (int i = 0; i < TownsBlockSize; ++i) {
-          generate_building(town({ i, up_building }));
-          generate_building(town({ i, down_building }));
+          generate_building(town({ i, up_building }).type);
+          generate_building(town({ i, down_building }).type);
         }
 
         for (int j = 0; j < TownsBlockSize; ++j) {
-          generate_building(town({ left_building, j }));
-          generate_building(town({ right_building, j }));
+          generate_building(town({ left_building, j }).type);
+          generate_building(town({ right_building, j }).type);
         }
 
         assert(building_index == buildings.size());
@@ -1081,7 +1082,7 @@ namespace ffw {
         while (blocks.contains(current)) {
           assert(town(current) != Building::Empty);
 
-          if (town(current) != Building::None) {
+          if (town(current).type != BuildingType::None) {
             std::swap(town(current), town(position));
             position += step;
           }
@@ -1107,6 +1108,42 @@ namespace ffw {
         stack_buildings(town, { right_building, down_building }, gf::Direction::Down);
       }
 
+      // compute building direction
+
+      for (TownState& town : map.towns) {
+        const int up_building = town.horizontal_street - 1;
+        const int down_building = town.horizontal_street;
+
+        const int left_building = town.vertical_street - 1;
+        const int right_building = town.vertical_street;
+
+        for (int32_t i = 0; i < TownsBlockSize; ++i) {
+          for (int32_t j = 0; j < TownsBlockSize; ++j) {
+            const gf::Vec2I block_position = { i, j };
+
+            if (town(block_position).type == BuildingType::Empty || town(block_position).type == BuildingType::None) {
+              continue;
+            }
+
+            gf::Direction direction = gf::Direction::Center;
+
+            if (j == up_building) {
+              direction = gf::Direction::Up;
+            } else if (j == down_building) {
+              direction = gf::Direction::Down;
+            }
+
+            if (i == left_building) {
+              direction = gf::Direction::Left;
+            } else if (i == right_building) {
+              direction = gf::Direction::Right;
+            }
+
+            assert(direction != gf::Direction::Center);
+            town(block_position).direction = direction;
+          }
+        }
+      }
 
       // remove decorations from towns
 
@@ -1117,6 +1154,45 @@ namespace ffw {
           map.ground(position).decoration = MapCellDecoration::None;
         }
       }
+
+      // put walls
+
+      for (const TownState& town : map.towns) {
+        for (int32_t i = 0; i < TownsBlockSize; ++i) {
+          for (int32_t j = 0; j < TownsBlockSize; ++j) {
+            const gf::Vec2I block_position = { i, j };
+            const Building& building = town(block_position);
+
+            if (building.type == BuildingType::Empty || building.type == BuildingType::None) {
+              continue;
+            }
+
+            const TownBuildingPlan& plan = compute_town_building_plan(building.type);
+
+            for (int32_t y = 0; y < TownBuildingSize; ++y) {
+              for (int32_t x = 0; x < TownBuildingSize; ++x) {
+                const gf::Vec2I position = { x, y };
+                const char16_t part = compute_town_building_part(plan, position, building.direction);
+                const BuildingPartType type = building_part_type(part);
+
+                const gf::Vec2I map_position = town.position + block_position * (TownBuildingSize + StreetSize) + position;
+
+                switch (type) {
+                  case BuildingPartType::None:
+                  case BuildingPartType::Outside:
+                  case BuildingPartType::Furniture:
+                    // nothing to do
+                    break;
+                  case BuildingPartType::Wall:
+                    map.ground(map_position).decoration = MapCellDecoration::Wall;
+                    break;
+                }
+              }
+            }
+          }
+        }
+      }
+
     }
 
     /*
@@ -1131,6 +1207,35 @@ namespace ffw {
         locality.number = 0; // TODO: make it random when available
         locality.direction = static_cast<gf::Direction>(random->compute_uniform_integer(3));
       }
+
+      // put walls
+
+      for (const LocalityState& locality : map.localities) {
+        const LocalityBuildingPlan& plan = compute_locality_building_plan(locality.type, locality.number);
+        const gf::Vec2I base_position = locality.position - LocalityRadius;
+
+        for (int32_t y = 0; y < LocalityDiameter; ++y) {
+          for (int32_t x = 0; x < LocalityDiameter; ++x) {
+            const gf::Vec2I position = { x, y };
+            const char16_t part = compute_locality_building_part(plan, position, locality.direction);
+            const BuildingPartType type = building_part_type(part);
+
+            const gf::Vec2I map_position = base_position + position;
+
+            switch (type) {
+              case BuildingPartType::None:
+              case BuildingPartType::Outside:
+              case BuildingPartType::Furniture:
+                // nothing to do
+                break;
+              case BuildingPartType::Wall:
+                map.ground(map_position).decoration = MapCellDecoration::Wall;
+                break;
+            }
+          }
+        }
+      }
+
     }
 
     /*

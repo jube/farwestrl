@@ -3,6 +3,8 @@
 #include <gf2/core/FieldOfVision.h>
 
 #include "ActorState.h"
+#include "MapBuilding.h"
+#include "MapCell.h"
 
 namespace ffw {
 
