@@ -75,7 +75,7 @@ namespace ffw {
     style.color.foreground = gf::White;
 
     const gf::Vec2I subtitle_position = { console.size().w / 2, console.size().h - 2 };
-    console.print(subtitle_position, gf::ConsoleAlignment::Center, m_game->style(), "copyright (c) 2025 ─ made with <style=gf>gf2</>");
+    console.print(subtitle_position, gf::ConsoleAlignment::Center, m_game->style(), "copyright (c) 2025-2026 ─ made with <style=gf>gf2</>");
   }
 
 }
