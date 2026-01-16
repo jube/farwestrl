@@ -3,6 +3,11 @@
 
 #include <cstdint>
 
+#include <array>
+
+#include <gf2/core/Clock.h>
+#include <gf2/core/Time.h>
+
 namespace ffw {
 
   enum class WorldGenerationStep : uint8_t {
@@ -36,6 +41,20 @@ namespace ffw {
 
     End,
   };
+
+  class WorldGenerationAnalysis {
+  public:
+
+    void set_step(WorldGenerationStep step);
+    WorldGenerationStep step() const;
+
+    void print_analysis() const;
+
+  private:
+    static constexpr std::size_t StepCount = static_cast<std::size_t>(WorldGenerationStep::End);
+    std::array<gf::Time, StepCount> m_step_times = {};
+  };
+
 
 }
 
