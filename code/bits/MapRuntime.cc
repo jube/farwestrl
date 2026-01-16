@@ -101,12 +101,12 @@ namespace ffw {
     bind_underground(state, random);
     step.store(WorldGenerationStep::MapRails);
     bind_railway(state);
-    // TODO: step
+    step.store(WorldGenerationStep::MapRoads);
     bind_roads(state, random);
     step.store(WorldGenerationStep::MapTowns);
     bind_towns(state, random);
 
-    // TODO: step
+    step.store(WorldGenerationStep::MapBuildings);
     bind_buildings(state);
 
     bind_reverse(state);

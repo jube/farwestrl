@@ -1678,7 +1678,7 @@ namespace ffw {
     state.network = generate_network(raw, state.map, places, random);
     gf::Log::info("- network ({:g}s)", clock.elapsed_time().as_seconds());
 
-    // TODO: step
+    step.store(WorldGenerationStep::Roads);
     generate_roads(raw, state.map, state.network, places);
     gf::Log::info("- roads ({:g}s)", clock.elapsed_time().as_seconds());
 

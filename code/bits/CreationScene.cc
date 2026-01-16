@@ -33,6 +33,8 @@ namespace ffw {
           return "Determining town locations";
         case WorldGenerationStep::Rails:
           return "Consructing railways";
+        case WorldGenerationStep::Roads:
+          return "Making roads";
         case WorldGenerationStep::Buildings:
           return "Placing buildings in towns";
         case WorldGenerationStep::Regions:
@@ -51,8 +53,12 @@ namespace ffw {
           return "Setting the map underground";
         case WorldGenerationStep::MapRails:
           return "Installing rails";
+        case WorldGenerationStep::MapRoads:
+          return "Linking roads";
         case WorldGenerationStep::MapTowns:
           return "Constructing the buildings";
+        case WorldGenerationStep::MapBuildings:
+          return "Elevating buildings";
         case WorldGenerationStep::MapMinimap:
           return "Generating the minimaps";
         case WorldGenerationStep::Network:

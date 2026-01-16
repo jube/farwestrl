@@ -17,6 +17,7 @@ namespace ffw {
     Moutains,
     Towns,
     Rails,
+    Roads,
     Buildings,
     Regions,
     Underground,
@@ -27,7 +28,9 @@ namespace ffw {
     MapGround,
     MapUnderground,
     MapRails,
+    MapRoads,
     MapTowns,
+    MapBuildings,
     MapMinimap,
     Network,
 
