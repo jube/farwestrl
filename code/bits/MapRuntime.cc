@@ -17,7 +17,7 @@
 #include "Utils.h"
 #include "WorldState.h"
 
-namespace ffw {
+namespace fw {
 
   void FloorMap::update_minimap_explored(const std::vector<gf::Vec2I>& explored)
   {

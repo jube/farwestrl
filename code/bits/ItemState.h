@@ -1,12 +1,12 @@
-#ifndef FFW_ITEM_STATE_H
-#define FFW_ITEM_STATE_H
+#ifndef FW_ITEM_STATE_H
+#define FW_ITEM_STATE_H
 
 #include <gf2/core/Vec2.h>
 
 #include "DataReference.h"
 #include "ItemData.h"
 
-namespace ffw {
+namespace fw {
 
   struct ItemState {
     DataReference<ItemData> data;
@@ -43,4 +43,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_ITEM_STATE_H
+#endif // FW_ITEM_STATE_H

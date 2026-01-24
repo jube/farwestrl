@@ -1,6 +1,6 @@
 #include "SchedulerState.h"
 
-namespace ffw {
+namespace fw {
 
   bool operator<(const Task& lhs, const Task& rhs)
   {

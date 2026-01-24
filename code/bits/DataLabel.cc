@@ -1,6 +1,6 @@
 #include "DataLabel.h"
 
-namespace ffw {
+namespace fw {
 
   void from_json(const nlohmann::json& json, DataLabel& label)
   {

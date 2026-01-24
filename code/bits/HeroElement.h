@@ -1,23 +1,23 @@
-#ifndef FFW_HERO_SCENE_H
-#define FFW_HERO_SCENE_H
+#ifndef FW_HERO_SCENE_H
+#define FW_HERO_SCENE_H
 
 #include <gf2/core/Time.h>
 #include <gf2/core/ConsoleElement.h>
 
-namespace ffw {
-  class FarFarWest;
+namespace fw {
+  class FarWest;
 
   class HeroElement : public gf::ConsoleElement {
   public:
-    HeroElement(FarFarWest* game);
+    HeroElement(FarWest* game);
 
     void update(gf::Time time) override;
     void render(gf::Console& console) override;
 
   private:
-    FarFarWest* m_game = nullptr;
+    FarWest* m_game = nullptr;
   };
 
 }
 
-#endif // FFW_HERO_SCENE_H
+#endif // FW_HERO_SCENE_H

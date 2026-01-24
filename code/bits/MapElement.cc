@@ -6,7 +6,7 @@
 #include <gf2/core/Direction.h>
 
 #include "ActorState.h"
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "MapCell.h"
 #include "MapRuntime.h"
 #include "MapState.h"
@@ -15,7 +15,7 @@
 #include "Settings.h"
 #include "Utils.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 
@@ -106,7 +106,7 @@ namespace ffw {
 
   }
 
-  MapElement::MapElement(FarFarWest* game)
+  MapElement::MapElement(FarWest* game)
   : m_game(game)
   {
   }

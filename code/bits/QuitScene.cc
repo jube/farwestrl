@@ -1,9 +1,9 @@
 #include "QuitScene.h"
 
 #include "Colors.h"
-#include "FarFarWest.h"
+#include "FarWest.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 
@@ -16,7 +16,7 @@ namespace ffw {
 
   }
 
-  QuitScene::QuitScene(FarFarWest* game)
+  QuitScene::QuitScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   , m_console(QuitConsoleSize)

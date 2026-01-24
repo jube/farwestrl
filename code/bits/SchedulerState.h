@@ -1,5 +1,5 @@
-#ifndef FFW_SCHEDULER_STATE_H
-#define FFW_SCHEDULER_STATE_H
+#ifndef FW_SCHEDULER_STATE_H
+#define FW_SCHEDULER_STATE_H
 
 #include <queue>
 
@@ -9,7 +9,7 @@
 
 #include "Date.h"
 
-namespace ffw {
+namespace fw {
 
   enum class TaskType : uint8_t {
     Actor,
@@ -49,4 +49,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_SCHEDULER_STATE_H
+#endif // FW_SCHEDULER_STATE_H

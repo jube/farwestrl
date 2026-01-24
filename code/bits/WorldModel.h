@@ -1,5 +1,5 @@
-#ifndef FFW_WORLD_MODEL_H
-#define FFW_WORLD_MODEL_H
+#ifndef FW_WORLD_MODEL_H
+#define FW_WORLD_MODEL_H
 
 #include <atomic>
 
@@ -12,7 +12,7 @@
 #include "WorldRuntime.h"
 #include "WorldState.h"
 
-namespace ffw {
+namespace fw {
 
   struct WorldModel : gf::Model {
     WorldModel(gf::Random* random);
@@ -64,4 +64,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_WORLD_MODEL_H
+#endif // FW_WORLD_MODEL_H

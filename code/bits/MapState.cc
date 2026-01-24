@@ -6,7 +6,7 @@
 #include "MapBuilding.h"
 #include "MapCell.h"
 
-namespace ffw {
+namespace fw {
 
   void clear_visible(BackgroundMap& map)
   {

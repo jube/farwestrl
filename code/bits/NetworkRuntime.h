@@ -1,11 +1,11 @@
-#ifndef FFW_NETWORK_RUNTIME_H
-#define FFW_NETWORK_RUNTIME_H
+#ifndef FW_NETWORK_RUNTIME_H
+#define FW_NETWORK_RUNTIME_H
 
 #include <vector>
 
 #include <gf2/core/Vec2.h>
 
-namespace ffw {
+namespace fw {
   struct WorldState;
 
   struct NetworkRuntime {
@@ -19,4 +19,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_NETWORK_RUNTIME_H
+#endif // FW_NETWORK_RUNTIME_H

@@ -7,7 +7,7 @@
 
 #include <gf2/core/Span.h>
 
-namespace ffw {
+namespace fw {
 
   namespace {
     constexpr std::size_t NameLengthMax = 22;

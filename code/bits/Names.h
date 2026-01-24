@@ -1,11 +1,11 @@
-#ifndef FFW_NAMES_H
-#define FFW_NAMES_H
+#ifndef FW_NAMES_H
+#define FW_NAMES_H
 
 #include <string>
 
 #include <gf2/core/Random.h>
 
-namespace ffw {
+namespace fw {
 
   std::string generate_random_white_last_name(gf::Random* random);
   std::string generate_random_white_male_name(gf::Random* random, const std::string& last_name = "");
@@ -23,4 +23,4 @@ namespace ffw {
 }
 
 
-#endif // FFW_NAMES_H
+#endif // FW_NAMES_H

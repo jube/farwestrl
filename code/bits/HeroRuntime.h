@@ -1,12 +1,12 @@
-#ifndef FFW_HERO_RUNTIME_H
-#define FFW_HERO_RUNTIME_H
+#ifndef FW_HERO_RUNTIME_H
+#define FW_HERO_RUNTIME_H
 
 #include <vector>
 
 #include <gf2/core/TaggedVariant.h>
 #include <gf2/core/Vec2.h>
 
-namespace ffw {
+namespace fw {
 
   enum class ActionType {
     None,
@@ -69,4 +69,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_HERO_RUNTIME_H
+#endif // FW_HERO_RUNTIME_H

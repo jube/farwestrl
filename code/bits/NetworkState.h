@@ -1,5 +1,5 @@
-#ifndef FFW_NETWORK_STATE_H
-#define FFW_NETWORK_STATE_H
+#ifndef FW_NETWORK_STATE_H
+#define FW_NETWORK_STATE_H
 
 #include <cstdint>
 
@@ -8,7 +8,7 @@
 #include <gf2/core/TypeTraits.h>
 #include <gf2/core/Vec2.h>
 
-namespace ffw {
+namespace fw {
 
   constexpr std::size_t TrainLength = 11;
 
@@ -49,4 +49,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_NETWORK_STATE_H
+#endif // FW_NETWORK_STATE_H

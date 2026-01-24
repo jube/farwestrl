@@ -1,4 +1,4 @@
-set_project("farfarwest")
+set_project("farwestrl")
 set_version("0.1.0")
 
 add_repositories("gf-repo https://github.com/GamedevFramework/xmake-repo")
@@ -26,12 +26,12 @@ if is_plat("windows") then
 end
 
 set_configdir("$(builddir)/config")
-set_configvar("FARFARWEST_DATADIR", "$(projectdir)/data/farfarwest")
+set_configvar("FARWESTRL_DATADIR", "$(projectdir)/data/farwestrl")
 add_configfiles("code/config.h.in", {pattern = "@(.-)@"})
 
-target("farfarwest")
+target("farwestrl")
     set_kind("binary")
-    add_files("code/farfarwest.cc")
+    add_files("code/farwestrl.cc")
     add_files("code/bits/*.cc")
     add_includedirs("$(builddir)/config")
     add_packages("gamedevframework2", "nlohmann_json")

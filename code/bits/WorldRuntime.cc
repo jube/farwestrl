@@ -10,7 +10,7 @@
 #include "Settings.h"
 #include "WorldState.h"
 
-namespace ffw {
+namespace fw {
 
   void WorldRuntime::sort_actors_by_distance(const std::vector<ActorState>& actors)
   {

@@ -28,7 +28,7 @@
 #include "Names.h"
 #include "Settings.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 

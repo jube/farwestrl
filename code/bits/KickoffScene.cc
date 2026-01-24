@@ -1,8 +1,8 @@
 #include "KickoffScene.h"
 
-#include "FarFarWest.h"
+#include "FarWest.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
     constexpr int ChoiceCount = 3;
@@ -12,7 +12,7 @@ namespace ffw {
 
   }
 
-  KickoffScene::KickoffScene(FarFarWest* game)
+  KickoffScene::KickoffScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   {

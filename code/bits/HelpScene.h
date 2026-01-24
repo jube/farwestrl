@@ -1,17 +1,17 @@
-#ifndef FFW_HELP_SCENE_H
-#define FFW_HELP_SCENE_H
+#ifndef FW_HELP_SCENE_H
+#define FW_HELP_SCENE_H
 
 #include <gf2/core/ActionGroup.h>
 #include <gf2/core/ActionSettings.h>
 #include <gf2/core/Console.h>
 #include <gf2/core/ConsoleScene.h>
 
-namespace ffw {
-  class FarFarWest;
+namespace fw {
+  class FarWest;
 
   class HelpScene : public gf::ConsoleScene {
   public:
-    HelpScene(FarFarWest* game);
+    HelpScene(FarWest* game);
 
     void process_event(const gf::Event& event) override;
     void handle_actions() override;
@@ -21,7 +21,7 @@ namespace ffw {
   private:
     static gf::ActionGroupSettings compute_settings();
 
-    FarFarWest* m_game = nullptr;
+    FarWest* m_game = nullptr;
     gf::ActionGroup m_action_group;
 
     gf::Console m_console;
@@ -29,4 +29,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_HELP_SCENE_H
+#endif // FW_HELP_SCENE_H

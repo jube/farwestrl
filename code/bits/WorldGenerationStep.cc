@@ -1,6 +1,6 @@
 #include "WorldGenerationStep.h"
 
-namespace ffw {
+namespace fw {
 
   void WorldGenerationAnalysis::set_step(WorldGenerationStep step)
   {

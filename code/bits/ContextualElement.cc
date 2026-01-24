@@ -1,11 +1,11 @@
 #include "ContextualElement.h"
 
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "Settings.h"
 
-namespace ffw {
+namespace fw {
 
-  ContextualElement::ContextualElement(FarFarWest* game)
+  ContextualElement::ContextualElement(FarWest* game)
   : m_game(game)
   {
   }
@@ -16,7 +16,7 @@ namespace ffw {
 
   void ContextualElement::render(gf::Console& console)
   {
-    auto* state = m_game->state();
+    [[maybe_unused]] WorldState *state = m_game->state();
 
     gf::ConsoleStyle contextual_box_style;
     contextual_box_style.color.foreground = gf::Gray;

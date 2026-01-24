@@ -1,4 +1,4 @@
-#include "FarFarWest.h"
+#include "FarWest.h"
 
 #include <filesystem>
 
@@ -8,12 +8,12 @@
 #include <gf2/core/Log.h>
 
 #include "Colors.h"
-#include "FarFarWestScene.h"
+#include "FarWestScene.h"
 #include "Settings.h"
 #include "WorldGeneration.h"
 #include "WorldGenerationStep.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 
@@ -74,7 +74,7 @@ namespace ffw {
 
   }
 
-  FarFarWest::FarFarWest(FarFarWestScene* enclosing_scene, gf::Random* random, const std::filesystem::path& datafile, const std::filesystem::path& savefile)
+  FarWest::FarWest(FarWestScene* enclosing_scene, gf::Random* random, const std::filesystem::path& datafile, const std::filesystem::path& savefile)
   : gf::ConsoleSceneManager(ConsoleSize)
   , title(this)
   , kickoff(this)
@@ -97,7 +97,7 @@ namespace ffw {
     push_scene(&kickoff);
   }
 
-  void FarFarWest::create_world(AdventureChoice choice)
+  void FarWest::create_world(AdventureChoice choice)
   {
     m_async_world_finished = false;
 
@@ -125,7 +125,7 @@ namespace ffw {
     });
   }
 
-  bool FarFarWest::world_creation_finished()
+  bool FarWest::world_creation_finished()
   {
     if (m_async_world.valid() && m_async_world.wait_for(std::chrono::seconds::zero()) == std::future_status::ready) {
       m_async_world.get();
@@ -135,24 +135,24 @@ namespace ffw {
     return m_async_world_finished;
   }
 
-  WorldGenerationStep FarFarWest::world_creation_step()
+  WorldGenerationStep FarWest::world_creation_step()
   {
     return m_step.load();
   }
 
-  void FarFarWest::start_world()
+  void FarWest::start_world()
   {
     pop_all_scenes();
     push_scene(&primary);
     push_scene(&control);
   }
 
-  bool FarFarWest::has_save() const
+  bool FarWest::has_save() const
   {
     return std::filesystem::is_regular_file(m_savefile);
   }
 
-  void FarFarWest::create_save()
+  void FarWest::create_save()
   {
     m_async_save_finished = false;
 
@@ -163,7 +163,7 @@ namespace ffw {
     });
   }
 
-  bool FarFarWest::save_creation_finished()
+  bool FarWest::save_creation_finished()
   {
     if (m_async_save.valid() && m_async_save.wait_for(std::chrono::seconds::zero()) == std::future_status::ready) {
       m_async_save.get();
@@ -173,7 +173,7 @@ namespace ffw {
     return m_async_save_finished;
   }
 
-  gf::Vec2I FarFarWest::point_to(gf::Vec2F mouse)
+  gf::Vec2I FarWest::point_to(gf::Vec2F mouse)
   {
     const gf::Vec2F location = m_enclosing_scene->position_to_world_location(mouse);
 

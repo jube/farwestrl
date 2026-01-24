@@ -1,5 +1,5 @@
-#ifndef FFW_INVENTORY_STATE_H
-#define FFW_INVENTORY_STATE_H
+#ifndef FW_INVENTORY_STATE_H
+#define FW_INVENTORY_STATE_H
 
 #include <cstdint>
 
@@ -7,7 +7,7 @@
 
 #include "ItemState.h"
 
-namespace ffw {
+namespace fw {
 
   struct InventoryState {
     int32_t cash = 0;
@@ -22,4 +22,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_INVENTORY_STATE_H
+#endif // FW_INVENTORY_STATE_H

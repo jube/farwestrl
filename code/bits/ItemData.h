@@ -1,5 +1,5 @@
-#ifndef FFW_ITEM_DATA_H
-#define FFW_ITEM_DATA_H
+#ifndef FW_ITEM_DATA_H
+#define FW_ITEM_DATA_H
 
 #include <cstdint>
 
@@ -10,7 +10,7 @@
 
 #include "DataLabel.h"
 
-namespace ffw {
+namespace fw {
 
   enum class ItemType {
     None,
@@ -41,4 +41,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_ITEM_DATA_H
+#endif // FW_ITEM_DATA_H

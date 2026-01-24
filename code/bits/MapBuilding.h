@@ -1,12 +1,12 @@
-#ifndef FFW_MAP_BUILDING_H
-#define FFW_MAP_BUILDING_H
+#ifndef FW_MAP_BUILDING_H
+#define FW_MAP_BUILDING_H
 
 #include "MapState.h"
 
 #include <array>
 #include <string_view>
 
-namespace ffw {
+namespace fw {
 
   using TownBuildingPlan = std::array<std::u16string_view, TownBuildingSize>;
 
@@ -29,4 +29,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_MAP_BUILDING_H
+#endif // FW_MAP_BUILDING_H

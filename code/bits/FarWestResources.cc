@@ -1,18 +1,18 @@
-#include "FarFarWestResources.h"
+#include "FarWestResources.h"
 
 #include <gf2/framework/BundleBuilder.h>
 
-#include "FarFarWestSystem.h"
+#include "FarWestSystem.h"
 
-namespace ffw {
+namespace fw {
 
-  FarFarWestResources::FarFarWestResources()
+  FarWestResources::FarWestResources()
   {
     console_resource.console_font = "Hack_square_64x64.png";
     console_resource.data.font_format = gf::DwarfFortressFormat;
   }
 
-  gf::ResourceBundle FarFarWestResources::bundle(FarFarWestSystem* game) const
+  gf::ResourceBundle FarWestResources::bundle(FarWestSystem* game) const
   {
     gf::BundleBuilder builder(game);
 

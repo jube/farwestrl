@@ -1,5 +1,5 @@
-#ifndef FFW_PRIMARY_SCENE_H
-#define FFW_PRIMARY_SCENE_H
+#ifndef FW_PRIMARY_SCENE_H
+#define FW_PRIMARY_SCENE_H
 
 #include <gf2/core/ConsoleScene.h>
 
@@ -8,15 +8,15 @@
 #include "MapElement.h"
 #include "MessageLogElement.h"
 
-namespace ffw {
-  class FarFarWest;
+namespace fw {
+  class FarWest;
 
   class PrimaryScene : public gf::ConsoleScene {
   public:
-    PrimaryScene(FarFarWest* game);
+    PrimaryScene(FarWest* game);
 
   private:
-    FarFarWest* m_game = nullptr;
+    FarWest* m_game = nullptr;
 
     MessageLogElement m_message_log_element;
     MapElement m_map_element;
@@ -27,4 +27,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_PRIMARY_SCENE_H
+#endif // FW_PRIMARY_SCENE_H

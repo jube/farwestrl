@@ -1,11 +1,11 @@
 #include "MinimapScene.h"
 
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "gf2/core/Scancode.h"
 
-namespace ffw {
+namespace fw {
 
-  MinimapScene::MinimapScene(FarFarWest* game)
+  MinimapScene::MinimapScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   , m_minimap(game)

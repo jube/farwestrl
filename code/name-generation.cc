@@ -5,10 +5,10 @@
 
 int main()
 {
-  gf::Log::debug("male: {}, female: {}, surname: {}", ffw::compute_max_length(ffw::NameType::MaleName), ffw::compute_max_length(ffw::NameType::FemaleName), ffw::compute_max_length(ffw::NameType::Surname));
+  gf::Log::debug("male: {}, female: {}, surname: {}", fw::compute_max_length(fw::NameType::MaleName), fw::compute_max_length(fw::NameType::FemaleName), fw::compute_max_length(fw::NameType::Surname));
 
   gf::Random random;
 
-  gf::Log::info("Female name: {}", ffw::generate_random_white_female_name(&random));
-  gf::Log::info("Male name: {}", ffw::generate_random_white_male_name(&random));
+  gf::Log::info("Female name: {}", fw::generate_random_white_female_name(&random));
+  gf::Log::info("Male name: {}", fw::generate_random_white_male_name(&random));
 }

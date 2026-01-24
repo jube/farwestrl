@@ -6,7 +6,7 @@
 
 #include "ColorUtils.h"
 
-namespace ffw {
+namespace fw {
 
   NLOHMANN_JSON_SERIALIZE_ENUM( ItemType, {
     { ItemType::None, nullptr },

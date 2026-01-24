@@ -1,5 +1,5 @@
-#ifndef FFW_MAP_CELL_H
-#define FFW_MAP_CELL_H
+#ifndef FW_MAP_CELL_H
+#define FW_MAP_CELL_H
 
 #include <cstdint>
 
@@ -7,7 +7,7 @@
 #include <gf2/core/Flags.h>
 #include <gf2/core/TypeTraits.h>
 
-namespace ffw {
+namespace fw {
 
   enum class MapCellBiome : uint8_t {
     None,
@@ -96,7 +96,7 @@ namespace ffw {
 }
 
 template<>
-struct gf::EnableBitmaskOperators<ffw::MapCellProperty> : std::true_type {
+struct gf::EnableBitmaskOperators<fw::MapCellProperty> : std::true_type {
 };
 
-#endif // FFW_MAP_CELL_H
+#endif // FW_MAP_CELL_H

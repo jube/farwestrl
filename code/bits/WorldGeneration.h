@@ -1,5 +1,5 @@
-#ifndef FFW_WORLD_GENERATION_H
-#define FFW_WORLD_GENERATION_H
+#ifndef FW_WORLD_GENERATION_H
+#define FW_WORLD_GENERATION_H
 
 #include <atomic>
 
@@ -8,10 +8,10 @@
 #include "WorldState.h"
 #include "WorldGenerationStep.h"
 
-namespace ffw {
+namespace fw {
 
   WorldState generate_world(gf::Random* random, std::atomic<WorldGenerationStep>& step);
 
 }
 
-#endif // FFW_WORLD_GENERATION_H
+#endif // FW_WORLD_GENERATION_H

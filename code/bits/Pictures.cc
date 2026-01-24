@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace ffw {
+namespace fw {
 
   char16_t rotate_picture(char16_t picture, gf::Direction direction)
   {

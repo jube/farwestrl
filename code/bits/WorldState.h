@@ -1,5 +1,5 @@
-#ifndef FFW_WORLD_STATE_H
-#define FFW_WORLD_STATE_H
+#ifndef FW_WORLD_STATE_H
+#define FW_WORLD_STATE_H
 
 #include <cassert>
 #include <cstdint>
@@ -17,7 +17,7 @@
 #include "NetworkState.h"
 #include "SchedulerState.h"
 
-namespace ffw {
+namespace fw {
   struct WorldData;
 
   constexpr std::uint16_t StateVersion = 1;
@@ -62,4 +62,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_WORLD_STATE_H
+#endif // FW_WORLD_STATE_H

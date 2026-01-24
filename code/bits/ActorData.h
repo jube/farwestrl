@@ -1,5 +1,5 @@
-#ifndef FFW_ACTOR_DATA_H
-#define FFW_ACTOR_DATA_H
+#ifndef FW_ACTOR_DATA_H
+#define FW_ACTOR_DATA_H
 
 #include <nlohmann/json.hpp>
 
@@ -8,7 +8,7 @@
 
 #include "DataLabel.h"
 
-namespace ffw {
+namespace fw {
 
   enum class ActorType : uint16_t {
     None,
@@ -37,4 +37,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_ACTOR_DATA_H
+#endif // FW_ACTOR_DATA_H

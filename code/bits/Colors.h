@@ -1,9 +1,9 @@
-#ifndef FFW_COLORS_H
-#define FFW_COLORS_H
+#ifndef FW_COLORS_H
+#define FW_COLORS_H
 
 #include <gf2/core/Color.h>
 
-namespace ffw {
+namespace fw {
 
   inline constexpr gf::Color RpgBlue = { 0.015625f, 0.03125f, 0.515625f };
   inline constexpr float RpgBlueAlpha = 0.85f;
@@ -27,4 +27,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_COLORS_H
+#endif // FW_COLORS_H

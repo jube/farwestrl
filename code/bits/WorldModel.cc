@@ -13,7 +13,7 @@
 #include "Times.h"
 #include "WorldGenerationStep.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 

@@ -1,6 +1,6 @@
 #include "NetworkRuntime.h"
 
-namespace ffw {
+namespace fw {
 
   uint32_t NetworkRuntime::next_position(uint32_t current, uint32_t advance) const
   {

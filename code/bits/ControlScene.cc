@@ -4,7 +4,7 @@
 #include <gf2/core/PathFinding.h>
 
 #include "ActorState.h"
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "MapRuntime.h"
 #include "MapState.h"
 #include "Settings.h"
@@ -12,7 +12,7 @@
 #include "WorldState.h"
 
 
-namespace ffw {
+namespace fw {
 
   namespace {
     using namespace gf::literals;
@@ -39,7 +39,7 @@ namespace ffw {
 
   }
 
-  ControlScene::ControlScene(FarFarWest* game)
+  ControlScene::ControlScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   {

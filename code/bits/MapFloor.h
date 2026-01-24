@@ -1,9 +1,9 @@
-#ifndef FFW_MAP_FLOOR_H
-#define FFW_MAP_FLOOR_H
+#ifndef FW_MAP_FLOOR_H
+#define FW_MAP_FLOOR_H
 
 #include <cstdint>
 
-namespace ffw {
+namespace fw {
 
   enum class Floor : int8_t {
     Underground = -1,
@@ -13,4 +13,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_MAP_FLOOR_H
+#endif // FW_MAP_FLOOR_H

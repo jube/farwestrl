@@ -1,5 +1,5 @@
-#ifndef FFW_DATA_LABEL_H
-#define FFW_DATA_LABEL_H
+#ifndef FW_DATA_LABEL_H
+#define FW_DATA_LABEL_H
 
 #include <string>
 
@@ -7,7 +7,7 @@
 
 #include <gf2/core/Id.h>
 
-namespace ffw {
+namespace fw {
 
   struct DataLabel {
     std::string tag;
@@ -24,4 +24,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_DATA_LABEL_H
+#endif // FW_DATA_LABEL_H

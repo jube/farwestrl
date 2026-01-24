@@ -1,12 +1,12 @@
 #include "MinimapElement.h"
 
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "MapRuntime.h"
 #include "Settings.h"
 
-namespace ffw {
+namespace fw {
 
-  MinimapElement::MinimapElement(FarFarWest* game)
+  MinimapElement::MinimapElement(FarWest* game)
   : m_game(game)
   {
   }

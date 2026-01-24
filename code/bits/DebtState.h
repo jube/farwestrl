@@ -1,11 +1,11 @@
-#ifndef FFW_DEBT_STATE_H
-#define FFW_DEBT_STATE_H
+#ifndef FW_DEBT_STATE_H
+#define FW_DEBT_STATE_H
 
 #include <vector>
 
 #include "Date.h"
 
-namespace ffw {
+namespace fw {
 
   struct Installment {
     int32_t amount;
@@ -31,4 +31,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_DEBT_STATE_H
+#endif // FW_DEBT_STATE_H

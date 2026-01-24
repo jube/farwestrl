@@ -1,17 +1,17 @@
-#ifndef FFW_QUIT_SCENE_H
-#define FFW_QUIT_SCENE_H
+#ifndef FW_QUIT_SCENE_H
+#define FW_QUIT_SCENE_H
 
 #include <gf2/core/ActionGroup.h>
 #include <gf2/core/ActionSettings.h>
 #include <gf2/core/ConsoleScene.h>
 #include <gf2/core/Console.h>
 
-namespace ffw {
-  class FarFarWest;
+namespace fw {
+  class FarWest;
 
   class QuitScene : public gf::ConsoleScene {
   public:
-    QuitScene(FarFarWest* game);
+    QuitScene(FarWest* game);
 
     void process_event(const gf::Event& event) override;
     void handle_actions() override;
@@ -20,7 +20,7 @@ namespace ffw {
   private:
     static gf::ActionGroupSettings compute_settings();
 
-    FarFarWest* m_game = nullptr;
+    FarWest* m_game = nullptr;
     gf::ActionGroup m_action_group;
     gf::Console m_console;
     int m_choice = 0;
@@ -28,4 +28,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_QUIT_SCENE_H
+#endif // FW_QUIT_SCENE_H

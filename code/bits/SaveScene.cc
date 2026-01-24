@@ -1,9 +1,9 @@
 #include "SaveScene.h"
 
 #include "Colors.h"
-#include "FarFarWest.h"
+#include "FarWest.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 
@@ -12,7 +12,7 @@ namespace ffw {
 
   }
 
-  SaveScene::SaveScene(FarFarWest* game)
+  SaveScene::SaveScene(FarWest* game)
   : m_game(game)
   , m_console(SaveConsoleSize)
   {

@@ -1,5 +1,5 @@
-#ifndef FFW_MAP_STATE_H
-#define FFW_MAP_STATE_H
+#ifndef FW_MAP_STATE_H
+#define FW_MAP_STATE_H
 
 #include <cstdint>
 
@@ -10,7 +10,7 @@
 #include "MapCell.h"
 #include "MapFloor.h"
 
-namespace ffw {
+namespace fw {
   enum class BuildingType : uint8_t {
     Empty,
     None,
@@ -121,4 +121,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_MAP_STATE_H
+#endif // FW_MAP_STATE_H

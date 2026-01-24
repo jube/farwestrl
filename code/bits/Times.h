@@ -1,9 +1,9 @@
-#ifndef FFW_TIMES_H
-#define FFW_TIMES_H
+#ifndef FW_TIMES_H
+#define FW_TIMES_H
 
 #include <cstdint>
 
-namespace ffw {
+namespace fw {
 
   constexpr uint16_t TrainTime = 5;
 
@@ -19,4 +19,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_TIMES_H
+#endif // FW_TIMES_H

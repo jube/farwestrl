@@ -4,7 +4,7 @@
 
 #include <gf2/core/Log.h>
 
-namespace ffw {
+namespace fw {
 
   char16_t to_uppercase_ascii(char16_t c)
   {

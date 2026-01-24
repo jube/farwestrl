@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace ffw {
+namespace fw {
 
   uint32_t to_rbga(std::string_view raw)
   {

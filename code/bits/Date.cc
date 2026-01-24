@@ -7,7 +7,7 @@
 
 #include <fmt/chrono.h>
 
-namespace ffw {
+namespace fw {
 
   namespace {
     constexpr uint16_t SecondsInMinute = 60;

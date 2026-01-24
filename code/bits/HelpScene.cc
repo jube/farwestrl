@@ -1,11 +1,11 @@
 #include "HelpScene.h"
 
 #include "Colors.h"
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "Settings.h"
 #include "gf2/core/Keycode.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 
@@ -87,7 +87,7 @@ namespace ffw {
 
   }
 
-  HelpScene::HelpScene(FarFarWest* game)
+  HelpScene::HelpScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   , m_console(compute_help_console())

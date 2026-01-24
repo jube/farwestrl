@@ -1,5 +1,5 @@
-#ifndef FFW_WORLD_RUNTIME_H
-#define FFW_WORLD_RUNTIME_H
+#ifndef FW_WORLD_RUNTIME_H
+#define FW_WORLD_RUNTIME_H
 
 #include <atomic>
 #include <vector>
@@ -11,7 +11,7 @@
 #include "NetworkRuntime.h"
 #include "WorldGenerationStep.h"
 
-namespace ffw {
+namespace fw {
   struct ActorState;
   struct TrainState;
   struct WorldData;
@@ -39,4 +39,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_WORLD_RUNTIME_H
+#endif // FW_WORLD_RUNTIME_H

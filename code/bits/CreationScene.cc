@@ -1,11 +1,11 @@
 #include "CreationScene.h"
 
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "WorldGenerationStep.h"
 
 #include <gf2/core/Color.h>
 
-namespace ffw {
+namespace fw {
 
   namespace {
 
@@ -72,7 +72,7 @@ namespace ffw {
 
   }
 
-  CreationScene::CreationScene(FarFarWest* game)
+  CreationScene::CreationScene(FarWest* game)
   : m_game(game)
   , m_console(CreationConsoleSize)
   {

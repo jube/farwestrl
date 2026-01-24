@@ -1,5 +1,5 @@
-#ifndef FFW_DATE_H
-#define FFW_DATE_H
+#ifndef FW_DATE_H
+#define FW_DATE_H
 
 #include <cstdint>
 
@@ -8,7 +8,7 @@
 #include <gf2/core/Random.h>
 #include <gf2/core/TypeTraits.h>
 
-namespace ffw {
+namespace fw {
 
   enum class WeekDay : uint8_t {
     Mon,
@@ -75,4 +75,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_DATE_H
+#endif // FW_DATE_H

@@ -1,12 +1,12 @@
-#ifndef FFW_SETTINGS_H
-#define FFW_SETTINGS_H
+#ifndef FW_SETTINGS_H
+#define FW_SETTINGS_H
 
 #include <cstdint>
 
 #include <gf2/core/Rect.h>
 #include <gf2/core/Vec2.h>
 
-namespace ffw {
+namespace fw {
 
   constexpr int32_t WorldBasicSize = 4096;
   constexpr gf::Vec2I WorldSize = { WorldBasicSize, WorldBasicSize };
@@ -35,4 +35,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_SETTINGS_H
+#endif // FW_SETTINGS_H

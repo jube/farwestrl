@@ -8,6 +8,6 @@
 
 int main() {
   gf::Random random;
-  std::atomic<ffw::WorldGenerationStep> step(ffw::WorldGenerationStep::Start);
-  ffw::generate_world(&random, step);
+  std::atomic<fw::WorldGenerationStep> step(fw::WorldGenerationStep::Start);
+  fw::generate_world(&random, step);
 }

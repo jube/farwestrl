@@ -1,5 +1,5 @@
-#ifndef FFW_MAP_RUNTIME_H
-#define FFW_MAP_RUNTIME_H
+#ifndef FW_MAP_RUNTIME_H
+#define FW_MAP_RUNTIME_H
 
 #include <cstdint>
 
@@ -16,7 +16,7 @@
 #include "Settings.h"
 #include "WorldGenerationStep.h"
 
-namespace ffw {
+namespace fw {
   struct WorldState;
 
   constexpr std::size_t MinimapCount = 4;
@@ -106,7 +106,7 @@ namespace ffw {
 }
 
 template<>
-struct gf::EnableBitmaskOperators<ffw::RuntimeMapCellProperty> : std::true_type {
+struct gf::EnableBitmaskOperators<fw::RuntimeMapCellProperty> : std::true_type {
 };
 
-#endif // FFW_MAP_RUNTIME_H
+#endif // FW_MAP_RUNTIME_H

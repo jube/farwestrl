@@ -2,14 +2,14 @@
 
 #include <cstdint>
 
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "MessageLogState.h"
 #include "Settings.h"
 #include "WorldState.h"
 
-namespace ffw {
+namespace fw {
 
-  MessageLogElement::MessageLogElement(FarFarWest* game)
+  MessageLogElement::MessageLogElement(FarWest* game)
   : m_game(game)
   {
   }

@@ -1,5 +1,5 @@
-#ifndef FFW_ACTOR_H
-#define FFW_ACTOR_H
+#ifndef FW_ACTOR_H
+#define FW_ACTOR_H
 
 #include <cstdint>
 
@@ -15,7 +15,7 @@
 #include "InventoryState.h"
 #include "MapFloor.h"
 
-namespace ffw {
+namespace fw {
 
   inline constexpr int32_t HeroVisionRange = 25;
 
@@ -85,4 +85,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_ACTOR_H
+#endif // FW_ACTOR_H

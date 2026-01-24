@@ -8,7 +8,7 @@
 
 #include "WorldData.h"
 
-namespace ffw {
+namespace fw {
 
   void WorldState::load_from_file(const std::filesystem::path& filename)
   {

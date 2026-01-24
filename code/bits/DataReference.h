@@ -1,5 +1,5 @@
-#ifndef FFW_DATA_REFERENCE_H
-#define FFW_DATA_REFERENCE_H
+#ifndef FW_DATA_REFERENCE_H
+#define FW_DATA_REFERENCE_H
 
 #include <cassert>
 
@@ -9,7 +9,7 @@
 
 #include "DataLexicon.h"
 
-namespace ffw {
+namespace fw {
 
   template<typename T>
   struct DataReference {
@@ -84,4 +84,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_DATA_REFERENCE_H
+#endif // FW_DATA_REFERENCE_H

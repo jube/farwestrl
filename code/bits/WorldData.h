@@ -1,11 +1,11 @@
-#ifndef FFW_WORLD_DATA_H
-#define FFW_WORLD_DATA_H
+#ifndef FW_WORLD_DATA_H
+#define FW_WORLD_DATA_H
 
 #include "ActorData.h"
 #include "DataLexicon.h"
 #include "ItemData.h"
 
-namespace ffw {
+namespace fw {
 
   struct WorldData {
     DataLexicon<ActorData> actors;
@@ -17,4 +17,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_WORLD_DATA_H
+#endif // FW_WORLD_DATA_H

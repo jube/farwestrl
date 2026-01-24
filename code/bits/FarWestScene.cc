@@ -1,13 +1,13 @@
-#include "FarFarWestScene.h"
+#include "FarWestScene.h"
 
 #include <gf2/graphics/GamePaths.h>
 
-#include "FarFarWestSystem.h"
+#include "FarWestSystem.h"
 #include "gf2/core/Event.h"
 
-namespace ffw {
+namespace fw {
 
-  FarFarWestScene::FarFarWestScene(FarFarWestSystem* game, const FarFarWestResources& resources)
+  FarWestScene::FarWestScene(FarWestSystem* game, const FarWestResources& resources)
   : m_game(game)
   , m_action_group(compute_settings())
   , m_console_scene_manager(this, game->random(), game->resource_manager()->search("data.json"), gf::user_data_path("jube", "farfarwest") / "save.dat")
@@ -21,7 +21,7 @@ namespace ffw {
     add_world_entity(&m_console_entity);
   }
 
-  gf::ActionGroupSettings FarFarWestScene::compute_settings()
+  gf::ActionGroupSettings FarWestScene::compute_settings()
   {
     using namespace gf::literals;
     gf::ActionGroupSettings settings;
@@ -31,7 +31,7 @@ namespace ffw {
     return settings;
   }
 
-  void FarFarWestScene::do_process_event(const gf::Event& event)
+  void FarWestScene::do_process_event(const gf::Event& event)
   {
     m_action_group.process_event(event);
     m_console_scene_manager.process_event(event);
@@ -41,7 +41,7 @@ namespace ffw {
     }
   }
 
-  void FarFarWestScene::do_handle_actions()
+  void FarWestScene::do_handle_actions()
   {
     using namespace gf::literals;
 
@@ -54,7 +54,7 @@ namespace ffw {
     m_action_group.reset();
   }
 
-  void FarFarWestScene::do_update(gf::Time time)
+  void FarWestScene::do_update(gf::Time time)
   {
     if (m_console_scene_manager.empty()) {
       m_game->pop_all_scenes();

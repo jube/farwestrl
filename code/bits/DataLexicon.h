@@ -1,5 +1,5 @@
-#ifndef FFW_DATA_LEXICON_H
-#define FFW_DATA_LEXICON_H
+#ifndef FW_DATA_LEXICON_H
+#define FW_DATA_LEXICON_H
 
 #include <algorithm>
 #include <type_traits>
@@ -9,7 +9,7 @@
 
 #include "DataLabel.h"
 
-namespace ffw {
+namespace fw {
 
   template<typename T>
   using DataLexicon = std::vector<T>;
@@ -56,4 +56,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_DATA_LEXICON_H
+#endif // FW_DATA_LEXICON_H

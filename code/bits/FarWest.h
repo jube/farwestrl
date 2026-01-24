@@ -1,5 +1,5 @@
-#ifndef FFW_FAR_FAR_WEST_H
-#define FFW_FAR_FAR_WEST_H
+#ifndef FW_FAR_FAR_WEST_H
+#define FW_FAR_FAR_WEST_H
 
 #include <cstdint>
 
@@ -23,17 +23,17 @@
 #include "WorldModel.h"
 #include "WorldGenerationStep.h"
 
-namespace ffw {
-  class FarFarWestScene;
+namespace fw {
+  class FarWestScene;
 
   enum class AdventureChoice : uint8_t {
     New,
     Saved,
   };
 
-  class FarFarWest : public gf::ConsoleSceneManager {
+  class FarWest : public gf::ConsoleSceneManager {
   public:
-    FarFarWest(FarFarWestScene* enclosing_scene, gf::Random* random, const std::filesystem::path& datafile, const std::filesystem::path& savefile);
+    FarWest(FarWestScene* enclosing_scene, gf::Random* random, const std::filesystem::path& datafile, const std::filesystem::path& savefile);
 
     gf::Random* random()
     {
@@ -84,7 +84,7 @@ namespace ffw {
     SaveScene save;
 
   private:
-    FarFarWestScene* m_enclosing_scene = nullptr;
+    FarWestScene* m_enclosing_scene = nullptr;
     gf::Random* m_random = nullptr;
     std::filesystem::path m_datafile;
 
@@ -103,4 +103,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_FAR_FAR_WEST_H
+#endif // FW_FAR_FAR_WEST_H

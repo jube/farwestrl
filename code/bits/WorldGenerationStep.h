@@ -1,5 +1,5 @@
-#ifndef FFW_WORLD_GENERATION_STEP_H
-#define FFW_WORLD_GENERATION_STEP_H
+#ifndef FW_WORLD_GENERATION_STEP_H
+#define FW_WORLD_GENERATION_STEP_H
 
 #include <cstdint>
 
@@ -8,7 +8,7 @@
 #include <gf2/core/Clock.h>
 #include <gf2/core/Time.h>
 
-namespace ffw {
+namespace fw {
 
   enum class WorldGenerationStep : uint8_t {
     Start,
@@ -58,4 +58,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_WORLD_GENERATION_STEP_H
+#endif // FW_WORLD_GENERATION_STEP_H

@@ -8,7 +8,7 @@
 
 #include "DataLexicon.h"
 
-namespace ffw {
+namespace fw {
 
   void WorldData::load_from_file(const std::filesystem::path& filename)
   {

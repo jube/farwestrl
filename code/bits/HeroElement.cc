@@ -3,14 +3,14 @@
 #include <cassert>
 
 #include "Colors.h"
-#include "FarFarWest.h"
+#include "FarWest.h"
 #include "ItemData.h"
 #include "Settings.h"
 #include "gf2/core/Color.h"
 #include "gf2/core/ConsoleEffect.h"
 #include "gf2/core/ConsoleStyle.h"
 
-namespace ffw {
+namespace fw {
 
   namespace {
 
@@ -57,7 +57,7 @@ namespace ffw {
 
   }
 
-  HeroElement::HeroElement(FarFarWest* game)
+  HeroElement::HeroElement(FarWest* game)
   : m_game(game)
   {
   }

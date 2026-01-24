@@ -1,5 +1,5 @@
-#ifndef FFW_MESSAGE_LOG_STATE_H
-#define FFW_MESSAGE_LOG_STATE_H
+#ifndef FW_MESSAGE_LOG_STATE_H
+#define FW_MESSAGE_LOG_STATE_H
 
 #include <string>
 #include <vector>
@@ -8,7 +8,7 @@
 
 #include "Date.h"
 
-namespace ffw {
+namespace fw {
 
   struct MessageState {
     Date date;
@@ -33,4 +33,4 @@ namespace ffw {
 
 }
 
-#endif // FFW_MESSAGE_LOG_STATE_H
+#endif // FW_MESSAGE_LOG_STATE_H
