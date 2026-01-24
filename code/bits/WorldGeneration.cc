@@ -1649,53 +1649,53 @@ namespace fw {
 
   }
 
-  WorldState generate_world(gf::Random* random, std::atomic<WorldGenerationStep>& step)
+  WorldState generate_world(gf::Random* random, WorldGenerationAnalysis& analysis)
   {
     gf::Clock clock;
 
     WorldState state = {};
-    step.store(WorldGenerationStep::Date);
+    analysis.set_step(WorldGenerationStep::Date);
     state.current_date = Date::generate_random(random);
 
     gf::Log::info("Starting generation...");
-    step.store(WorldGenerationStep::Terrain);
+    analysis.set_step(WorldGenerationStep::Terrain);
     const RawWorld raw = generate_raw(random);
     gf::Log::info("- raw ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Biomes);
+    analysis.set_step(WorldGenerationStep::Biomes);
     state.map = generate_outline(raw, random);
     gf::Log::info("- outline ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Moutains);
+    analysis.set_step(WorldGenerationStep::Moutains);
     generate_mountains(state.map, random);
     gf::Log::info("- moutains ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Towns);
+    analysis.set_step(WorldGenerationStep::Towns);
     const WorldPlaces places = generate_places(state.map, random);
     gf::Log::info("- places ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Rails);
+    analysis.set_step(WorldGenerationStep::Rails);
     state.network = generate_network(raw, state.map, places, random);
     gf::Log::info("- network ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Roads);
+    analysis.set_step(WorldGenerationStep::Roads);
     generate_roads(raw, state.map, state.network, places);
     gf::Log::info("- roads ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Buildings);
+    analysis.set_step(WorldGenerationStep::Buildings);
     generate_towns(state.map, places, random);
     generate_localities(state.map, places, random);
     gf::Log::info("- towns and localities ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Regions);
+    analysis.set_step(WorldGenerationStep::Regions);
     const WorldRegions regions = compute_regions(state.map);
     gf::Log::info("- regions ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Underground);
+    analysis.set_step(WorldGenerationStep::Underground);
     compute_underground(state.map, regions, random);
     gf::Log::info("- underground ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::Hero);
+    analysis.set_step(WorldGenerationStep::Hero);
 
     ActorState hero = {};
     hero.data = "Hero";
@@ -1745,7 +1745,7 @@ namespace fw {
     state.actors.push_back(hero);
     state.scheduler.queue.push({state.current_date, TaskType::Actor, 0});
 
-    step.store(WorldGenerationStep::Actors);
+    analysis.set_step(WorldGenerationStep::Actors);
 
     {
       ActorState cow = {};
@@ -1773,7 +1773,7 @@ namespace fw {
 
     gf::Log::info("- actors ({:g}s)", clock.elapsed_time().as_seconds());
 
-    step.store(WorldGenerationStep::End);
+    analysis.set_step(WorldGenerationStep::End);
     return state;
   }
 

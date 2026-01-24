@@ -96,7 +96,7 @@ namespace fw {
     std::future<void> m_async_world;
     bool m_async_world_finished = false;
 
-    std::atomic<WorldGenerationStep> m_step;
+    WorldGenerationAnalysis m_analysis;
 
     gf::ConsoleRichStyle m_rich_style;
   };

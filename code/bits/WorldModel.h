@@ -21,7 +21,7 @@ namespace fw {
     WorldState state;
     WorldRuntime runtime;
 
-    void bind(std::atomic<WorldGenerationStep>& step);
+    void bind(WorldGenerationAnalysis& analysis);
 
     void update(gf::Time time) override;
 

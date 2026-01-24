@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include <array>
+#include <atomic>
 
 #include <gf2/core/Clock.h>
 #include <gf2/core/Time.h>
@@ -52,6 +53,8 @@ namespace fw {
 
   private:
     static constexpr std::size_t StepCount = static_cast<std::size_t>(WorldGenerationStep::End);
+    gf::Clock m_current_clock;
+    std::atomic<WorldGenerationStep> m_current_step = WorldGenerationStep::Start;
     std::array<gf::Time, StepCount> m_step_times = {};
   };
 

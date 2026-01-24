@@ -78,11 +78,11 @@ namespace fw {
   {
   }
 
-  void WorldModel::bind(std::atomic<WorldGenerationStep>& step)
+  void WorldModel::bind(WorldGenerationAnalysis& analysis)
   {
-    step.store(WorldGenerationStep::Data);
+    analysis.set_step(WorldGenerationStep::Data);
     state.bind(data);
-    runtime.bind(data, state, m_random, step);
+    runtime.bind(data, state, m_random, analysis);
   }
 
   void WorldModel::update(gf::Time time)

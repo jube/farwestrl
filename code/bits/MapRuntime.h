@@ -87,7 +87,7 @@ namespace fw {
     const FloorMap& from_floor(Floor floor) const;
     FloorMap& from_floor(Floor floor);
 
-    void bind(const WorldState& state, gf::Random* random, std::atomic<WorldGenerationStep>& step);
+    void bind(const WorldState& state, gf::Random* random, WorldGenerationAnalysis& analysis);
 
     void bind_ground(const WorldState& state, gf::Random* random);
     void bind_underground(const WorldState& state, gf::Random* random);

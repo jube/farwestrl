@@ -46,6 +46,7 @@ target("world-generation")
     add_files("code/bits/MapBuilding.cc")
     add_files("code/bits/Pictures.cc")
     add_files("code/bits/WorldGeneration.cc")
+    add_files("code/bits/WorldGenerationStep.cc")
     add_packages("gamedevframework2", "nlohmann_json")
     set_rundir("$(projectdir)/run")
 

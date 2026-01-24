@@ -90,7 +90,6 @@ namespace fw {
   , m_datafile(datafile)
   , m_savefile(savefile)
   , m_model(random)
-  , m_step(WorldGenerationStep::Start)
   , m_rich_style(compute_rich_style())
   {
     push_scene(&title);
@@ -100,9 +99,10 @@ namespace fw {
   void FarWest::create_world(AdventureChoice choice)
   {
     m_async_world_finished = false;
+    m_analysis.set_step(WorldGenerationStep::Start);
 
     m_async_world = std::async(std::launch::async, [&,choice]() {
-      m_step.store(WorldGenerationStep::File);
+      m_analysis.set_step(WorldGenerationStep::File);
       m_model.data.load_from_file(m_datafile);
 
       if (choice == AdventureChoice::New) {
@@ -111,17 +111,19 @@ namespace fw {
           std::filesystem::remove(m_savefile);
         }
 
-        m_model.state = generate_world(m_random, m_step);
+        m_model.state = generate_world(m_random, m_analysis);
       } else {
         assert(has_save());
         gf::Clock clock;
-        m_step.store(WorldGenerationStep::Load);
+        m_analysis.set_step(WorldGenerationStep::Load);
         m_model.state.load_from_file(m_savefile);
         gf::Log::info("Game loaded in {:g}s from file {}", clock.elapsed_time().as_seconds(), m_savefile);
         std::filesystem::remove(m_savefile);
       }
 
-      m_model.bind(m_step);
+      m_model.bind(m_analysis);
+
+      m_analysis.print_analysis();
     });
   }
 
@@ -137,7 +139,7 @@ namespace fw {
 
   WorldGenerationStep FarWest::world_creation_step()
   {
-    return m_step.load();
+    return m_analysis.step();
   }
 
   void FarWest::start_world()
