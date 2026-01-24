@@ -3,7 +3,7 @@
 namespace fw {
 
   FarWestSystem::FarWestSystem(const std::filesystem::path& asset_directory)
-  : gf::SceneSystem("Far Far West", { 1600, 900 }, asset_directory)
+  : gf::SceneSystem("Far West RL", { 1600, 900 }, asset_directory)
   {
     auto bundle = m_resources.bundle(this);
     bundle.load_from(resource_manager());
