@@ -1773,7 +1773,6 @@ namespace fw {
 
     gf::Log::info("- actors ({:g}s)", clock.elapsed_time().as_seconds());
 
-    analysis.set_step(WorldGenerationStep::End);
     return state;
   }
 
