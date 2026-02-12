@@ -4,6 +4,7 @@
 #include "WorldGenerationStep.h"
 
 #include <gf2/core/Color.h>
+#include <gf2/core/ConsoleOperations.h>
 
 namespace fw {
 
@@ -94,20 +95,20 @@ namespace fw {
     style.color.foreground = gf::White;
     style.effect = gf::ConsoleEffect::set();
 
-    m_console.clear(style);
-    m_console.draw_frame(gf::RectI::from_size(CreationConsoleSize), style);
+    gf::console_clear(m_console, style);
+    gf::console_draw_frame(m_console, gf::RectI::from_size(CreationConsoleSize), style);
 
     const std::size_t dots = std::size_t(m_time.as_seconds() * DotsPerSeconds) % 4;
-    m_console.print({ 3, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Creation of the world" + std::string(dots, '.'));
+    gf::console_print_picture(m_console, { 3, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Creation of the world" + std::string(dots, '.'));
 
     style.color.foreground = gf::Amber;
     const WorldGenerationStep step = m_game->world_creation_step();
     const std::string_view step_name = compute_step(step);
-    m_console.print({ CreationConsoleSize.x / 2, 2 }, gf::ConsoleAlignment::Center, style, "{}", step_name);
+    gf::console_print_picture(m_console, { CreationConsoleSize.x / 2, 2 }, gf::ConsoleAlignment::Center, style, "{}", step_name);
 
     const gf::Vec2I padding = console.size() - m_console.size();
     const gf::Vec2I creation_position = { padding.x / 2, padding.y / 2 + 10 };
-    m_console.blit_to(console, gf::RectI::from_size(m_console.size()), creation_position);
+    gf::console_blit_to(m_console, console, creation_position);
   }
 
 }

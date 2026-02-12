@@ -1,5 +1,7 @@
 #include "KickoffScene.h"
 
+#include <gf2/core/ConsoleOperations.h>
+
 #include "FarWest.h"
 
 namespace fw {
@@ -85,7 +87,7 @@ namespace fw {
     gf::ConsoleStyle style;
 
     style.color.foreground = gf::White;
-    console.print({ 35, 35 }, gf::ConsoleAlignment::Left, style, "Start a new adventure");
+    gf::console_print_picture(console, { 35, 35 }, gf::ConsoleAlignment::Left, style, "Start a new adventure");
 
     if (m_game->has_save()) {
       style.color.foreground = gf::White;
@@ -93,13 +95,13 @@ namespace fw {
       style.color.foreground = gf::Gray;
     }
 
-    console.print({ 35, 36 }, gf::ConsoleAlignment::Left, style, "Continue the previous adventure");
+    gf::console_print_picture(console, { 35, 36 }, gf::ConsoleAlignment::Left, style, "Continue the previous adventure");
 
     style.color.foreground = gf::White;
-    console.print({ 35, 37 }, gf::ConsoleAlignment::Left, style, "Quit");
+    gf::console_print_picture(console, { 35, 37 }, gf::ConsoleAlignment::Left, style, "Quit");
 
     style.color.foreground = gf::White;
-    console.print({ 33, 35 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
+    gf::console_print_picture(console, { 33, 35 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
   }
 
 }

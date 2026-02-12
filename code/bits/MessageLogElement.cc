@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include <gf2/core/ConsoleOperations.h>
+
 #include "FarWest.h"
 #include "MessageLogState.h"
 #include "Settings.h"
@@ -34,7 +36,7 @@ namespace fw {
       }
     }
 
-    console.print_area(MessageBox, gf::ConsoleAlignment::Left, m_game->style(), "{}", log);
+    gf::console_print_picture(console, MessageBox, gf::ConsoleAlignment::Left, m_game->style(), "{}", log);
   }
 
 }

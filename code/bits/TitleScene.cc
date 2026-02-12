@@ -4,6 +4,7 @@
 
 #include <gf2/core/Color.h>
 #include <gf2/core/ConsoleChar.h>
+#include <gf2/core/ConsoleOperations.h>
 #include <gf2/core/FontManager.h>
 #include <gf2/core/Math.h>
 #include <gf2/core/Range.h>
@@ -50,7 +51,7 @@ namespace fw {
   {
     for (const gf::Vec2I position : gf::position_range(Size)) {
       const char16_t c = Title[position.y][position.x];
-      m_title.put_character(position, c, TitleColor, gf::Transparent);
+      gf::console_write_picture(m_title, position, c, TitleColor);
     }
   }
 
@@ -58,19 +59,10 @@ namespace fw {
   {
     const gf::Vec2I padding = console.size() - m_title.size();
     const gf::Vec2I title_position = { padding.w / 2, padding.h / 2 - padding.h / 6 };
-    m_title.blit_to(console, gf::RectI::from_size(m_title.size()), title_position);
-
-    // gf::ConsoleStyle style;
-    // style.color.foreground = gf::Amber;
-    //
-    // const gf::Vec2I subtitle_position = { console.size().w / 2, title_position.y + Size.y + 2 };
-    // console.print(subtitle_position, gf::ConsoleAlignment::Center, style, "This mortgage was not a good idea. Find the money or run!");
-
-    gf::ConsoleStyle style;
-    style.color.foreground = gf::White;
+    gf::console_blit_to(m_title, console, title_position);
 
     const gf::Vec2I subtitle_position = { console.size().w / 2, console.size().h - 2 };
-    console.print(subtitle_position, gf::ConsoleAlignment::Center, m_game->style(), "copyright (c) 2025-2026 ─ made with <style=gf>gf2</>");
+    gf::console_print_picture(console, subtitle_position, gf::ConsoleAlignment::Center, m_game->style(), "copyright (c) 2025-2026 ─ made with <style=gf>gf2</>");
   }
 
 }

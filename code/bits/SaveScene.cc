@@ -1,5 +1,7 @@
 #include "SaveScene.h"
 
+#include <gf2/core/ConsoleOperations.h>
+
 #include "Colors.h"
 #include "FarWest.h"
 
@@ -34,15 +36,15 @@ namespace fw {
     style.color.foreground = gf::White;
     style.effect = gf::ConsoleEffect::set();
 
-    m_console.clear(style);
-    m_console.draw_frame(gf::RectI::from_size(SaveConsoleSize), style);
+    gf::console_clear(m_console, style);
+    gf::console_draw_frame(m_console, gf::RectI::from_size(SaveConsoleSize), style);
 
     const std::size_t dots = std::size_t(m_time.as_seconds() * DotsPerSeconds) % 4;
-    m_console.print({ 2, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Saving the adventure before leaving" + std::string(dots, '.'));
+    gf::console_print_picture(m_console, { 2, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Saving the adventure before leaving" + std::string(dots, '.'));
 
     const gf::Vec2I padding = console.size() - m_console.size();
     const gf::Vec2I save_position = padding / 2;
-    m_console.blit_to(console, gf::RectI::from_size(m_console.size()), save_position, 1.0f, RpgBlueAlpha);
+    gf::console_blit_to(m_console, console, save_position, 1.0f, RpgBlueAlpha);
   }
 
 }

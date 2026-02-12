@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include <gf2/core/ConsoleChar.h>
+#include <gf2/core/ConsoleOperations.h>
 #include <gf2/core/Direction.h>
 #include <gf2/core/Easing.h>
 #include <gf2/core/Math.h>
@@ -16,6 +17,7 @@
 #include "Settings.h"
 #include "Utils.h"
 #include "WorldState.h"
+#include "gf2/core/Color.h"
 
 namespace fw {
 
@@ -225,10 +227,8 @@ namespace fw {
         }
 
         background_color = gf::lighter(background_color, random->compute_uniform_float(0.0f, ColorLighterBound));
-
         const auto [ character, foreground_color ] = compute_decoration(state, position, cell.decoration, background_color, random);
-
-        map.console.put_character(position, character, foreground_color, background_color);
+        gf::console_write_picture(map.console, position, character, { foreground_color, background_color });
 
         if (!is_walkable(cell.decoration)) {
           map.background(position).properties.reset(RuntimeMapCellProperty::Walkable);
@@ -347,7 +347,7 @@ namespace fw {
           const gf::Vec2I neighbor(i, j);
           const gf::Vec2I neighbor_position = position + neighbor;
 
-          ground.console.put_character(neighbor_position, plan[neighbor.y + 1][neighbor.x + 1], style);
+          gf::console_write_picture(ground.console, neighbor_position, plan[neighbor.y + 1][neighbor.x + 1], style);
         }
       }
     }
@@ -365,7 +365,7 @@ namespace fw {
           const gf::Vec2I neighbor_position = position + neighbor;
 
           gf::Color color = gf::lighter(gf::gray(0.9f), random->compute_uniform_float(0.0f, ColorLighterBound));
-          ground.console.set_background(neighbor_position, color, road_effect);
+          gf::console_write_background(ground.console, neighbor_position, color, road_effect);
         }
       }
     }
@@ -388,7 +388,7 @@ namespace fw {
 
         if (random->compute_bernoulli(probability)) {
           gf::Color color = gf::lighter(StreetColor, random->compute_uniform_float(0.0f, ColorLighterBound));
-          ground.console.set_background(position, color, street_effect);
+          gf::console_write_background(ground.console, position, color, street_effect);
         }
       }
     }
@@ -407,13 +407,13 @@ namespace fw {
       for (int32_t i = -Extra; i < TownDiameter + Extra; ++i) {
         const gf::Vec2I position = horizontal_position + gf::dirx(i);
         gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-        ground.console.set_background(position, color, street_effect);
+        gf::console_write_background(ground.console, position, color, street_effect);
 
         if (position.x != vertical_position.x) {
           color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          ground.console.set_background(position + gf::diry(-1), color, street_effect);
+          gf::console_write_background(ground.console, position + gf::diry(-1), color, street_effect);
           color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          ground.console.set_background(position + gf::diry(+1), color, street_effect);
+          gf::console_write_background(ground.console, position + gf::diry(+1), color, street_effect);
         }
       }
 
@@ -421,13 +421,13 @@ namespace fw {
       for (int32_t i = -Extra; i < TownDiameter + Extra; ++i) {
         const gf::Vec2I position = vertical_position + gf::diry(i);
         gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-        ground.console.set_background(position, color, street_effect);
+        gf::console_write_background(ground.console, position, color, street_effect);
 
         if (position.y != horizontal_position.y) {
           color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          ground.console.set_background(position + gf::dirx(-1), color, street_effect);
+          gf::console_write_background(ground.console, position + gf::dirx(-1), color, street_effect);
           color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          ground.console.set_background(position + gf::dirx(+1), color, street_effect);
+          gf::console_write_background(ground.console, position + gf::dirx(+1), color, street_effect);
         }
       }
    }
@@ -519,7 +519,7 @@ namespace fw {
               style.color = building_style(type);
               style.effect = gf::ConsoleEffect::set();
 
-              ground.console.put_character(map_position, part, style);
+              gf::console_write_picture(ground.console, map_position, part, style);
 
               switch (type) {
                 case BuildingPartType::None:
@@ -554,7 +554,7 @@ namespace fw {
             style.color = building_style(type);
             style.effect = gf::ConsoleEffect::set();
 
-            ground.console.put_character(map_position, part, style);
+            gf::console_write_picture(ground.console, map_position, part, style);
           } else {
             assert(part == u'.');
           }
@@ -671,7 +671,7 @@ namespace fw {
             break;
         }
 
-        console.set_background(position, color);
+        gf::console_write_background(console, position, color);
       }
 
       /*
@@ -739,8 +739,7 @@ namespace fw {
 
         const char16_t picture = compute_minimap_rail_plan(direction_before, direction_after);
 
-        minimap.console.set_foreground(position, gf::Black);
-        minimap.console.set_character(position, picture);
+        gf::console_write_picture(minimap.console, position, picture, gf::Black);
       }
 
       // roads
@@ -758,8 +757,8 @@ namespace fw {
       minimap_roads.erase(std::unique(minimap_roads.begin(), minimap_roads.end()), minimap_roads.end());
 
       for (const gf::Vec2I position : minimap_roads) {
-        const gf::Color background = minimap.console.background(position);
-        minimap.console.set_background(position, gf::darker(background, 0.2f / factor));
+        const gf::Color background = minimap.console(position).parts[0].background; // TODO
+        gf::console_write_background(minimap.console, position, gf::darker(background, 0.2f / factor));
       }
 
       return minimap;

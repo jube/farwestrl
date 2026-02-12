@@ -1,9 +1,10 @@
 #include "HelpScene.h"
 
+#include <gf2/core/ConsoleOperations.h>
+
 #include "Colors.h"
 #include "FarWest.h"
 #include "Settings.h"
-#include "gf2/core/Keycode.h"
 
 namespace fw {
 
@@ -69,17 +70,17 @@ namespace fw {
       rich_style.set_style("context", { gf::gray(0.7f), RpgBlue });
 
       gf::Console console(ConsoleSize);
-      console.clear(style);
-      console.draw_frame(gf::RectI::from_size(ConsoleSize), style);
+      gf::console_clear(console, style);
+      gf::console_draw_frame(console, gf::RectI::from_size(ConsoleSize), style);
 
-      console.draw_frame(MoveHelpBox, style, "Move");
-      console.print_area(MoveHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, MoveHelpText);
+      gf::console_draw_frame(console, MoveHelpBox, style, gf::ConsoleMode::Picture, "Move");
+      gf::console_print_picture(console, MoveHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, MoveHelpText);
 
-      console.draw_frame(ActionHelpBox, style, "Action");
-      console.print_area(ActionHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, ActionHelpText);
+      gf::console_draw_frame(console, ActionHelpBox, style, gf::ConsoleMode::Picture, "Action");
+      gf::console_print_picture(console, ActionHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, ActionHelpText);
 
-      console.draw_frame(GeneralHelpBox, style, "General");
-      console.print_area(GeneralHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, GeneralHelpText);
+      gf::console_draw_frame(console, GeneralHelpBox, style, gf::ConsoleMode::Picture, "General");
+      gf::console_print_picture(console, GeneralHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, GeneralHelpText);
 
       return console;
     }
@@ -112,7 +113,7 @@ namespace fw {
 
   void HelpScene::render(gf::Console& console)
   {
-    m_console.blit_to(console, gf::RectI::from_size(m_console.size()), { 0, 0 }, 1.0f, RpgBlueAlpha);
+    gf::console_blit_to(m_console, console, { 0, 0 }, 1.0f, RpgBlueAlpha);
   }
 
   gf::ActionGroupSettings HelpScene::compute_settings()

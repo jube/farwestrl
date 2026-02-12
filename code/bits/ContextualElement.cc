@@ -1,5 +1,7 @@
 #include "ContextualElement.h"
 
+#include <gf2/core/ConsoleOperations.h>
+
 #include "FarWest.h"
 #include "Settings.h"
 
@@ -20,7 +22,7 @@ namespace fw {
 
     gf::ConsoleStyle contextual_box_style;
     contextual_box_style.color.foreground = gf::Gray;
-    console.draw_frame(ContextualBox, contextual_box_style);
+    gf::console_draw_frame(console, ContextualBox, contextual_box_style);
 
   }
 

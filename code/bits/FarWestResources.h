@@ -1,7 +1,7 @@
 #ifndef FW_FAR_FAR_WEST_RESOURCES_H
 #define FW_FAR_FAR_WEST_RESOURCES_H
 
-#include <gf2/core/ConsoleData.h>
+#include <gf2/core/ConsoleFontResource.h>
 #include <gf2/core/ResourceBundle.h>
 
 namespace fw {
@@ -12,7 +12,7 @@ namespace fw {
 
     gf::ResourceBundle bundle(FarWestSystem* game) const;
 
-    gf::ConsoleResource console_resource;
+    gf::ConsoleFontResource console_resource;
   };
 
 }

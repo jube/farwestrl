@@ -1,5 +1,7 @@
 #include "QuitScene.h"
 
+#include <gf2/core/ConsoleOperations.h>
+
 #include "Colors.h"
 #include "FarWest.h"
 
@@ -63,19 +65,19 @@ namespace fw {
     style.color.foreground = gf::White;
     style.effect = gf::ConsoleEffect::set();
 
-    m_console.clear(style);
+    gf::console_clear(m_console, style);
 
-    m_console.draw_frame(gf::RectI::from_size(QuitConsoleSize), style);
+    gf::console_draw_frame(m_console, gf::RectI::from_size(QuitConsoleSize), style);
 
-    m_console.print({ 3, 1 }, gf::ConsoleAlignment::Left, style, "Back to real life, see you soon");
-    m_console.print({ 3, 2 }, gf::ConsoleAlignment::Left, style, "Back to real life, farewell");
-    m_console.print({ 3, 3 }, gf::ConsoleAlignment::Left, style, "Back to adventure");
+    gf::console_print_picture(m_console, { 3, 1 }, gf::ConsoleAlignment::Left, style, "Back to real life, see you soon");
+    gf::console_print_picture(m_console, { 3, 2 }, gf::ConsoleAlignment::Left, style, "Back to real life, farewell");
+    gf::console_print_picture(m_console, { 3, 3 }, gf::ConsoleAlignment::Left, style, "Back to adventure");
 
-    m_console.print({ 1, 1 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
+    gf::console_print_picture(m_console, { 1, 1 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
 
     const gf::Vec2I padding = console.size() - m_console.size();
     const gf::Vec2I quit_position = padding / 2;
-    m_console.blit_to(console, gf::RectI::from_size(m_console.size()), quit_position, 1.0f, RpgBlueAlpha);
+    gf::console_blit_to(m_console, console, quit_position, 1.0f, RpgBlueAlpha);
   }
 
   gf::ActionGroupSettings QuitScene::compute_settings()

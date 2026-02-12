@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string_view>
 
+#include <gf2/core/ConsoleOperations.h>
 #include <gf2/core/Direction.h>
 
 #include "ActorState.h"
@@ -131,7 +132,7 @@ namespace fw {
     // display map background
 
     const FloorMap& floor_map = runtime->map.from_floor(hero.floor);
-    floor_map.console.blit_to(console, view, GameBoxPosition);
+    gf::console_blit_to(floor_map.console, console, view, GameBoxPosition);
 
     const WorldState* state = m_game->state();
     const BackgroundMap& map = state->map.from_floor(hero.floor);
@@ -146,11 +147,11 @@ namespace fw {
       const gf::Vec2I console_position = position - view.position() + GameBoxPosition;
 
       if (cell.explored()) {
-        console.set_background(console_position, gf::Gray, gf::ConsoleEffect::multiply());
-        console.set_character(console_position, u' ');
+        gf::console_write_background(console, console_position, gf::Gray, gf::ConsoleEffect::multiply());
+        gf::console_write_picture(console, console_position, u' ');
       } else {
         assert(!cell.visible());
-        console.put_character(console_position, u' ', gf::Black, gf::Black);
+        gf::console_write_picture(console, console_position, u' ', { gf::Black, gf::Black });
       }
     }
 
@@ -187,7 +188,7 @@ namespace fw {
         }
       }
 
-      console.put_character(actor.position - view.position(), actor_picture, actor_style);
+      gf::console_write_picture(console, actor.position - view.position(), actor_picture, actor_style);
     }
 
     // display trains
@@ -231,7 +232,7 @@ namespace fw {
               continue;
             }
 
-            console.put_character(neighbor_position - view.position(), compute_train_part(part, neighbor + 1, direction), train_style);
+            gf::console_write_picture(console, neighbor_position - view.position(), compute_train_part(part, neighbor + 1, direction), train_style);
           }
         }
 

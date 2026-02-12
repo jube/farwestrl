@@ -1,5 +1,6 @@
 #include "ControlScene.h"
 
+#include <gf2/core/ConsoleOperations.h>
 #include <gf2/core/Flags.h>
 #include <gf2/core/PathFinding.h>
 
@@ -221,11 +222,11 @@ namespace fw {
     style.effect = gf::ConsoleEffect::none();
 
     for (const gf::Vec2I position : path) {
-      console.put_character(position - view.position(), u'·', style);
+      gf::console_write_picture(console, position - view.position(), u'·', style);
     }
 
     if (m_mouse) {
-      console.put_character(*m_mouse, '+', style);
+      gf::console_write_picture(console, m_mouse.value(), '+', style);
     }
   }
 
