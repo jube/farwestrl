@@ -11,7 +11,7 @@ namespace fw {
   : m_game(game)
   , m_action_group(compute_settings())
   , m_console_scene_manager(this, game->random(), game->resource_manager()->search("data.json"), gf::user_data_path("jube", "farfarwest") / "save.dat")
-  , m_console_entity(resources.console_resource, game->resource_manager())
+  , m_console_entity(resources.console_font_resource, game->resource_manager())
   {
     const gf::Vec2I bounds = m_console_scene_manager.console().size() * 64; // TODO: magic constant
     set_clear_color(gf::Black);

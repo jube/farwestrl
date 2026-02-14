@@ -12,7 +12,7 @@ namespace fw {
 
     gf::ResourceBundle bundle(FarWestSystem* game) const;
 
-    gf::ConsoleFontResource console_resource;
+    gf::MixedConsoleFontResource console_font_resource;
   };
 
 }

@@ -74,13 +74,13 @@ namespace fw {
       gf::console_draw_frame(console, gf::RectI::from_size(ConsoleSize), style);
 
       gf::console_draw_frame(console, MoveHelpBox, style, gf::ConsoleMode::Picture, "Move");
-      gf::console_print_picture(console, MoveHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, MoveHelpText);
+      gf::console_print_text(console, MoveHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, MoveHelpText);
 
       gf::console_draw_frame(console, ActionHelpBox, style, gf::ConsoleMode::Picture, "Action");
-      gf::console_print_picture(console, ActionHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, ActionHelpText);
+      gf::console_print_text(console, ActionHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, ActionHelpText);
 
       gf::console_draw_frame(console, GeneralHelpBox, style, gf::ConsoleMode::Picture, "General");
-      gf::console_print_picture(console, GeneralHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, GeneralHelpText);
+      gf::console_print_text(console, GeneralHelpBox.shrink_by(1), gf::ConsoleAlignment::Left, rich_style, GeneralHelpText);
 
       return console;
     }

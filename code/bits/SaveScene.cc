@@ -9,7 +9,7 @@ namespace fw {
 
   namespace {
 
-    constexpr gf::Vec2I SaveConsoleSize = { 44, 3 };
+    constexpr gf::Vec2I SaveConsoleSize = { 23, 3 };
     constexpr float DotsPerSeconds = 1.5f;
 
   }
@@ -40,7 +40,7 @@ namespace fw {
     gf::console_draw_frame(m_console, gf::RectI::from_size(SaveConsoleSize), style);
 
     const std::size_t dots = std::size_t(m_time.as_seconds() * DotsPerSeconds) % 4;
-    gf::console_print_picture(m_console, { 2, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Saving the adventure before leaving" + std::string(dots, '.'));
+    gf::console_print_text(m_console, { 2, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Saving the adventure before leaving" + std::string(dots, '.'));
 
     const gf::Vec2I padding = console.size() - m_console.size();
     const gf::Vec2I save_position = padding / 2;

@@ -18,6 +18,10 @@ namespace fw {
   : m_game(game)
   , m_action_group(compute_settings())
   {
+    // TODO: cannot do this for now as the order of initialization in FarWest is not OK
+    // if (m_game->has_save()) {
+    //   m_choice = ContinueGameChoice;
+    // }
   }
 
   gf::ActionGroupSettings KickoffScene::compute_settings()
@@ -68,26 +72,12 @@ namespace fw {
 
   void KickoffScene::render(gf::Console& console)
   {
-#if 0
-    gf::ConsoleStyle style;
-    style.color.background = gf::Black;
-    style.color.foreground = gf::Red;
-
-    console.draw_frame(MessageBox, style);
-
-    style.color.foreground = gf::Chartreuse;
-
-    console.draw_frame(CharacterBox, style);
-
-    style.color.foreground = gf::Orange;
-
-    console.draw_frame(ContextualBox, style);
-#endif
+    const int32_t offset = 40;
 
     gf::ConsoleStyle style;
 
     style.color.foreground = gf::White;
-    gf::console_print_picture(console, { 35, 35 }, gf::ConsoleAlignment::Left, style, "Start a new adventure");
+    gf::console_print_text(console, { offset, 35 }, gf::ConsoleAlignment::Left, style, "Start a new adventure");
 
     if (m_game->has_save()) {
       style.color.foreground = gf::White;
@@ -95,13 +85,13 @@ namespace fw {
       style.color.foreground = gf::Gray;
     }
 
-    gf::console_print_picture(console, { 35, 36 }, gf::ConsoleAlignment::Left, style, "Continue the previous adventure");
+    gf::console_print_text(console, { offset, 36 }, gf::ConsoleAlignment::Left, style, "Continue the previous adventure");
 
     style.color.foreground = gf::White;
-    gf::console_print_picture(console, { 35, 37 }, gf::ConsoleAlignment::Left, style, "Quit");
+    gf::console_print_text(console, { offset, 37 }, gf::ConsoleAlignment::Left, style, "Quit");
 
     style.color.foreground = gf::White;
-    gf::console_print_picture(console, { 33, 35 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
+    gf::console_print_text(console, { offset - 1, 35 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
   }
 
 }

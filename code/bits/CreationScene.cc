@@ -10,7 +10,7 @@ namespace fw {
 
   namespace {
 
-    constexpr gf::Vec2I CreationConsoleSize = { 30, 4 };
+    constexpr gf::Vec2I CreationConsoleSize = { 17, 4 };
     constexpr float DotsPerSeconds = 1.5f;
 
     std::string_view compute_step(WorldGenerationStep step)
@@ -99,12 +99,12 @@ namespace fw {
     gf::console_draw_frame(m_console, gf::RectI::from_size(CreationConsoleSize), style);
 
     const std::size_t dots = std::size_t(m_time.as_seconds() * DotsPerSeconds) % 4;
-    gf::console_print_picture(m_console, { 3, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Creation of the world" + std::string(dots, '.'));
+    gf::console_print_text(m_console, { 3, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Creation of the world" + std::string(dots, '.'));
 
     style.color.foreground = gf::Amber;
     const WorldGenerationStep step = m_game->world_creation_step();
     const std::string_view step_name = compute_step(step);
-    gf::console_print_picture(m_console, { CreationConsoleSize.x / 2, 2 }, gf::ConsoleAlignment::Center, style, "{}", step_name);
+    gf::console_print_text(m_console, { CreationConsoleSize.x / 2, 2 }, gf::ConsoleAlignment::Center, style, "{}", step_name);
 
     const gf::Vec2I padding = console.size() - m_console.size();
     const gf::Vec2I creation_position = { padding.x / 2, padding.y / 2 + 10 };

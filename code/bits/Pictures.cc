@@ -20,6 +20,26 @@ namespace fw {
         return u"▄▌▀▐"[index];
       case u'▌':
         return u"▌▀▐▄"[index];
+      case u'▙':
+        return u"▙▛▜▟"[index];
+      case u'▛':
+        return u"▛▜▟▙"[index];
+      case u'▜':
+        return u"▜▟▙▛"[index];
+      case u'▟':
+        return u"▟▙▛▜"[index];
+      case u'▚':
+        return u"▚▞▚▞"[index];
+      case u'▞':
+        return u"▞▚▞▚"[index];
+      case u'╭':
+        return u"╭╮╯╰"[index];
+      case u'╮':
+        return u"╮╯╰╭"[index];
+      case u'╯':
+        return u"╯╰╭╮"[index];
+      case u'╰':
+        return u"╰╭╮╯"[index];
       // double straight
       case u'║':
         return u"║═║═"[index];
@@ -106,6 +126,15 @@ namespace fw {
         return u"┐┘└┌"[index];
       case u'┘':
         return u"┘└┌┐"[index];
+      // triangles
+      case u'◢':
+        return u"◢◣◤◥"[index];
+      case u'◣':
+        return u"◣◤◥◢"[index];
+      case u'◤':
+        return u"◤◥◢◣"[index];
+      case u'◥':
+        return u"◥◢◣◤"[index];
 
       // case u' ':
       //   return u"    "[index];

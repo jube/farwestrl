@@ -10,7 +10,7 @@
 
 namespace fw {
 
-  constexpr std::size_t TrainLength = 11;
+  constexpr std::size_t TrainLength = 12;
 
   struct StationState {
     uint32_t index;

@@ -14,7 +14,7 @@ namespace fw {
     constexpr int QuitChoice = 1;
     constexpr int ReturnChoice = 2;
 
-    constexpr gf::Vec2I QuitConsoleSize = { 37, 5 };
+    constexpr gf::Vec2I QuitConsoleSize = { 20, 5 };
 
   }
 
@@ -69,11 +69,11 @@ namespace fw {
 
     gf::console_draw_frame(m_console, gf::RectI::from_size(QuitConsoleSize), style);
 
-    gf::console_print_picture(m_console, { 3, 1 }, gf::ConsoleAlignment::Left, style, "Back to real life, see you soon");
-    gf::console_print_picture(m_console, { 3, 2 }, gf::ConsoleAlignment::Left, style, "Back to real life, farewell");
-    gf::console_print_picture(m_console, { 3, 3 }, gf::ConsoleAlignment::Left, style, "Back to adventure");
+    gf::console_print_text(m_console, { 3, 1 }, gf::ConsoleAlignment::Left, style, "Back to real life, see you soon");
+    gf::console_print_text(m_console, { 3, 2 }, gf::ConsoleAlignment::Left, style, "Back to real life, farewell");
+    gf::console_print_text(m_console, { 3, 3 }, gf::ConsoleAlignment::Left, style, "Back to adventure");
 
-    gf::console_print_picture(m_console, { 1, 1 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
+    gf::console_print_text(m_console, { 2, 1 + m_choice }, gf::ConsoleAlignment::Left, style, ">");
 
     const gf::Vec2I padding = console.size() - m_console.size();
     const gf::Vec2I quit_position = padding / 2;

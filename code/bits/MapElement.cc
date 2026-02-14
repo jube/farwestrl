@@ -26,7 +26,7 @@ namespace fw {
     using RailPart = std::array<std::u16string_view, TrainSize>;
 
     constexpr RailPart LocomotiveFront = {{
-      u" ▄ ",
+      u"◢█◣",
       u"▐◘▌",
       u"▐█▌",
     }};
@@ -38,9 +38,9 @@ namespace fw {
     }};
 
     constexpr RailPart Coupler = {{
-      u"▐█▌",
-      u" · ",
-      u"▐█▌",
+      u"◥█◤",
+      u" • ",
+      u"◢█◣",
     }};
 
     constexpr RailPart WagonFront = {{
@@ -55,7 +55,13 @@ namespace fw {
       u"███",
     }};
 
-    constexpr std::string_view Train = "lLCwWCwWCwW";
+    constexpr RailPart WagonEnd = {{
+      u"███",
+      u"███",
+      u"◥█◤",
+    }};
+
+    constexpr std::string_view Train = "lLCwWCwWCwWE";
     static_assert(Train.length() == TrainLength);
 
     const RailPart& compute_train_basic_part(char part_character)
@@ -71,6 +77,8 @@ namespace fw {
           return WagonFront;
         case 'W':
           return WagonBack;
+        case 'E':
+          return WagonEnd;
       }
 
       assert(false);
@@ -147,11 +155,14 @@ namespace fw {
       const gf::Vec2I console_position = position - view.position() + GameBoxPosition;
 
       if (cell.explored()) {
-        gf::console_write_background(console, console_position, gf::Gray, gf::ConsoleEffect::multiply());
-        gf::console_write_picture(console, console_position, u' ');
+        constexpr gf::Color LightFadeColor = gf::gray(0.75f);
+        gf::console_write_background(console, console_position, LightFadeColor, gf::ConsoleEffect::multiply());
+        console(console_position).parts[0].foreground *= LightFadeColor;
       } else {
         assert(!cell.visible());
-        gf::console_write_picture(console, console_position, u' ', { gf::Black, gf::Black });
+        constexpr gf::Color DarkFadeColor = gf::gray(0.05f);
+        gf::console_write_background(console, console_position, DarkFadeColor, gf::ConsoleEffect::multiply());
+        console(console_position).parts[0].foreground *= DarkFadeColor;
       }
     }
 

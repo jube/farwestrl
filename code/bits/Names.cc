@@ -10,7 +10,7 @@
 namespace fw {
 
   namespace {
-    constexpr std::size_t NameLengthMax = 22;
+    constexpr std::size_t NameLengthMax = 40;
     constexpr double MiddleNameProbability = 0.2;
 
     // data taken from https://www.census.gov/topics/population/genealogy/data/1990_census/1990_census_namefiles.html

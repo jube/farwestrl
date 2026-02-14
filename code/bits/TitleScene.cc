@@ -62,7 +62,7 @@ namespace fw {
     gf::console_blit_to(m_title, console, title_position);
 
     const gf::Vec2I subtitle_position = { console.size().w / 2, console.size().h - 2 };
-    gf::console_print_picture(console, subtitle_position, gf::ConsoleAlignment::Center, m_game->style(), "copyright (c) 2025-2026 ─ made with <style=gf>gf2</>");
+    gf::console_print_text(console, subtitle_position, gf::ConsoleAlignment::Center, m_game->style(), "copyright © 2025-2026 — made with <style=gf>gf2</>");
   }
 
 }

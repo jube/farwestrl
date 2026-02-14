@@ -157,16 +157,16 @@ namespace fw {
               gf::ConsoleChar::FullBlock,           // 0000
               gf::ConsoleChar::UpperHalfBlock,      // 0001
               gf::ConsoleChar::RightHalfBlock,      // 0010
-              gf::ConsoleChar::FullBlock,           // 0011 // gf::ConsoleChar::QuadrantUpperRight
+              u'\u25E5',                            // 0011 // gf::ConsoleChar::QuadrantUpperRight
               gf::ConsoleChar::LowerHalfBlock,      // 0100
               gf::ConsoleChar::FullBlock,           // 0101
-              gf::ConsoleChar::FullBlock,           // 0110 // gf::ConsoleChar::QuadrantLowerRight
+              u'\u25E2',                            // 0110 // gf::ConsoleChar::QuadrantLowerRight
               gf::ConsoleChar::FullBlock,           // 0111
               gf::ConsoleChar::LeftHalfBlock,       // 1000
-              gf::ConsoleChar::FullBlock,           // 1001 // gf::ConsoleChar::QuadrantUpperLeft
+              u'\u25E4',                            // 1001 // gf::ConsoleChar::QuadrantUpperLeft
               gf::ConsoleChar::FullBlock,           // 1010
               gf::ConsoleChar::FullBlock,           // 1011
-              gf::ConsoleChar::FullBlock,           // 1100 // gf::ConsoleChar::QuadrantLowerLeft
+              u'\u25E3',                            // 1100 // gf::ConsoleChar::QuadrantLowerLeft
               gf::ConsoleChar::FullBlock,           // 1101
               gf::ConsoleChar::FullBlock,           // 1110
               gf::ConsoleChar::FullBlock,           // 1111
@@ -265,13 +265,13 @@ namespace fw {
     constexpr RailPlan RailNW = {{
       u"┼─┼",
       u"│ │",
-      u"┼─┘",
+      u"┼─╯",
     }};
 
     constexpr RailPlan RailNE = {{
       u"┼─┼",
       u"│ │",
-      u"└─┼",
+      u"╰─┼",
     }};
 
     constexpr RailPlan RailWE = {{
@@ -281,13 +281,13 @@ namespace fw {
     }};
 
     constexpr RailPlan RailSW = {{
-      u"┼─┐",
+      u"┼─╮",
       u"│ │",
       u"┼─┼",
     }};
 
     constexpr RailPlan RailSE = {{
-      u"┌─┼",
+      u"╭─┼",
       u"│ │",
       u"┼─┼",
     }};

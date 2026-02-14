@@ -17,7 +17,7 @@ namespace fw {
 
   namespace {
 
-    constexpr gf::ConsoleStyle DefaultStyle = { {  gf::White, gf::Transparent }, gf::ConsoleEffect::set() };
+    constexpr gf::ConsoleStyle DefaultStyle = { gf::White, gf::Transparent, gf::ConsoleEffect::set() };
 
     constexpr gf::ConsoleColorStyle Gf = { gf::Orange, gf::Azure };
 

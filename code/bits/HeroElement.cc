@@ -79,15 +79,16 @@ namespace fw {
 
     gf::Vec2I position = CharacterBoxPosition + 1;
 
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=date>{}</>", state->current_date.to_string());
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=date>{}</>", state->current_date.to_string());
     position.y += 2;
 
     const ActorState& hero = state->hero();
     const HumanFeature& feature = hero.feature.from<ActorType::Human>();
 
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=hero>{}</>", feature.name);
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=hero>{}</>", feature.name);
     ++position.y;
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "{} year old, <style={}>{}</>", feature.age, gender_style(feature.gender), gender_symbol(feature.gender));
+    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style={}>{}</>", gender_style(feature.gender), gender_symbol(feature.gender));
+    gf::console_print_text(console, position + gf::dirx(1), gf::ConsoleAlignment::Left, m_game->style(), "{} year old", feature.age);
 
     position.y += 2;
 
@@ -101,7 +102,7 @@ namespace fw {
     stat_style.color.background = gf::Transparent;
 
     auto print_attribute_stat = [&](std::string_view attribute_name, std::string_view attribute_style, int8_t attribute, std::string_view stat_name, gf::Color stat_color, const Stat& stat) {
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style={}>{}</>: {}", attribute_style, attribute_name, attribute);
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style={}>{}</>: {}", attribute_style, attribute_name, attribute);
       ++position.y;
 
       const int stat_bar = (stat * (CharacterBoxSize.w - 2) / 100).as_int();
@@ -110,7 +111,7 @@ namespace fw {
         gf::console_write_background(console, position + gf::dirx(x), x <= stat_bar ? stat_color : gf::Gray);
       }
 
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, stat_style, "{}: {}", stat_name, stat.as_int());
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, stat_style, "{}: {}", stat_name, stat.as_int());
       ++position.y;
     };
 
@@ -120,22 +121,13 @@ namespace fw {
 
     ++position.y;
 
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Weapon</>:"); // put the type of the weapon here?
-    ++position.y;
-
-    if (hero.weapon.data) {
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "{}", hero.weapon.data->label.tag);
-    } else {
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "-");
-    }
-
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Weapon</>: {}", hero.weapon.data ? hero.weapon.data->label.tag : "-");
     ++position.y;
 
     if (hero.ammunition.data) {
       assert(hero.ammunition.data->feature.type() == ItemType::Ammunition);
       const AmmunitionDataFeature& ammunition = hero.ammunition.data->feature.from<ItemType::Ammunition>();
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: .{}", ammunition.caliber); // only for firearms
-      ++position.y;
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: .{} × {}", ammunition.caliber, hero.ammunition.count); // only for firearms
 
       assert(hero.weapon.data->feature.type() == ItemType::Firearm);
       const FirearmDataFeature& firearm = hero.weapon.data->feature.from<ItemType::Firearm>();
@@ -150,18 +142,17 @@ namespace fw {
         cartridges += "○";
       }
 
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "{} [{}]", cartridges, hero.ammunition.count);
+      gf::console_print_picture(console, position + gf::dirx(CharacterBoxSize.x - 3), gf::ConsoleAlignment::Right, m_game->style(), "{}", cartridges);
     } else {
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>:");
-      ++position.y;
-      gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "-");
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: -");
+      gf::console_print_picture(console, position + gf::dirx(CharacterBoxSize.x - 3), gf::ConsoleAlignment::Right, m_game->style(), "∅");
     }
 
     position.y += 2;
 
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=cash>Cash</>: 100$");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=cash>Cash</>: 100$");
     ++position.y;
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=debt>Debt</>: 10034$");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=debt>Debt</>: 10034$");
     ++position.y;
 
 

@@ -36,7 +36,7 @@ namespace fw {
       }
     }
 
-    gf::console_print_picture(console, MessageBox, gf::ConsoleAlignment::Left, m_game->style(), "{}", log);
+    gf::console_print_text(console, MessageBox, gf::ConsoleAlignment::Left, m_game->style(), "{}", log);
   }
 
 }
