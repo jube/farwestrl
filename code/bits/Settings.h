@@ -31,7 +31,9 @@ namespace fw {
   constexpr gf::Vec2I ContextualBoxSize = { 24, 27 };
   constexpr gf::RectI ContextualBox = gf::RectI::from_position_size(ContextualBoxPosition, ContextualBoxSize);
 
-  constexpr int8_t MaxHealth = 10;
+  constexpr int32_t HeroVisionRange = 30;
+
+  constexpr int8_t MaxHealth = 20;
 
 }
 

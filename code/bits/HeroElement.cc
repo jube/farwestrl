@@ -92,7 +92,7 @@ namespace fw {
 
     position.y += 2;
 
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=health>{}</><style=non_health>{}</>", health_bar(feature.health), health_bar(MaxHealth - feature.health));
+    gf::console_print_picture(console, position + gf::dirx(1), gf::ConsoleAlignment::Left, m_game->style(), "<style=health>{}</><style=non_health>{}</>", health_bar(feature.health), health_bar(MaxHealth - feature.health));
 
     position.y += 2;
 
