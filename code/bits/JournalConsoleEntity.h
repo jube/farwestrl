@@ -1,5 +1,5 @@
-#ifndef FW_HERO_SCENE_H
-#define FW_HERO_SCENE_H
+#ifndef FW_JOURNAL_CONSOLE_ENTITY_H
+#define FW_JOURNAL_CONSOLE_ENTITY_H
 
 #include <gf2/core/Time.h>
 #include <gf2/core/ConsoleEntity.h>
@@ -7,9 +7,9 @@
 namespace fw {
   class FarWest;
 
-  class HeroElement : public gf::ConsoleEntity {
+  class JournalConsoleEntity : public gf::ConsoleEntity {
   public:
-    HeroElement(FarWest* game);
+    JournalConsoleEntity(FarWest* game);
 
     void update(gf::Time time) override;
     void render(gf::Console& console) override;
@@ -20,4 +20,4 @@ namespace fw {
 
 }
 
-#endif // FW_HERO_SCENE_H
+#endif // FW_JOURNAL_CONSOLE_ENTITY_H

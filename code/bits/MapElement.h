@@ -1,12 +1,12 @@
 #ifndef FW_MAP_SCENE_H
 #define FW_MAP_SCENE_H
 
-#include <gf2/core/ConsoleElement.h>
+#include <gf2/core/ConsoleEntity.h>
 
 namespace fw {
   class FarWest;
 
-  class MapElement : public gf::ConsoleElement {
+  class MapElement : public gf::ConsoleEntity {
   public:
     MapElement(FarWest* game);
 

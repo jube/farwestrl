@@ -13,10 +13,10 @@ namespace fw {
   {
     add_model(game->model());
 
-    add_element(&m_message_log_element);
-    add_element(&m_map_element);
-    add_element(&m_hero_element);
-    add_element(&m_contextual_element);
+    add_entity(&m_message_log_element);
+    add_entity(&m_map_element);
+    add_entity(&m_hero_element);
+    add_entity(&m_contextual_element);
   }
 
 }

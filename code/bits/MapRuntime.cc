@@ -128,11 +128,11 @@ namespace fw {
         case MapCellDecoration::None:
           break;
         case MapCellDecoration::FloorDown:
-          character = u'▼';
+          character = u'↓';
           foreground_color = gf::darker(background_color);
           break;
         case MapCellDecoration::FloorUp:
-          character = u'▲';
+          character = u'↑';
           foreground_color = gf::darker(background_color);
           break;
         case MapCellDecoration::Herb:
@@ -144,7 +144,7 @@ namespace fw {
           foreground_color = gf::darker(gf::Green, 0.3f);
           break;
         case MapCellDecoration::Tree:
-          character = generate_character({ gf::ConsoleChar::GreekPhiSymbol, gf::ConsoleChar::YenSign }, random);
+          character = generate_character({ u'φ', u'ψ', u'¥' }, random);
           foreground_color = gf::darker(gf::Green, 0.7f);
           break;
         case MapCellDecoration::Cliff:
@@ -157,16 +157,16 @@ namespace fw {
               gf::ConsoleChar::FullBlock,           // 0000
               gf::ConsoleChar::UpperHalfBlock,      // 0001
               gf::ConsoleChar::RightHalfBlock,      // 0010
-              u'\u25E5',                            // 0011 // gf::ConsoleChar::QuadrantUpperRight
+              gf::ConsoleChar::QuadrantUpperRight,  // 0011
               gf::ConsoleChar::LowerHalfBlock,      // 0100
               gf::ConsoleChar::FullBlock,           // 0101
-              u'\u25E2',                            // 0110 // gf::ConsoleChar::QuadrantLowerRight
+              gf::ConsoleChar::QuadrantLowerRight,  // 0110
               gf::ConsoleChar::FullBlock,           // 0111
               gf::ConsoleChar::LeftHalfBlock,       // 1000
-              u'\u25E4',                            // 1001 // gf::ConsoleChar::QuadrantUpperLeft
+              gf::ConsoleChar::QuadrantUpperLeft,   // 1001
               gf::ConsoleChar::FullBlock,           // 1010
               gf::ConsoleChar::FullBlock,           // 1011
-              u'\u25E3',                            // 1100 // gf::ConsoleChar::QuadrantLowerLeft
+              gf::ConsoleChar::QuadrantLowerLeft,   // 1100
               gf::ConsoleChar::FullBlock,           // 1101
               gf::ConsoleChar::FullBlock,           // 1110
               gf::ConsoleChar::FullBlock,           // 1111

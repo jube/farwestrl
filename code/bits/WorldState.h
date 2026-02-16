@@ -12,8 +12,8 @@
 #include "Date.h"
 #include "DebtState.h"
 #include "ItemState.h"
+#include "JournalState.h"
 #include "MapState.h"
-#include "MessageLogState.h"
 #include "NetworkState.h"
 #include "SchedulerState.h"
 
@@ -34,7 +34,7 @@ namespace fw {
     DebtState debt;
 
     SchedulerState scheduler;
-    MessageLogState log;
+    JournalState journal;
 
     ActorState& hero() {
       assert(!actors.empty());
@@ -57,7 +57,7 @@ namespace fw {
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<WorldState, Archive>& state)
   {
-    return ar | state.current_date | state.map | state.network | state.actors | state.debt | state.scheduler | state.log;
+    return ar | state.current_date | state.map | state.network | state.actors | state.debt | state.scheduler | state.journal;
   }
 
 }

@@ -1647,6 +1647,58 @@ namespace fw {
       return attribute;
     }
 
+    HumanFeature generate_human(gf::Random* random, int8_t age_min, int8_t age_max) {
+      HumanFeature human;
+      human.gender = generate_gender(random);
+
+      switch (human.gender) {
+        case Gender::Girl:
+          human.name = generate_random_white_female_name(random);
+          break;
+        case Gender::Boy:
+          human.name = generate_random_white_male_name(random);
+          break;
+        case Gender::NonBinary:
+          human.name = generate_random_white_non_binary_name(random);
+          break;
+      }
+
+      human.age = random->compute_uniform_integer<int8_t>(age_min, age_max);
+      human.birthday = generate_random_birthday(random);
+
+      human.health = MaxHealth - 1;
+
+      human.force = generate_attribute(random);
+      human.dexterity = generate_attribute(random);
+      human.constitution = generate_attribute(random);
+      human.luck = generate_attribute(random);
+
+      human.intensity = random->compute_uniform_integer(50, 90);
+      human.precision = random->compute_uniform_integer(50, 90);
+      human.endurance = random->compute_uniform_integer(50, 90);
+
+      gf::Log::info("Name: {} (Luck: {})", human.name, human.luck);
+
+      return human;
+    }
+
+    ActorState generate_hero(const WorldState& state, gf::Random* random)
+    {
+      ActorState hero = {};
+      hero.data = "Hero";
+      hero.position = compute_starting_position(state.network);
+
+      hero.feature = generate_human(random, 20, 40);
+
+      // hero.weapon.data = "Colt Dragoon Revolver";
+      // hero.weapon.cartridges = 0;
+      //
+      // hero.ammunition.data = ".44 Ammunitions";
+      // hero.ammunition.count = 32;
+
+      return hero;
+    }
+
   }
 
   WorldState generate_world(gf::Random* random, WorldGenerationAnalysis& analysis)
@@ -1697,50 +1749,8 @@ namespace fw {
 
     analysis.set_step(WorldGenerationStep::Hero);
 
-    ActorState hero = {};
-    hero.data = "Hero";
-    hero.position = compute_starting_position(state.network);
-
+    ActorState hero = generate_hero(state, random);
     compute_hero_fov(hero.position, state.map.ground);
-
-    HumanFeature human;
-    human.gender = generate_gender(random);
-
-    switch (human.gender) {
-      case Gender::Girl:
-        human.name = generate_random_white_female_name(random);
-        break;
-      case Gender::Boy:
-        human.name = generate_random_white_male_name(random);
-        break;
-      case Gender::NonBinary:
-        human.name = generate_random_white_non_binary_name(random);
-        break;
-    }
-
-    human.age = random->compute_uniform_integer<int8_t>(20, 40);
-    human.birthday = generate_random_birthday(random);
-
-    human.health = MaxHealth - 1;
-
-    human.force = generate_attribute(random);
-    human.dexterity = generate_attribute(random);
-    human.constitution = generate_attribute(random);
-    human.luck = generate_attribute(random);
-
-    human.intensity = 100;
-    human.precision = 90;
-    human.endurance = 70;
-
-    hero.feature = human;
-
-    hero.weapon.data = "Colt Dragoon Revolver";
-    hero.weapon.cartridges = 0;
-
-    hero.ammunition.data = ".44 Ammunitions";
-    hero.ammunition.count = 32;
-
-    gf::Log::info("Name: {} (Luck: {})", human.name, human.luck);
 
     state.actors.push_back(hero);
     state.scheduler.queue.push({state.current_date, TaskType::Actor, 0});
@@ -1769,7 +1779,7 @@ namespace fw {
       state.scheduler.queue.push({ date, TaskType::Train, uint32_t(index) } );
     }
 
-    state.add_message(fmt::format("Hello <style=character>{}</>!", human.name));
+    // state.add_message(fmt::format("Hello <style=character>{}</>!", human.name));
 
     gf::Log::info("- actors ({:g}s)", clock.elapsed_time().as_seconds());
 

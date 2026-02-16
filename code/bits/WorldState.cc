@@ -30,7 +30,7 @@ namespace fw {
 
   void WorldState::add_message(std::string message)
   {
-    log.messages.push_back({ current_date, std::move(message) });
+    journal.entries.push_back({ current_date, std::move(message) });
   }
 
   void WorldState::bind(const WorldData& data)

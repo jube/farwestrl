@@ -3,7 +3,7 @@
 
 #include <gf2/core/ActionSettings.h>
 #include <gf2/core/ActionGroup.h>
-#include <gf2/graphics/ConsoleEntity.h>
+#include <gf2/graphics/ConsoleGraphicsEntity.h>
 #include <gf2/graphics/Scene.h>
 
 #include "FarWest.h"
@@ -26,7 +26,7 @@ namespace fw {
     FarWestSystem* m_game;
     gf::ActionGroup m_action_group;
     FarWest m_console_scene_manager;
-    gf::ConsoleEntity m_console_entity;
+    gf::ConsoleGraphicsEntity m_console_entity;
   };
 
 }

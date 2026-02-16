@@ -10,7 +10,7 @@ namespace fw {
   , m_action_group(compute_settings())
   , m_minimap(game)
   {
-    add_element(&m_minimap);
+    add_entity(&m_minimap);
   }
 
   void MinimapScene::process_event(const gf::Event& event)
