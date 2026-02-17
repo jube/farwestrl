@@ -35,6 +35,16 @@ namespace fw {
 
   constexpr int8_t MaxHealth = 20;
 
+
+  /*
+   * Map
+   */
+
+  // map runtime
+
+  constexpr double RoadColorProbability = 0.7;
+  constexpr double StreetColorProbability = 0.8;
+
 }
 
 #endif // FW_SETTINGS_H

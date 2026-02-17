@@ -364,8 +364,10 @@ namespace fw {
           const gf::Vec2I neighbor(i, j);
           const gf::Vec2I neighbor_position = position + neighbor;
 
-          gf::Color color = gf::lighter(gf::gray(0.9f), random->compute_uniform_float(0.0f, ColorLighterBound));
-          gf::console_write_background(ground.console, neighbor_position, color, road_effect);
+          if (random->compute_bernoulli(RoadColorProbability)) {
+            gf::Color color = gf::lighter(gf::gray(0.9f), random->compute_uniform_float(0.0f, ColorLighterBound));
+            gf::console_write_background(ground.console, neighbor_position, color, road_effect);
+          }
         }
       }
     }
@@ -406,28 +408,44 @@ namespace fw {
 
       for (int32_t i = -Extra; i < TownDiameter + Extra; ++i) {
         const gf::Vec2I position = horizontal_position + gf::dirx(i);
-        gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-        gf::console_write_background(ground.console, position, color, street_effect);
+
+        if (random->compute_bernoulli(StreetColorProbability)) {
+          const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+          gf::console_write_background(ground.console, position, color, street_effect);
+        }
 
         if (position.x != vertical_position.x) {
-          color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          gf::console_write_background(ground.console, position + gf::diry(-1), color, street_effect);
-          color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          gf::console_write_background(ground.console, position + gf::diry(+1), color, street_effect);
+          if (random->compute_bernoulli(StreetColorProbability)) {
+            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            gf::console_write_background(ground.console, position + gf::diry(-1), color, street_effect);
+          }
+
+          if (random->compute_bernoulli(StreetColorProbability)) {
+            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            gf::console_write_background(ground.console, position + gf::diry(+1), color, street_effect);
+          }
         }
       }
 
 
       for (int32_t i = -Extra; i < TownDiameter + Extra; ++i) {
         const gf::Vec2I position = vertical_position + gf::diry(i);
-        gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-        gf::console_write_background(ground.console, position, color, street_effect);
+
+        if (random->compute_bernoulli(StreetColorProbability)) {
+          const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+          gf::console_write_background(ground.console, position, color, street_effect);
+        }
 
         if (position.y != horizontal_position.y) {
-          color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          gf::console_write_background(ground.console, position + gf::dirx(-1), color, street_effect);
-          color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
-          gf::console_write_background(ground.console, position + gf::dirx(+1), color, street_effect);
+          if (random->compute_bernoulli(StreetColorProbability)) {
+            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            gf::console_write_background(ground.console, position + gf::dirx(-1), color, street_effect);
+          }
+
+          if (random->compute_bernoulli(StreetColorProbability)) {
+            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            gf::console_write_background(ground.console, position + gf::dirx(+1), color, street_effect);
+          }
         }
       }
    }
