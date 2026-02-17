@@ -76,15 +76,15 @@ namespace fw {
 
   FarWest::FarWest(FarWestScene* enclosing_scene, gf::Random* random, const std::filesystem::path& datafile, const std::filesystem::path& savefile)
   : gf::ConsoleSceneManager(ConsoleSize)
-  , title(this)
-  , kickoff(this)
-  , creation(this)
-  , primary(this)
-  , control(this)
-  , minimap(this)
-  , help(this)
-  , quit(this)
-  , save(this)
+  , kickoff_title(this)
+  , kickoff_menu(this)
+  , kickoff_creation(this)
+  , adventure_primary(this)
+  , adventure_control(this)
+  , adventure_minimap(this)
+  , adventure_help(this)
+  , adventure_quit(this)
+  , adventure_save(this)
   , m_enclosing_scene(enclosing_scene)
   , m_random(random)
   , m_datafile(datafile)
@@ -92,8 +92,8 @@ namespace fw {
   , m_model(random)
   , m_rich_style(compute_rich_style())
   {
-    push_scene(&title);
-    push_scene(&kickoff);
+    push_scene(&kickoff_title);
+    push_scene(&kickoff_menu);
   }
 
   void FarWest::create_world(AdventureChoice choice)
@@ -142,11 +142,11 @@ namespace fw {
     return m_analysis.step();
   }
 
-  void FarWest::start_world()
+  void FarWest::start_adventure()
   {
     pop_all_scenes();
-    push_scene(&primary);
-    push_scene(&control);
+    push_scene(&adventure_primary);
+    push_scene(&adventure_control);
   }
 
   bool FarWest::has_save() const

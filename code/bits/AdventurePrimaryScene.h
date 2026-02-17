@@ -1,5 +1,5 @@
-#ifndef FW_PRIMARY_SCENE_H
-#define FW_PRIMARY_SCENE_H
+#ifndef FW_ADVENTURE_PRIMARY_SCENE_H
+#define FW_ADVENTURE_PRIMARY_SCENE_H
 
 #include <gf2/core/ConsoleScene.h>
 
@@ -11,9 +11,9 @@
 namespace fw {
   class FarWest;
 
-  class PrimaryScene : public gf::ConsoleScene {
+  class AdventurePrimaryScene : public gf::ConsoleScene {
   public:
-    PrimaryScene(FarWest* game);
+    AdventurePrimaryScene(FarWest* game);
 
   private:
     FarWest* m_game = nullptr;
@@ -27,4 +27,4 @@ namespace fw {
 
 }
 
-#endif // FW_PRIMARY_SCENE_H
+#endif // FW_ADVENTURE_PRIMARY_SCENE_H

@@ -1,5 +1,5 @@
-#ifndef FW_KICKOFF_SCENE_H
-#define FW_KICKOFF_SCENE_H
+#ifndef FW_KICKOFF_MENU_SCENE_H
+#define FW_KICKOFF_MENU_SCENE_H
 
 #include <gf2/core/ActionSettings.h>
 #include <gf2/core/ActionGroup.h>
@@ -8,9 +8,9 @@
 namespace fw {
   class FarWest;
 
-  class KickoffScene : public gf::ConsoleScene {
+  class KickoffMenuScene : public gf::ConsoleScene {
   public:
-    KickoffScene(FarWest* game);
+    KickoffMenuScene(FarWest* game);
 
     void process_event(const gf::Event& event) override;
     void handle_actions() override;
@@ -26,4 +26,4 @@ namespace fw {
 
 }
 
-#endif // FW_KICKOFF_SCENE_H
+#endif // FW_KICKOFF_MENU_SCENE_H

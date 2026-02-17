@@ -1,4 +1,4 @@
-#include "CreationScene.h"
+#include "KickoffCreationScene.h"
 
 #include "FarWest.h"
 #include "WorldGenerationStep.h"
@@ -73,22 +73,22 @@ namespace fw {
 
   }
 
-  CreationScene::CreationScene(FarWest* game)
+  KickoffCreationScene::KickoffCreationScene(FarWest* game)
   : m_game(game)
   , m_console(CreationConsoleSize)
   {
   }
 
-  void CreationScene::update(gf::Time time)
+  void KickoffCreationScene::update(gf::Time time)
   {
     m_time += time;
 
     if (m_game->world_creation_finished()) {
-      m_game->start_world();
+      m_game->start_adventure();
     }
   }
 
-  void CreationScene::render(gf::Console& console)
+  void KickoffCreationScene::render(gf::Console& console)
   {
     gf::ConsoleStyle style;
     style.color.background = gf::Black;

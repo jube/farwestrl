@@ -3,7 +3,6 @@
 
 #include <cstdint>
 
-#include <atomic>
 #include <filesystem>
 #include <future>
 
@@ -11,15 +10,15 @@
 #include <gf2/core/ConsoleStyle.h>
 #include <gf2/core/Random.h>
 
-#include "ControlScene.h"
-#include "CreationScene.h"
-#include "KickoffScene.h"
-#include "HelpScene.h"
-#include "MinimapScene.h"
-#include "PrimaryScene.h"
-#include "QuitScene.h"
-#include "SaveScene.h"
-#include "TitleScene.h"
+#include "AdventureControlScene.h"
+#include "AdventureHelpScene.h"
+#include "AdventureMinimapScene.h"
+#include "AdventurePrimaryScene.h"
+#include "AdventureQuitScene.h"
+#include "AdventureSaveScene.h"
+#include "KickoffCreationScene.h"
+#include "KickoffMenuScene.h"
+#include "KickoffTitleScene.h"
 #include "WorldModel.h"
 #include "WorldGenerationStep.h"
 
@@ -64,7 +63,7 @@ namespace fw {
     bool world_creation_finished();
     WorldGenerationStep world_creation_step();
 
-    void start_world();
+    void start_adventure();
 
     bool has_save() const;
     void create_save();
@@ -72,16 +71,16 @@ namespace fw {
 
     gf::Vec2I point_to(gf::Vec2F mouse);
 
-    TitleScene title;
-    KickoffScene kickoff;
-    CreationScene creation;
+    KickoffTitleScene kickoff_title;
+    KickoffMenuScene kickoff_menu;
+    KickoffCreationScene kickoff_creation;
 
-    PrimaryScene primary;
-    ControlScene control;
-    MinimapScene minimap;
-    HelpScene help;
-    QuitScene quit;
-    SaveScene save;
+    AdventurePrimaryScene adventure_primary;
+    AdventureControlScene adventure_control;
+    AdventureMinimapScene adventure_minimap;
+    AdventureHelpScene adventure_help;
+    AdventureQuitScene adventure_quit;
+    AdventureSaveScene adventure_save;
 
   private:
     FarWestScene* m_enclosing_scene = nullptr;

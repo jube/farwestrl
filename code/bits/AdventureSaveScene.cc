@@ -1,4 +1,4 @@
-#include "SaveScene.h"
+#include "AdventureSaveScene.h"
 
 #include <gf2/core/ConsoleOperations.h>
 
@@ -14,13 +14,13 @@ namespace fw {
 
   }
 
-  SaveScene::SaveScene(FarWest* game)
+  AdventureSaveScene::AdventureSaveScene(FarWest* game)
   : m_game(game)
   , m_console(SaveConsoleSize)
   {
   }
 
-  void SaveScene::update(gf::Time time)
+  void AdventureSaveScene::update(gf::Time time)
   {
     m_time += time;
 
@@ -29,7 +29,7 @@ namespace fw {
     }
   }
 
-  void SaveScene::render(gf::Console& console)
+  void AdventureSaveScene::render(gf::Console& console)
   {
     gf::ConsoleStyle style;
     style.color.background = RpgBlue;

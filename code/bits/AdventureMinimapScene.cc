@@ -1,11 +1,10 @@
-#include "MinimapScene.h"
+#include "AdventureMinimapScene.h"
 
 #include "FarWest.h"
-#include "gf2/core/Scancode.h"
 
 namespace fw {
 
-  MinimapScene::MinimapScene(FarWest* game)
+  AdventureMinimapScene::AdventureMinimapScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   , m_minimap(game)
@@ -13,12 +12,12 @@ namespace fw {
     add_entity(&m_minimap);
   }
 
-  void MinimapScene::process_event(const gf::Event& event)
+  void AdventureMinimapScene::process_event(const gf::Event& event)
   {
     m_action_group.process_event(event);
   }
 
-  void MinimapScene::handle_actions()
+  void AdventureMinimapScene::handle_actions()
   {
     using namespace gf::literals;
 
@@ -31,13 +30,13 @@ namespace fw {
     }
 
     if (m_action_group.active("back"_id)) {
-      m_game->start_world();
+      m_game->start_adventure();
     }
 
     m_action_group.reset();
   }
 
-  gf::ActionGroupSettings MinimapScene::compute_settings()
+  gf::ActionGroupSettings AdventureMinimapScene::compute_settings()
   {
     using namespace gf::literals;
     gf::ActionGroupSettings settings;

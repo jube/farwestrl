@@ -9,10 +9,6 @@
 #include "ItemData.h"
 #include "Settings.h"
 
-// #include "gf2/core/Color.h"
-// #include "gf2/core/ConsoleEffect.h"
-// #include "gf2/core/ConsoleStyle.h"
-
 namespace fw {
 
   namespace {

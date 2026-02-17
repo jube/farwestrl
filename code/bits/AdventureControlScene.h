@@ -1,5 +1,5 @@
-#ifndef FW_CONTROL_SCENE_H
-#define FW_CONTROL_SCENE_H
+#ifndef FW_ADVENTURE_CONTROL_SCENE_H
+#define FW_ADVENTURE_CONTROL_SCENE_H
 
 #include <optional>
 
@@ -13,9 +13,9 @@
 namespace fw {
   class FarWest;
 
-  class ControlScene : public gf::ConsoleScene {
+  class AdventureControlScene : public gf::ConsoleScene {
   public:
-    ControlScene(FarWest* game);
+    AdventureControlScene(FarWest* game);
 
     void process_event(const gf::Event& event) override;
     void handle_actions() override;
@@ -38,4 +38,4 @@ namespace fw {
 
 }
 
-#endif // FW_CONTROL_SCENE_H
+#endif // FW_ADVENTURE_CONTROL_SCENE_H

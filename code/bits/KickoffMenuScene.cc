@@ -1,4 +1,4 @@
-#include "KickoffScene.h"
+#include "KickoffMenuScene.h"
 
 #include <gf2/core/ConsoleOperations.h>
 
@@ -14,7 +14,7 @@ namespace fw {
 
   }
 
-  KickoffScene::KickoffScene(FarWest* game)
+  KickoffMenuScene::KickoffMenuScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   {
@@ -24,7 +24,7 @@ namespace fw {
     // }
   }
 
-  gf::ActionGroupSettings KickoffScene::compute_settings()
+  gf::ActionGroupSettings KickoffMenuScene::compute_settings()
   {
     using namespace gf::literals;
     gf::ActionGroupSettings settings;
@@ -36,12 +36,12 @@ namespace fw {
     return settings;
   }
 
-  void KickoffScene::process_event(const gf::Event& event)
+  void KickoffMenuScene::process_event(const gf::Event& event)
   {
     m_action_group.process_event(event);
   }
 
-  void KickoffScene::handle_actions()
+  void KickoffMenuScene::handle_actions()
   {
     using namespace gf::literals;
 
@@ -53,12 +53,12 @@ namespace fw {
       switch (m_choice) {
         case StartNewGameChoice:
           m_game->create_world(AdventureChoice::New);
-          m_game->replace_scene(&m_game->creation);
+          m_game->replace_scene(&m_game->kickoff_creation);
           break;
         case ContinueGameChoice:
           if (m_game->has_save()) {
             m_game->create_world(AdventureChoice::Saved);
-            m_game->replace_scene(&m_game->creation);
+            m_game->replace_scene(&m_game->kickoff_creation);
           }
           break;
         case QuitChoice:
@@ -70,7 +70,7 @@ namespace fw {
     m_action_group.reset();
   }
 
-  void KickoffScene::render(gf::Console& console)
+  void KickoffMenuScene::render(gf::Console& console)
   {
     const int32_t offset = 40;
 

@@ -1,5 +1,5 @@
-#ifndef FW_MINIMAP_SCENE_H
-#define FW_MINIMAP_SCENE_H
+#ifndef FW_ADVENTURE_MINIMAP_SCENE_H
+#define FW_ADVENTURE_MINIMAP_SCENE_H
 
 #include <gf2/core/ActionGroup.h>
 #include <gf2/core/ActionSettings.h>
@@ -10,9 +10,9 @@
 namespace fw {
   class FarWest;
 
-  class MinimapScene : public gf::ConsoleScene {
+  class AdventureMinimapScene : public gf::ConsoleScene {
   public:
-    MinimapScene(FarWest* game);
+    AdventureMinimapScene(FarWest* game);
 
     void process_event(const gf::Event& event) override;
     void handle_actions() override;
@@ -28,4 +28,4 @@ namespace fw {
 
 }
 
-#endif // FW_MINIMAP_SCENE_H
+#endif // FW_ADVENTURE_MINIMAP_SCENE_H

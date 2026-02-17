@@ -1,4 +1,4 @@
-#include "QuitScene.h"
+#include "AdventureQuitScene.h"
 
 #include <gf2/core/ConsoleOperations.h>
 
@@ -18,19 +18,19 @@ namespace fw {
 
   }
 
-  QuitScene::QuitScene(FarWest* game)
+  AdventureQuitScene::AdventureQuitScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   , m_console(QuitConsoleSize)
   {
   }
 
-  void QuitScene::process_event(const gf::Event& event)
+  void AdventureQuitScene::process_event(const gf::Event& event)
   {
     m_action_group.process_event(event);
   }
 
-  void QuitScene::handle_actions()
+  void AdventureQuitScene::handle_actions()
   {
     using namespace gf::literals;
 
@@ -42,23 +42,23 @@ namespace fw {
       switch (m_choice) {
         case SaveAndQuitChoice:
           m_game->create_save();
-          m_game->replace_scene(&m_game->save);
+          m_game->replace_scene(&m_game->adventure_save);
           break;
         case QuitChoice:
           m_game->pop_all_scenes();
           break;
         case ReturnChoice:
-          m_game->replace_scene(&m_game->control);
+          m_game->replace_scene(&m_game->adventure_control);
           break;
       }
     } else if (m_action_group.active("escape"_id)) {
-      m_game->replace_scene(&m_game->control);
+      m_game->replace_scene(&m_game->adventure_control);
     }
 
     m_action_group.reset();
   }
 
-  void QuitScene::render(gf::Console& console)
+  void AdventureQuitScene::render(gf::Console& console)
   {
     gf::ConsoleStyle style;
     style.color.background = RpgBlue;
@@ -80,7 +80,7 @@ namespace fw {
     gf::console_blit_to(m_console, console, quit_position, 1.0f, RpgBlueAlpha);
   }
 
-  gf::ActionGroupSettings QuitScene::compute_settings()
+  gf::ActionGroupSettings AdventureQuitScene::compute_settings()
   {
     using namespace gf::literals;
     gf::ActionGroupSettings settings;

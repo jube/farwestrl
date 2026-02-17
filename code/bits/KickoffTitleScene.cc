@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+#include "KickoffTitleScene.h"
 
 #include <string_view>
 
@@ -45,7 +45,7 @@ namespace fw {
 
   }
 
-  TitleScene::TitleScene(FarWest* game)
+  KickoffTitleScene::KickoffTitleScene(FarWest* game)
   : m_game(game)
   , m_title(Size)
   {
@@ -55,7 +55,7 @@ namespace fw {
     }
   }
 
-  void TitleScene::render(gf::Console& console)
+  void KickoffTitleScene::render(gf::Console& console)
   {
     const gf::Vec2I padding = console.size() - m_title.size();
     const gf::Vec2I title_position = { padding.w / 2, padding.h / 2 - padding.h / 6 };

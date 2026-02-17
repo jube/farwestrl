@@ -1,10 +1,10 @@
-#include "PrimaryScene.h"
+#include "AdventurePrimaryScene.h"
 
 #include "FarWest.h"
 
 namespace fw {
 
-  PrimaryScene::PrimaryScene(FarWest* game)
+  AdventurePrimaryScene::AdventurePrimaryScene(FarWest* game)
   : m_game(game)
   , m_message_log_element(game)
   , m_map_element(game)

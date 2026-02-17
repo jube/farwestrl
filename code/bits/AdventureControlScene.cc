@@ -1,4 +1,4 @@
-#include "ControlScene.h"
+#include "AdventureControlScene.h"
 
 #include <gf2/core/ConsoleOperations.h>
 #include <gf2/core/Flags.h>
@@ -40,13 +40,13 @@ namespace fw {
 
   }
 
-  ControlScene::ControlScene(FarWest* game)
+  AdventureControlScene::AdventureControlScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   {
   }
 
-  void ControlScene::process_event(const gf::Event& event)
+  void AdventureControlScene::process_event(const gf::Event& event)
   {
     m_action_group.process_event(event);
 
@@ -62,7 +62,7 @@ namespace fw {
     }
   }
 
-  gf::ActionGroupSettings ControlScene::compute_settings()
+  gf::ActionGroupSettings AdventureControlScene::compute_settings()
   {
     using namespace gf::literals;
     gf::ActionGroupSettings settings;
@@ -89,7 +89,7 @@ namespace fw {
     return settings;
   }
 
-  void ControlScene::handle_actions()
+  void AdventureControlScene::handle_actions()
   {
     const WorldState* state = m_game->state();
 
@@ -140,21 +140,21 @@ namespace fw {
 
     if (m_action_group.active("minimap"_id)) {
       m_game->pop_all_scenes();
-      m_game->push_scene(&m_game->minimap);
+      m_game->push_scene(&m_game->adventure_minimap);
     }
 
     if (m_action_group.active("help"_id)) {
-      m_game->replace_scene(&m_game->help);
+      m_game->replace_scene(&m_game->adventure_help);
     }
 
     if (m_action_group.active("escape"_id)) {
-      m_game->replace_scene(&m_game->quit);
+      m_game->replace_scene(&m_game->adventure_quit);
     }
 
     m_action_group.reset();
   }
 
-  void ControlScene::update([[maybe_unused]] gf::Time time)
+  void AdventureControlScene::update([[maybe_unused]] gf::Time time)
   {
     if (!m_mouse) {
       m_computed_path.clear();
@@ -210,7 +210,7 @@ namespace fw {
     }
   }
 
-  void ControlScene::render(gf::Console& console)
+  void AdventureControlScene::render(gf::Console& console)
   {
     const WorldRuntime* runtime = m_game->runtime();
     const gf::RectI view = runtime->compute_view();
@@ -230,7 +230,7 @@ namespace fw {
     }
   }
 
-  void ControlScene::update_grid()
+  void AdventureControlScene::update_grid()
   {
     const WorldState* state = m_game->state();
 

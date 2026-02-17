@@ -1,15 +1,16 @@
-#ifndef FW_SAVE_SCENE_H
-#define FW_SAVE_SCENE_H
+#ifndef FW_KICKOFF_CREATION_SCENE_H
+#define FW_KICKOFF_CREATION_SCENE_H
 
+#include <gf2/core/Time.h>
 #include <gf2/core/ConsoleScene.h>
 #include <gf2/core/Console.h>
 
 namespace fw {
   class FarWest;
 
-  class SaveScene : public gf::ConsoleScene {
+  class KickoffCreationScene : public gf::ConsoleScene {
   public:
-    SaveScene(FarWest* game);
+    KickoffCreationScene(FarWest* game);
 
     void update(gf::Time time) override;
     void render(gf::Console& console) override;
@@ -22,4 +23,4 @@ namespace fw {
 
 }
 
-#endif // FW_SAVE_SCENE_H
+#endif // FW_KICKOFF_CREATION_SCENE_H

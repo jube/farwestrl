@@ -1,4 +1,4 @@
-#include "HelpScene.h"
+#include "AdventureHelpScene.h"
 
 #include <gf2/core/ConsoleOperations.h>
 
@@ -88,35 +88,35 @@ namespace fw {
 
   }
 
-  HelpScene::HelpScene(FarWest* game)
+  AdventureHelpScene::AdventureHelpScene(FarWest* game)
   : m_game(game)
   , m_action_group(compute_settings())
   , m_console(compute_help_console())
   {
   }
 
-  void HelpScene::process_event(const gf::Event& event)
+  void AdventureHelpScene::process_event(const gf::Event& event)
   {
     m_action_group.process_event(event);
   }
 
-  void HelpScene::handle_actions()
+  void AdventureHelpScene::handle_actions()
   {
     using namespace gf::literals;
 
     if (m_action_group.active("back"_id)) {
-      m_game->replace_scene(&m_game->control);
+      m_game->replace_scene(&m_game->adventure_control);
     }
 
     m_action_group.reset();
   }
 
-  void HelpScene::render(gf::Console& console)
+  void AdventureHelpScene::render(gf::Console& console)
   {
     gf::console_blit_to(m_console, console, { 0, 0 }, 1.0f, RpgBlueAlpha);
   }
 
-  gf::ActionGroupSettings HelpScene::compute_settings()
+  gf::ActionGroupSettings AdventureHelpScene::compute_settings()
   {
     using namespace gf::literals;
     gf::ActionGroupSettings settings;
