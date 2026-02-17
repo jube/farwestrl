@@ -1,14 +1,14 @@
-#ifndef FW_MAP_SCENE_H
-#define FW_MAP_SCENE_H
+#ifndef FW_MAP_CONSOLE_ENTITY_H
+#define FW_MAP_CONSOLE_ENTITY_H
 
 #include <gf2/core/ConsoleEntity.h>
 
 namespace fw {
   class FarWest;
 
-  class MapElement : public gf::ConsoleEntity {
+  class MapConsoleEntity : public gf::ConsoleEntity {
   public:
-    MapElement(FarWest* game);
+    MapConsoleEntity(FarWest* game);
 
     void update(gf::Time time) override;
     void render(gf::Console& console) override;
@@ -19,4 +19,4 @@ namespace fw {
 
 }
 
-#endif // FW_MAP_SCENE_H
+#endif // FW_MAP_CONSOLE_ENTITY_H

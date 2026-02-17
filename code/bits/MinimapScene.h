@@ -5,7 +5,7 @@
 #include <gf2/core/ActionSettings.h>
 #include <gf2/core/ConsoleScene.h>
 
-#include "MinimapElement.h"
+#include "MinimapConsoleEntity.h"
 
 namespace fw {
   class FarWest;
@@ -23,7 +23,7 @@ namespace fw {
     FarWest* m_game = nullptr;
     gf::ActionGroup m_action_group;
 
-    MinimapElement m_minimap;
+    MinimapConsoleEntity m_minimap;
   };
 
 }

@@ -1,4 +1,4 @@
-#include "HeroElement.h"
+#include "HeroConsoleEntity.h"
 
 #include <cassert>
 
@@ -60,16 +60,16 @@ namespace fw {
 
   }
 
-  HeroElement::HeroElement(FarWest* game)
+  HeroConsoleEntity::HeroConsoleEntity(FarWest* game)
   : m_game(game)
   {
   }
 
-  void HeroElement::update([[maybe_unused]] gf::Time time)
+  void HeroConsoleEntity::update([[maybe_unused]] gf::Time time)
   {
   }
 
-  void HeroElement::render(gf::Console& console)
+  void HeroConsoleEntity::render(gf::Console& console)
   {
     WorldState *state = m_game->state();
 

@@ -1,14 +1,14 @@
-#ifndef FW_MINIMAP_ELEMENT_H
-#define FW_MINIMAP_ELEMENT_H
+#ifndef FW_MINIMAP_CONSOLE_ENTITY_H
+#define FW_MINIMAP_CONSOLE_ENTITY_H
 
 #include <gf2/core/ConsoleEntity.h>
 
 namespace fw {
   class FarWest;
 
-  class MinimapElement : public gf::ConsoleEntity {
+  class MinimapConsoleEntity : public gf::ConsoleEntity {
   public:
-    MinimapElement(FarWest* game);
+    MinimapConsoleEntity(FarWest* game);
 
     void zoom_in();
     void zoom_out();
@@ -22,4 +22,4 @@ namespace fw {
 
 }
 
-#endif // FW_MINIMAP_ELEMENT_H
+#endif // FW_MINIMAP_CONSOLE_ENTITY_H

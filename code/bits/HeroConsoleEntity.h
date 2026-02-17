@@ -1,14 +1,15 @@
-#ifndef FW_CONTEXTUAL_ELEMENT_H
-#define FW_CONTEXTUAL_ELEMENT_H
+#ifndef FW_HERO_CONSOLE_ENTITY_H
+#define FW_HERO_CONSOLE_ENTITY_H
 
+#include <gf2/core/Time.h>
 #include <gf2/core/ConsoleEntity.h>
 
 namespace fw {
   class FarWest;
 
-  class ContextualElement : public gf::ConsoleEntity {
+  class HeroConsoleEntity : public gf::ConsoleEntity {
   public:
-    ContextualElement(FarWest* game);
+    HeroConsoleEntity(FarWest* game);
 
     void update(gf::Time time) override;
     void render(gf::Console& console) override;
@@ -19,4 +20,4 @@ namespace fw {
 
 }
 
-#endif // FW_CONTEXTUAL_ELEMENT_H
+#endif // FW_HERO_CONSOLE_ENTITY_H

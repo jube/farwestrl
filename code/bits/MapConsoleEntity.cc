@@ -1,4 +1,4 @@
-#include "MapElement.h"
+#include "MapConsoleEntity.h"
 
 #include <cstdint>
 #include <string_view>
@@ -115,12 +115,12 @@ namespace fw {
 
   }
 
-  MapElement::MapElement(FarWest* game)
+  MapConsoleEntity::MapConsoleEntity(FarWest* game)
   : m_game(game)
   {
   }
 
-  void MapElement::update([[maybe_unused]] gf::Time time)
+  void MapConsoleEntity::update([[maybe_unused]] gf::Time time)
   {
     const WorldState* state = m_game->state();
     WorldRuntime* runtime = m_game->runtime();
@@ -128,7 +128,7 @@ namespace fw {
     runtime->view_center = gf::clamp(runtime->view_center, hero_position - ViewRelaxation, hero_position + ViewRelaxation);
   }
 
-  void MapElement::render(gf::Console& console)
+  void MapConsoleEntity::render(gf::Console& console)
   {
     const ActorState& hero = m_game->state()->hero();
 

@@ -1,4 +1,4 @@
-#include "ContextualElement.h"
+#include "ContextualConsoleEntity.h"
 
 #include <gf2/core/ConsoleOperations.h>
 
@@ -7,16 +7,16 @@
 
 namespace fw {
 
-  ContextualElement::ContextualElement(FarWest* game)
+  ContextualConsoleEntity::ContextualConsoleEntity(FarWest* game)
   : m_game(game)
   {
   }
 
-  void ContextualElement::update([[maybe_unused]] gf::Time time)
+  void ContextualConsoleEntity::update([[maybe_unused]] gf::Time time)
   {
   }
 
-  void ContextualElement::render(gf::Console& console)
+  void ContextualConsoleEntity::render(gf::Console& console)
   {
     [[maybe_unused]] WorldState *state = m_game->state();
 

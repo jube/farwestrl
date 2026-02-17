@@ -3,9 +3,9 @@
 
 #include <gf2/core/ConsoleScene.h>
 
-#include "ContextualElement.h"
-#include "HeroElement.h"
-#include "MapElement.h"
+#include "ContextualConsoleEntity.h"
+#include "HeroConsoleEntity.h"
+#include "MapConsoleEntity.h"
 #include "JournalConsoleEntity.h"
 
 namespace fw {
@@ -19,9 +19,9 @@ namespace fw {
     FarWest* m_game = nullptr;
 
     JournalConsoleEntity m_message_log_element;
-    MapElement m_map_element;
-    HeroElement m_hero_element;
-    ContextualElement m_contextual_element;
+    MapConsoleEntity m_map_element;
+    HeroConsoleEntity m_hero_element;
+    ContextualConsoleEntity m_contextual_element;
   };
 
 

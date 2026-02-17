@@ -1,4 +1,4 @@
-#include "MinimapElement.h"
+#include "MinimapConsoleEntity.h"
 
 #include <gf2/core/ConsoleOperations.h>
 
@@ -8,26 +8,26 @@
 
 namespace fw {
 
-  MinimapElement::MinimapElement(FarWest* game)
+  MinimapConsoleEntity::MinimapConsoleEntity(FarWest* game)
   : m_game(game)
   {
   }
 
-  void MinimapElement::zoom_in()
+  void MinimapConsoleEntity::zoom_in()
   {
     if (m_zoom_level > 0) {
       --m_zoom_level;
     }
   }
 
-  void MinimapElement::zoom_out()
+  void MinimapConsoleEntity::zoom_out()
   {
     if (m_zoom_level < MinimapCount - 1) {
       ++m_zoom_level;
     }
   }
 
-  void MinimapElement::render(gf::Console& console)
+  void MinimapConsoleEntity::render(gf::Console& console)
   {
     const FloorMap& floor = m_game->runtime()->map.from_floor(m_game->state()->hero().floor);
     const Minimap& minimap = floor.minimaps[m_zoom_level];
