@@ -11,6 +11,9 @@
 namespace fw {
 
   namespace {
+    constexpr double SolticeAmplitude = 3.17;
+    constexpr double EquinoxOffset = 0.07;
+
     std::tm to_tm(const Date& date)
     {
       std::tm tm = {};
@@ -45,7 +48,7 @@ namespace fw {
     {
       static constexpr uint32_t Equinox = days_in_month(Month::Jan) + days_in_month(Month::Feb) + 22; // 22 march
 
-      return static_cast<uint32_t>(ExactNoonInSeconds + 3.07 * MinutesInHour * SecondsInMinute * std::sin(2.0 * std::numbers::pi * (static_cast<double>(days) - static_cast<double>(Equinox)) / DaysInYear));
+      return static_cast<uint32_t>(ExactNoonInSeconds + SolticeAmplitude * MinutesInHour * SecondsInMinute * std::sin(2.0 * std::numbers::pi * (static_cast<double>(days) - static_cast<double>(Equinox) + EquinoxOffset) / DaysInYear));
     }
 
     uint32_t compute_sunrise_in_seconds(uint32_t daylight_in_seconds)
