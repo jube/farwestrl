@@ -17,7 +17,7 @@ end
 
 set_policy("build.warning", true)
 set_warnings("allextra")
-set_languages("cxx20")
+set_languages("cxx23")
 set_encodings("utf-8")
 
 if is_plat("windows") then
@@ -50,4 +50,9 @@ target("world-generation")
 target("name-generation")
     set_kind("binary")
     add_files("code/name-generation.cc")
+    add_deps("farwestrl0")
+
+target("date-generation")
+    set_kind("binary")
+    add_files("code/date-generation.cc")
     add_deps("farwestrl0")

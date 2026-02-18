@@ -160,6 +160,7 @@ namespace fw {
   void WorldModel::update_date()
   {
     state.current_date = state.scheduler.queue.top().date;
+    runtime.phase = state.current_date.phase();
   }
 
   void WorldModel::update_current_task_in_queue(uint16_t seconds)

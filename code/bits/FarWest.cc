@@ -69,6 +69,11 @@ namespace fw {
       style.set_style("dexterity", DexterityStyle);
       style.set_style("constitution", ConstitutionStyle);
 
+      style.set_style("nightlight", { NightlightColor, gf::Transparent });
+      style.set_style("daylight", { DaylightColor, gf::Transparent });
+      style.set_style("noon", { NoonColor, gf::Transparent });
+      style.set_style("twilight", { TwilightColor, gf::Transparent });
+
       return style;
     }
 

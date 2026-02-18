@@ -25,6 +25,12 @@ namespace fw {
   inline constexpr gf::Color NativeColor = 0x8D5524;
   inline constexpr gf::Color CavalryColor = 0x3F4C5A;
 
+
+  inline constexpr gf::Color TwilightColor = 0xFFE4BA;  // #FFE4BA
+  inline constexpr gf::Color DaylightColor = 0xFFEE50;  // #FFEE50
+  inline constexpr gf::Color NoonColor = 0xFFFF70;      // #FFFF70
+  inline constexpr gf::Color NightlightColor = gf::White;
+
 }
 
 #endif // FW_COLORS_H

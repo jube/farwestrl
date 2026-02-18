@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <ctime>
 
+#include <numbers>
+#include <numeric>
 #include <tuple>
 
 #include <fmt/chrono.h>
@@ -10,19 +12,6 @@
 namespace fw {
 
   namespace {
-    constexpr uint16_t SecondsInMinute = 60;
-    constexpr uint16_t MinutesInHour = 60;
-    constexpr uint8_t HoursInDay = 24;
-    constexpr uint8_t DaysInWeek = 7;
-    constexpr uint8_t MonthsInYear = 12;
-
-    constexpr uint8_t DaysInMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-    uint8_t days_in_month(Month month)
-    {
-      return DaysInMonth[uint8_t(month)];
-    }
-
     std::tm to_tm(const Date& date)
     {
       std::tm tm = {};
@@ -35,7 +24,59 @@ namespace fw {
       return tm;
     }
 
+    uint32_t days_since_1st_jan(const MonthDay& month_day)
+    {
+      uint32_t days = 0;
+      Month month = Month::Jan;
+
+      while (month < month_day.month) {
+        days += days_in_month(month);
+        month = next_month(month);
+      }
+
+      days += month_day.day - 1;
+      assert(days < DaysInYear);
+
+      return days;
+    }
+
+    constexpr uint32_t ExactNoonInSeconds = HoursInDay * MinutesInHour * SecondsInMinute / 2;
+
+    uint32_t daylight_seconds(uint32_t days)
+    {
+      static constexpr uint32_t Equinox = days_in_month(Month::Jan) + days_in_month(Month::Feb) + 21; // 21 march
+
+      return static_cast<uint32_t>(ExactNoonInSeconds + 4 * MinutesInHour * SecondsInMinute * std::sin(2.0 * std::numbers::pi * (static_cast<double>(days) - static_cast<double>(Equinox)) / DaysInYear));
+    }
+
+    uint32_t compute_sunrise_in_seconds(uint32_t daylight_in_seconds)
+    {
+      return ExactNoonInSeconds - daylight_in_seconds / 2;
+    }
+
+    uint32_t compute_sunset_in_seconds(uint32_t daylight_in_seconds)
+    {
+      return compute_sunrise_in_seconds(daylight_in_seconds) + daylight_in_seconds;
+    }
+
+    HourMinuteSeconds from_seconds(uint32_t seconds)
+    {
+      HourMinuteSeconds hms = {};
+      hms.seconds = seconds % SecondsInMinute;
+      const uint32_t minutes = seconds / SecondsInMinute;
+
+      hms.minutes = minutes % MinutesInHour;
+      const uint32_t hours = minutes / MinutesInHour;
+
+      hms.hours = static_cast<uint8_t>(hours % HoursInDay);
+      return hms;
+    }
+
   }
+
+  /*
+   * Date
+   */
 
   std::string Date::to_string() const
   {
@@ -65,11 +106,11 @@ namespace fw {
 
     while (hours >= HoursInDay) {
       ++day;
-      weekday = WeekDay{uint8_t((uint8_t(weekday) + 1) % DaysInWeek)};
+      weekday = next_weekday(weekday);
 
       if (day > days_in_month(month)) {
         day = 1;
-        month = Month{uint8_t((uint8_t(month) + 1) % MonthsInYear)};
+        month = next_month(month);
 
         if (month == Month::Jan) {
           // it's a new year
@@ -79,6 +120,59 @@ namespace fw {
 
       hours -= HoursInDay;
     }
+  }
+
+  Phase Date::phase() const
+  {
+    static constexpr uint32_t ExactNoon = 12 * 60;
+
+    // compute the number of days from the beginning of the year
+
+    const uint32_t days = days_since_1st_jan({ .month = month, .day = day });
+
+    // compute the length of daytime
+
+    const uint32_t daylight_in_seconds = daylight_seconds(days);
+
+    // compute milestones
+
+    const uint32_t sunrise = compute_sunrise_in_seconds(daylight_in_seconds);
+    const uint32_t dawn = sunrise - 30 * SecondsInMinute;
+
+    const uint32_t sunset = compute_sunset_in_seconds(daylight_in_seconds);
+    const uint32_t dusk = sunset + 30 * SecondsInMinute;
+
+    const uint32_t noon_begin = ExactNoon - 30 * SecondsInMinute;
+    const uint32_t noon_end = ExactNoon + 30 * SecondsInMinute;
+
+
+    const uint32_t past_seconds = hours * MinutesInHour * SecondsInMinute + minutes * SecondsInMinute + seconds;
+
+    if (past_seconds < dawn) {
+      return Phase::Night;
+    }
+
+    if (past_seconds < sunrise) {
+      return Phase::Dawn;
+    }
+
+    if (past_seconds < noon_begin) {
+      return Phase::Morning;
+    }
+
+    if (past_seconds < noon_end) {
+      return Phase::Noon;
+    }
+
+    if (past_seconds < sunset) {
+      return Phase::Afternoon;
+    }
+
+    if (past_seconds < dusk) {
+      return Phase::Dusk;
+    }
+
+    return Phase::Night;
   }
 
   Date Date::generate_random(gf::Random* random)
@@ -98,13 +192,6 @@ namespace fw {
     return date;
   }
 
-  MonthDay generate_random_birthday(gf::Random* random)
-  {
-    const Month month = Month{ random->compute_uniform_integer(MonthsInYear) };
-    uint8_t day = random->compute_uniform_integer(days_in_month(month)); ++day;
-    return { month, day };
-  }
-
   bool operator<(const Date& lhs, const Date& rhs)
   {
     return std::tie(lhs.year, lhs.month, lhs.day, lhs.hours, lhs.minutes, lhs.seconds) < std::tie(rhs.year, rhs.month, rhs.day, rhs.hours, rhs.minutes, rhs.seconds);
@@ -113,6 +200,42 @@ namespace fw {
   bool operator==(const Date& lhs, const Date& rhs)
   {
     return std::tie(lhs.year, lhs.month, lhs.day, lhs.hours, lhs.minutes, lhs.seconds) == std::tie(rhs.year, rhs.month, rhs.day, rhs.hours, rhs.minutes, rhs.seconds);
+  }
+
+  /*
+   * MonthDay
+   */
+
+  MonthDay generate_random_birthday(gf::Random* random)
+  {
+    const Month month = Month{ random->compute_uniform_integer(MonthsInYear) };
+    uint8_t day = random->compute_uniform_integer(days_in_month(month)); ++day;
+    return { month, day };
+  }
+
+  /*
+   * HourMinuteSeconds
+   */
+
+  std::string HourMinuteSeconds::to_string() const
+  {
+    return fmt::format("{:02}:{:02}:{:02}", hours, minutes, seconds);
+  }
+
+  HourMinuteSeconds compute_sunrise(const MonthDay& month_day)
+  {
+    const uint32_t days = days_since_1st_jan(month_day);
+    const uint32_t daylight_in_seconds = daylight_seconds(days);
+    const uint32_t sunrise = compute_sunrise_in_seconds(daylight_in_seconds);
+    return from_seconds(sunrise);
+  }
+
+  HourMinuteSeconds compute_sunset(const MonthDay& month_day)
+  {
+    const uint32_t days = days_since_1st_jan(month_day);
+    const uint32_t daylight_in_seconds = daylight_seconds(days);
+    const uint32_t sunrise = compute_sunset_in_seconds(daylight_in_seconds);
+    return from_seconds(sunrise);
   }
 
 }

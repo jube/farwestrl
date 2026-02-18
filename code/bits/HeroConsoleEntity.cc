@@ -13,6 +13,25 @@ namespace fw {
 
   namespace {
 
+    std::string_view phase_style(Phase phase)
+    {
+      switch (phase) {
+        case Phase::Night:
+          return "nightlight";
+        case Phase::Noon:
+          return "noon";
+        case Phase::Dawn:
+        case Phase::Dusk:
+          return "twilight";
+        default:
+          return "daylight";
+      }
+    }
+
+    std::string_view phase_symbol(Phase phase) {
+      return phase == Phase::Night ? "☾" : "☼";
+    }
+
     std::string_view gender_style(Gender gender)
     {
       switch (gender) {
@@ -67,7 +86,8 @@ namespace fw {
 
   void HeroConsoleEntity::render(gf::Console& console)
   {
-    WorldState *state = m_game->state();
+    const WorldState* state = m_game->state();
+    const WorldRuntime* runtime = m_game->runtime();
 
     gf::ConsoleStyle character_box_style;
     character_box_style.color.foreground = gf::Gray;
@@ -76,6 +96,8 @@ namespace fw {
     gf::Vec2I position = CharacterBoxPosition + 1;
 
     gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=date>{}</>", state->current_date.to_string());
+    gf::console_print_picture(console, position + gf::dirx(12), gf::ConsoleAlignment::Left, m_game->style(), "<style={}>{}</>", phase_style(runtime->phase), phase_symbol(runtime->phase));
+
     position.y += 2;
 
     const ActorState& hero = state->hero();

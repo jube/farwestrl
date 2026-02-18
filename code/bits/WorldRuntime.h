@@ -1,11 +1,11 @@
 #ifndef FW_WORLD_RUNTIME_H
 #define FW_WORLD_RUNTIME_H
 
-#include <atomic>
 #include <vector>
 
 #include <gf2/core/Random.h>
 
+#include "Date.h"
 #include "HeroRuntime.h"
 #include "MapRuntime.h"
 #include "NetworkRuntime.h"
@@ -18,6 +18,7 @@ namespace fw {
   struct WorldState;
 
   struct WorldRuntime {
+    Phase phase = Phase::Noon;
     gf::Vec2I view_center;
     HeroRuntime hero;
     MapRuntime map;
