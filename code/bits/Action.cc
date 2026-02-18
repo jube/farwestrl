@@ -224,7 +224,6 @@ namespace fw {
 
     // Reload
 
-
     ActionResult compute_reload_action(WorldModel& model, ActorState& actor, [[maybe_unused]] const ReloadAction& action)
     {
       assert(actor.feature.type() == ActorType::Human);
@@ -270,6 +269,20 @@ namespace fw {
 
     }
 
+    // Graze
+
+    ActionResult compute_graze_action(WorldModel& model, ActorState& actor, const GrazeAction& action)
+    {
+      const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
+      const gf::Vec2I new_position = actor.position + displacement;
+
+      if (model.is_walkable(actor.floor, new_position)) {
+        apply_move(model, actor, new_position);
+      }
+
+      model.update_current_task_in_queue(GrazeTime);
+      return ActionResult::Success;
+    }
   }
 
   ActionResult compute_action(WorldModel& model, ActorState& actor, const Action& action)
@@ -288,6 +301,8 @@ namespace fw {
         return compute_dismount_action(model, actor, action.from<ActionType::Dismount>());
       case ActionType::Reload:
         return compute_reload_action(model, actor, action.from<ActionType::Reload>());
+      case ActionType::Graze:
+        return compute_graze_action(model, actor, action.from<ActionType::Graze>());
     }
 
     return ActionResult::Failure;

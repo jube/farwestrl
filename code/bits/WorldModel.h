@@ -27,11 +27,7 @@ namespace fw {
 
     uint32_t index_of(ActorState& actor) const;
 
-    bool is_prairie(gf::Vec2I position) const;
-
     bool is_walkable(Floor floor, gf::Vec2I position) const;
-    void move_actor(ActorState& actor, gf::Vec2I position);
-    bool move_human(ActorState& actor, gf::Vec2I position);
 
     void update_current_task_in_queue(uint16_t seconds);
 
@@ -52,10 +48,6 @@ namespace fw {
 
     bool check_actor_position(ActorState& actor);
     bool change_floor(ActorState& actor, Floor new_floor);
-
-    bool update_actor(ActorState& actor);
-    void update_cow(ActorState& cow);
-
 
     bool update_train(TrainState& train, uint32_t train_index);
 

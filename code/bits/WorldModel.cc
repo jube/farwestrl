@@ -6,6 +6,7 @@
 #include "Action.h"
 #include "ActorData.h"
 #include "ActorState.h"
+#include "Behavior.h"
 #include "Index.h"
 #include "MapCell.h"
 #include "MapRuntime.h"
@@ -21,26 +22,6 @@ namespace fw {
     constexpr gf::Time Cooldown = gf::milliseconds(20);
 
     constexpr int32_t IdleDistance = 100;
-
-    constexpr int MaxMoveTries = 10;
-
-    gf::Orientation random_orientation(gf::Random* random) {
-      constexpr gf::Orientation Orientations[] = {
-        gf::Orientation::Center,
-        gf::Orientation::North,
-        gf::Orientation::NorthEast,
-        gf::Orientation::East,
-        gf::Orientation::SouthEast,
-        gf::Orientation::South,
-        gf::Orientation::SouthWest,
-        gf::Orientation::West,
-        gf::Orientation::NorthWest,
-      };
-
-      const std::size_t index = random->compute_uniform_integer(std::size(Orientations));
-      assert(index < std::size(Orientations));
-      return Orientations[index];
-    }
 
     constexpr Floor compute_floor_down(Floor floor)
     {
@@ -101,6 +82,7 @@ namespace fw {
 
     update_date();
 
+    const gf::RectI view = runtime.compute_view();
     bool need_cooldown = false;
 
     while (state.current_date == state.scheduler.queue.top().date) {
@@ -117,8 +99,12 @@ namespace fw {
       if (current_task.type == TaskType::Actor) {
         assert(current_task.index < state.actors.size());
         gf::Log::debug("[SCHEDULER] {}: Update actor {}", state.current_date.to_string(), current_task.index);
+        ActorState& actor = state.actors[current_task.index];
 
-        if (update_actor(state.actors[current_task.index])) {
+        const Action action = select_behavior(*this, actor, m_random);
+        const ActionResult result = compute_action(*this, actor, action);
+
+        if (result == ActionResult::Success && view.contains(actor.position)) {
           need_cooldown = true;
         }
 
@@ -149,15 +135,6 @@ namespace fw {
     return static_cast<uint32_t>(offset);
   }
 
-  bool WorldModel::is_prairie(gf::Vec2I position) const
-  {
-    if (!state.map.ground.valid(position)) {
-      return false;
-    }
-
-    return state.map.ground(position).region == MapCellBiome::Prairie;
-  }
-
   bool WorldModel::is_walkable(Floor floor, gf::Vec2I position) const
   {
     const FloorMap& floor_map = runtime.map.from_floor(floor);
@@ -180,29 +157,6 @@ namespace fw {
     return true;
   }
 
-  void WorldModel::move_actor(ActorState& actor, gf::Vec2I position)
-  {
-    assert(gf::chebyshev_distance(actor.position, position) < 2);
-
-    if (actor.position == position) {
-      return;
-    }
-
-    FloorMap& floor_map = runtime.map.from_floor(actor.floor);
-
-    assert(floor_map.reverse.valid(actor.position));
-    ReverseMapCell& old_reverse_cell = floor_map.reverse(actor.position);
-    assert(old_reverse_cell.actor_index < state.actors.size());
-    assert(&actor == &state.actors[old_reverse_cell.actor_index]);
-
-    assert(floor_map.reverse.valid(position));
-    ReverseMapCell& new_reverse_cell = floor_map.reverse(position);
-    assert(floor_map.reverse(position).actor_index == NoIndex);
-
-    actor.position = position;
-    std::swap(old_reverse_cell.actor_index, new_reverse_cell.actor_index);
-  }
-
   void WorldModel::update_date()
   {
     state.current_date = state.scheduler.queue.top().date;
@@ -222,7 +176,7 @@ namespace fw {
   bool WorldModel::update_hero()
   {
     if (!runtime.hero.moves.empty()) {
-      runtime.hero.move(runtime.hero.moves.back() - state.hero().position);
+      runtime.hero.action = make_action<MoveAction>(runtime.hero.moves.back() - state.hero().position);
       runtime.hero.moves.pop_back();
     }
 
@@ -321,64 +275,6 @@ namespace fw {
     }
 
     return true;
-  }
-
-  bool WorldModel::update_actor(ActorState& actor)
-  {
-    const int32_t distance_to_hero = gf::chebyshev_distance(actor.position, state.hero().position);
-
-    if (distance_to_hero > IdleDistance) {
-      update_current_task_in_queue(static_cast<uint16_t>(distance_to_hero - IdleDistance + IdleTime));
-      return false; // do not cooldown in this case
-    }
-
-    using namespace gf::literals;
-
-    switch (actor.data->label.id) {
-      case "Cow"_id:
-        update_cow(actor);
-        break;
-
-      default:
-        update_current_task_in_queue(10);
-        assert(false);
-        break;
-    }
-
-    return true;
-  }
-
-  void WorldModel::update_cow(ActorState& cow)
-  {
-    assert(cow.feature.type() == ActorType::Animal);
-
-    if (cow.feature.from<ActorType::Animal>().mounted_by != NoIndex) {
-      update_current_task_in_queue(IdleTime);
-      return;
-    }
-
-    gf::Orientation orientation = random_orientation(m_random);
-    gf::Vec2I new_position = cow.position + gf::displacement(orientation);
-
-    int tries = 0;
-
-    for (;;) {
-      if (tries == MaxMoveTries) {
-        new_position = cow.position;
-        break;
-      }
-
-      if (is_walkable(cow.floor, new_position) && is_prairie(new_position)) { // TODO: maybe change this, a cow should be able to walk anywhere
-        break;
-      }
-
-      orientation = random_orientation(m_random);
-      new_position = cow.position + gf::displacement(orientation);
-      ++tries;
-    }
-
-    move_actor(cow, new_position);
-    update_current_task_in_queue(GrazeTime);
   }
 
   bool WorldModel::update_train(TrainState& train, uint32_t train_index)

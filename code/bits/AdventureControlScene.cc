@@ -4,11 +4,13 @@
 #include <gf2/core/Flags.h>
 #include <gf2/core/PathFinding.h>
 
+#include "Action.h"
 #include "ActorState.h"
 #include "FarWest.h"
 #include "MapRuntime.h"
 #include "MapState.h"
 #include "Settings.h"
+#include "Times.h"
 #include "WorldRuntime.h"
 #include "WorldState.h"
 
@@ -112,11 +114,11 @@ namespace fw {
     }
 
     if (orientation != gf::vec(0, 0)) {
-      runtime->hero.move(orientation);
+      runtime->hero.action = make_action<MoveAction>(orientation);
     }
 
     if (m_action_group.active("idle"_id)) {
-      runtime->hero.idle();
+      runtime->hero.action = make_action<IdleAction>(IdleTime);
     }
 
     if (m_action_group.active("go"_id)) {
@@ -128,14 +130,14 @@ namespace fw {
 
     if (m_action_group.active("mount"_id)) {
       if (state->hero().feature.from<ActorType::Human>().mounting == NoIndex) {
-        runtime->hero.mount();
+        runtime->hero.action = make_action<MountAction>();
       } else {
-        runtime->hero.dismount();
+        runtime->hero.action = make_action<DismountAction>();
       }
     }
 
     if (m_action_group.active("reload"_id)) {
-      runtime->hero.reload();
+      runtime->hero.action = make_action<ReloadAction>();
     }
 
     if (m_action_group.active("minimap"_id)) {
