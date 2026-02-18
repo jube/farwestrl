@@ -22,7 +22,7 @@ namespace fw {
       tm.tm_hour = date.hours;
       tm.tm_mday = date.day;
       tm.tm_mon = uint8_t(date.month);
-      tm.tm_wday = uint8_t(date.weekday);
+      tm.tm_wday = (uint8_t(date.weekday) + 1) % DaysInWeek;
       return tm;
     }
 

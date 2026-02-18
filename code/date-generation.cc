@@ -7,6 +7,9 @@
 int main()
 {
   fw::Month month = fw::Month::Jan;
+  fw::WeekDay week_day = fw::WeekDay::Mon;
+
+  std::cout << "+------------------------+------------------------+\n";
 
   for (uint8_t i = 0; i < fw::MonthsInYear; ++i) {
     uint8_t days = fw::days_in_month(month);
@@ -17,7 +20,7 @@ int main()
         .year = 0,
         .month = month,
         .day = day,
-        .weekday = fw::WeekDay::Mon,
+        .weekday = week_day,
         .hours = hms_sunrise.hours,
         .minutes = hms_sunrise.minutes,
         .seconds = hms_sunrise.seconds
@@ -28,16 +31,18 @@ int main()
         .year = 0,
         .month = month,
         .day = day,
-        .weekday = fw::WeekDay::Mon,
+        .weekday = week_day,
         .hours = hms_sunset.hours,
         .minutes = hms_sunset.minutes,
         .seconds = hms_sunset.seconds
       };
 
-      std::cout << "Sunrise: " << date_sunrise.to_string() << ' ';
-      std::cout << "Sunset: " << date_sunset.to_string() << '\n';
+      std::cout << "| " << date_sunrise.to_string() << " | " << date_sunset.to_string() << " |\n";
+
+      week_day = fw::next_weekday(week_day);
     }
 
+    std::cout << "+------------------------+------------------------+\n";
     month = fw::next_month(month);
   }
 
