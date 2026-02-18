@@ -1,6 +1,6 @@
 #include <cstdint>
 
-#include <print>
+#include <iostream>
 
 #include "bits/Date.h"
 
@@ -23,8 +23,6 @@ int main()
         .seconds = hms_sunrise.seconds
       };
 
-      std::println("Sunrise: {}", date_sunrise.to_string());
-
       const fw::HourMinuteSeconds hms_sunset = fw::compute_sunset({ .month = month, .day = day });
       const fw::Date date_sunset = {
         .year = 0,
@@ -36,7 +34,8 @@ int main()
         .seconds = hms_sunset.seconds
       };
 
-      std::println("Sunset:  {}", date_sunset.to_string());
+      std::cout << "Sunrise: " << date_sunrise.to_string() << ' ';
+      std::cout << "Sunset: " << date_sunset.to_string() << '\n';
     }
 
     month = fw::next_month(month);

@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+#include <numeric>
 #include <string>
 
 #include <gf2/core/Random.h>

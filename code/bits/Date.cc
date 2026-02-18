@@ -4,7 +4,6 @@
 #include <ctime>
 
 #include <numbers>
-#include <numeric>
 #include <tuple>
 
 #include <fmt/chrono.h>
@@ -34,7 +33,7 @@ namespace fw {
         month = next_month(month);
       }
 
-      days += month_day.day - 1;
+      days += month_day.day;
       assert(days < DaysInYear);
 
       return days;
@@ -44,9 +43,9 @@ namespace fw {
 
     uint32_t daylight_seconds(uint32_t days)
     {
-      static constexpr uint32_t Equinox = days_in_month(Month::Jan) + days_in_month(Month::Feb) + 21; // 21 march
+      static constexpr uint32_t Equinox = days_in_month(Month::Jan) + days_in_month(Month::Feb) + 22; // 22 march
 
-      return static_cast<uint32_t>(ExactNoonInSeconds + 4 * MinutesInHour * SecondsInMinute * std::sin(2.0 * std::numbers::pi * (static_cast<double>(days) - static_cast<double>(Equinox)) / DaysInYear));
+      return static_cast<uint32_t>(ExactNoonInSeconds + 3.07 * MinutesInHour * SecondsInMinute * std::sin(2.0 * std::numbers::pi * (static_cast<double>(days) - static_cast<double>(Equinox)) / DaysInYear));
     }
 
     uint32_t compute_sunrise_in_seconds(uint32_t daylight_in_seconds)
