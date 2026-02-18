@@ -126,8 +126,6 @@ namespace fw {
 
   Phase Date::phase() const
   {
-    static constexpr uint32_t ExactNoon = 12 * 60;
-
     // compute the number of days from the beginning of the year
 
     const uint32_t days = days_since_1st_jan({ .month = month, .day = day });
@@ -144,9 +142,8 @@ namespace fw {
     const uint32_t sunset = compute_sunset_in_seconds(daylight_in_seconds);
     const uint32_t dusk = sunset + 30 * SecondsInMinute;
 
-    const uint32_t noon_begin = ExactNoon - 30 * SecondsInMinute;
-    const uint32_t noon_end = ExactNoon + 30 * SecondsInMinute;
-
+    const uint32_t noon_begin = ExactNoonInSeconds - 30 * SecondsInMinute;
+    const uint32_t noon_end = ExactNoonInSeconds + 30 * SecondsInMinute;
 
     const uint32_t past_seconds = hours * MinutesInHour * SecondsInMinute + minutes * SecondsInMinute + seconds;
 
