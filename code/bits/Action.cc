@@ -1,6 +1,7 @@
 #include "Action.h"
 
 #include "ActorState.h"
+#include "MapCell.h"
 #include "Times.h"
 #include "WorldModel.h"
 
@@ -31,6 +32,66 @@ namespace fw {
 
       actor.position = position;
       std::swap(old_reverse_cell.actor_index, new_reverse_cell.actor_index);
+    }
+
+    constexpr Floor compute_floor_down(Floor floor)
+    {
+      switch (floor) {
+        case Floor::Underground:
+          return Floor::Underground;
+        case Floor::Ground:
+          return Floor::Underground;
+        case Floor::Upstairs:
+          return Floor::Ground;
+      }
+
+      assert(false);
+      return Floor::Ground;
+    }
+
+    constexpr Floor compute_floor_up(Floor floor)
+    {
+      switch (floor) {
+        case Floor::Underground:
+          return Floor::Ground;
+        case Floor::Ground:
+          return Floor::Upstairs;
+        case Floor::Upstairs:
+          return Floor::Upstairs;
+      }
+
+      assert(false);
+      return Floor::Ground;
+    }
+
+    void apply_change_floor(WorldModel& model, ActorState& actor, Floor new_floor)
+    {
+      gf::Log::debug("Want to change floor: {} -> {}", int(actor.floor), int(new_floor));
+
+      if (actor.floor == new_floor) {
+        return;
+      }
+
+      if (actor.feature.type() == ActorType::Human && actor.feature.from<ActorType::Human>().mounting != NoIndex) {
+        // actor is mounted, no floor change possible
+        return;
+      }
+
+      FloorMap& old_floor_map = model.runtime.map.from_floor(actor.floor);
+      FloorMap& new_floor_map = model.runtime.map.from_floor(new_floor);
+
+      ReverseMapCell& old_map_cell = old_floor_map.reverse(actor.position);
+      ReverseMapCell& new_map_cell = new_floor_map.reverse(actor.position);
+
+      if (new_map_cell.actor_index != NoIndex) {
+        // there is already an actor on the target cell
+        return;
+      }
+
+      gf::Log::debug("Change floor!");
+
+      std::swap(old_map_cell.actor_index, new_map_cell.actor_index);
+      actor.floor = new_floor;
     }
 
     ActionResult compute_move_human_action(WorldModel& model, ActorState& actor, gf::Vec2I position)
@@ -91,13 +152,30 @@ namespace fw {
       const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
       const gf::Vec2I new_position = actor.position + displacement;
 
+      ActionResult result = ActionResult::Failure;
+
       if (actor.feature.type() == ActorType::Human) {
-        return compute_move_human_action(model, actor, new_position);
+        result = compute_move_human_action(model, actor, new_position);
       }
 
       // TODO: animals and others
 
-      return ActionResult::Success;
+      if (result == ActionResult::Success) {
+        const MapCellDecoration decoration = model.state.map.from_floor(actor.floor)(actor.position).decoration;
+
+        switch (decoration) {
+          case MapCellDecoration::FloorDown:
+            apply_change_floor(model, actor, compute_floor_down(actor.floor));
+            break;
+          case MapCellDecoration::FloorUp:
+            apply_change_floor(model, actor, compute_floor_up(actor.floor));
+            break;
+          default:
+            break;
+        }
+      }
+
+      return result;
     }
 
     // Mount

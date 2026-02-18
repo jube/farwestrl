@@ -43,12 +43,7 @@ namespace fw {
     gf::Time m_cooldown;
 
     void update_date();
-
     bool update_hero();
-
-    bool check_actor_position(ActorState& actor);
-    bool change_floor(ActorState& actor, Floor new_floor);
-
     bool update_train(TrainState& train, uint32_t train_index);
 
   };

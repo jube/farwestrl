@@ -188,6 +188,7 @@ namespace fw {
     gf::Log::debug("[SCHEDULER] {}: Update hero", state.current_date.to_string());
 
     ActorState& hero = state.hero();
+    const Floor floor = hero.floor;
     const ActionResult result = compute_action(*this, hero, runtime.hero.action);
 
     if (runtime.hero.action.type() == ActionType::Move) {
@@ -197,85 +198,18 @@ namespace fw {
 
         FloorMap& runtime_map = runtime.map.from_floor(hero.floor);
         runtime_map.update_minimap_explored(explored);
+
+        if (hero.floor != floor) {
+          runtime.hero.moves.clear();
+        }
       } else {
         runtime.hero.moves.clear();
       }
 
     }
 
-    if (check_actor_position(hero)) {
-      runtime.hero.moves.clear();
-    }
-
     runtime.hero.action = {};
     return result == ActionResult::Success;
-  }
-
-  bool WorldModel::check_actor_position(ActorState& actor)
-  {
-    MapCellDecoration decoration = MapCellDecoration::None;
-
-    switch (actor.floor) {
-      case Floor::Underground:
-        decoration = state.map.underground(actor.position).decoration;
-        break;
-      case Floor::Ground:
-        decoration = state.map.ground(actor.position).decoration;
-        break;
-      case Floor::Upstairs:
-        assert(false); // TODO: upstairs
-        break;
-    }
-
-    switch (decoration) {
-      case MapCellDecoration::FloorDown:
-        return change_floor(actor, compute_floor_down(actor.floor));
-      case MapCellDecoration::FloorUp:
-        return change_floor(actor, compute_floor_up(actor.floor));
-      default:
-        break;
-    }
-
-    return false;
-  }
-
-  bool WorldModel::change_floor(ActorState& actor, Floor new_floor)
-  {
-    gf::Log::debug("Want to change floor: {} -> {}", int(actor.floor), int(new_floor));
-
-    if (actor.floor == new_floor) {
-      return false;
-    }
-
-    if (actor.feature.type() == ActorType::Human && actor.feature.from<ActorType::Human>().mounting != NoIndex) {
-      // actor is mounted, no floor change possible
-      return false;
-    }
-
-    FloorMap& old_floor_map = runtime.map.from_floor(actor.floor);
-    FloorMap& new_floor_map = runtime.map.from_floor(new_floor);
-
-    ReverseMapCell& old_map_cell = old_floor_map.reverse(actor.position);
-    ReverseMapCell& new_map_cell = new_floor_map.reverse(actor.position);
-
-    if (new_map_cell.actor_index != NoIndex) {
-      return false;
-    }
-
-    gf::Log::debug("Change floor!");
-
-    std::swap(old_map_cell.actor_index, new_map_cell.actor_index);
-    actor.floor = new_floor;
-
-    // update fov for hero
-
-    if (&actor == &state.hero()) {
-      BackgroundMap& map = state.map.from_floor(new_floor);
-      const std::vector<gf::Vec2I> explored = compute_hero_fov(actor.position, map);
-      new_floor_map.update_minimap_explored(explored);
-    }
-
-    return true;
   }
 
   bool WorldModel::update_train(TrainState& train, uint32_t train_index)
