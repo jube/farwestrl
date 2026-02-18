@@ -32,7 +32,7 @@ namespace fw {
 
   struct WeaponItemState {
     DataReference<ItemData> data;
-    int8_t cartridges = 0;
+    int16_t cartridges = 0;
   };
 
   template<typename Archive>

@@ -25,11 +25,15 @@ namespace fw {
 
     void update(gf::Time time) override;
 
+    uint32_t index_of(ActorState& actor) const;
+
     bool is_prairie(gf::Vec2I position) const;
 
     bool is_walkable(Floor floor, gf::Vec2I position) const;
     void move_actor(ActorState& actor, gf::Vec2I position);
     bool move_human(ActorState& actor, gf::Vec2I position);
+
+    void update_current_task_in_queue(uint16_t seconds);
 
   private:
     gf::Random* m_random = nullptr;
@@ -43,16 +47,11 @@ namespace fw {
     gf::Time m_cooldown;
 
     void update_date();
-    void update_current_task_in_queue(uint16_t seconds);
 
     bool update_hero();
 
     bool check_actor_position(ActorState& actor);
     bool change_floor(ActorState& actor, Floor new_floor);
-
-    bool update_actor_mount(ActorState& actor);
-    bool update_actor_dismount(ActorState& actor);
-    bool update_actor_reload(ActorState& actor);
 
     bool update_actor(ActorState& actor);
     void update_cow(ActorState& cow);

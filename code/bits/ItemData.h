@@ -20,7 +20,7 @@ namespace fw {
 
   struct FirearmDataFeature {
     int8_t caliber;
-    int8_t capacity;
+    int16_t capacity;
     uint16_t reload_time;
   };
 

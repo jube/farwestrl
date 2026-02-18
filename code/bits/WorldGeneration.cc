@@ -796,7 +796,7 @@ namespace fw {
           }
         }
 
-        assert(!path.empty());
+        assert(!path.empty()); // TODO: what to do in this case? it happens from time to time
         gf::Log::info("Points between {} and {}: {}", i, j, path.size());
 
         paths.push_back(std::move(path));
