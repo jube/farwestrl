@@ -1,0 +1,10 @@
+#ifndef FW_CONFIG_H
+#define FW_CONFIG_H
+
+#include <string_view>
+
+namespace fw {
+  constexpr std::string_view FarWestDebugDataDirectory =  R"(@FARWESTDEBUG_DATADIR@)";
+}
+
+#endif // FW_CONFIG_H

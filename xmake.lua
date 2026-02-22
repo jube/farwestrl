@@ -27,7 +27,9 @@ end
 
 set_configdir("$(builddir)/config")
 set_configvar("FARWESTRL_DATADIR", "$(projectdir)/data/farwestrl")
+set_configvar("FARWESTDEBUG_DATADIR", "$(projectdir)/data/farwestrl-debug")
 add_configfiles("code/config.h.in", {pattern = "@(.-)@"})
+add_configfiles("code/config-debug.h.in", {pattern = "@(.-)@"})
 
 target("farwestrl0")
     set_kind("static")
@@ -55,4 +57,10 @@ target("name-generation")
 target("date-generation")
     set_kind("binary")
     add_files("code/date-generation.cc")
+    add_deps("farwestrl0")
+
+target("farwestrl-debug")
+    set_kind("binary")
+    add_files("code/farwestrl-debug.cc")
+    add_includedirs("$(builddir)/config")
     add_deps("farwestrl0")
