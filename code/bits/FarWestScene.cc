@@ -3,7 +3,6 @@
 #include <gf2/graphics/GamePaths.h>
 
 #include "FarWestSystem.h"
-#include "gf2/core/Event.h"
 
 namespace fw {
 

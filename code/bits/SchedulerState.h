@@ -1,8 +1,7 @@
 #ifndef FW_SCHEDULER_STATE_H
 #define FW_SCHEDULER_STATE_H
 
-#include <queue>
-
+#include <gf2/core/BinaryHeap.h>
 #include <gf2/core/TaggedVariant.h>
 #include <gf2/core/TypeTraits.h>
 #include <gf2/core/Vec2.h>
@@ -31,7 +30,7 @@ namespace fw {
   bool operator<(const Task& lhs, const Task& rhs);
 
   struct SchedulerState {
-    std::priority_queue<Task> queue;
+    gf::BinaryHeap<Task> queue;
 
     bool is_hero_turn() const
     {
