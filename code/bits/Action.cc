@@ -23,6 +23,9 @@ namespace fw {
 
       assert(floor_map.reverse.valid(actor.position));
       ReverseMapCell& old_reverse_cell = floor_map.reverse(actor.position);
+
+      gf::Log::debug("Actor: index = {}, reverse.actor_index = {}", model.index_of(actor), old_reverse_cell.actor_index);
+
       assert(old_reverse_cell.actor_index < model.state.actors.size());
       assert(&actor == &model.state.actors[old_reverse_cell.actor_index]);
 
@@ -32,6 +35,8 @@ namespace fw {
 
       actor.position = position;
       std::swap(old_reverse_cell.actor_index, new_reverse_cell.actor_index);
+
+      assert(model.check());
     }
 
     constexpr Floor compute_floor_down(Floor floor)

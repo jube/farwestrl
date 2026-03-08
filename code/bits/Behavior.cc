@@ -50,6 +50,14 @@ namespace fw {
       return make_action<GrazeAction>(gf::displacement(orientation));
     }
 
+    Action select_snake_behavior([[maybe_unused]] const WorldModel& model, ActorState& actor, gf::Random* random)
+    {
+      assert(actor.feature.type() == ActorType::Animal);
+
+      const gf::Orientation orientation = random_orientation(random);
+      return make_action<GrazeAction>(gf::displacement(orientation));
+    }
+
   }
 
 
@@ -64,6 +72,9 @@ namespace fw {
     switch (actor.data->label.id) {
       case "Cow"_id:
         return select_cow_behavior(model, actor, random);
+
+      case "Snake"_id:
+        return select_snake_behavior(model, actor, random);
 
       default:
         assert(false);

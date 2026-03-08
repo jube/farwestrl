@@ -108,6 +108,8 @@ namespace fw {
           need_cooldown = true;
         }
 
+        assert(check());
+
         continue;
       }
 
@@ -154,6 +156,12 @@ namespace fw {
       return false;
     }
 
+    const BackgroundMap& background_map = state.map.from_floor(floor);
+
+    if (!fw::is_walkable(background_map(position).decoration)) {
+      return false;
+    }
+
     return true;
   }
 
@@ -172,6 +180,22 @@ namespace fw {
     gf::Log::debug("\tNext turn: {}", task.date.to_string());
 
     state.scheduler.queue.push(task);
+  }
+
+
+  bool WorldModel::check() const
+  {
+    // check actors
+    for (auto [ index, actor ] : gf::enumerate(state.actors)) {
+      const FloorMap& floor_map = runtime.map.from_floor(actor.floor);
+
+      if (floor_map.reverse(actor.position).actor_index != index) {
+        gf::Log::debug("CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", actor.position.x, actor.position.y, index, floor_map.reverse(actor.position).actor_index);
+        return false;
+      }
+    }
+
+    return true;
   }
 
   bool WorldModel::update_hero()

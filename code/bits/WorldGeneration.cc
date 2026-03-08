@@ -27,6 +27,7 @@
 #include "MapState.h"
 #include "Names.h"
 #include "Settings.h"
+#include "gf2/core/Range.h"
 
 namespace fw {
 
@@ -1611,6 +1612,115 @@ namespace fw {
 
     }
 
+    /*
+     * Animals
+     */
+
+    enum class Seat {
+      Free,
+      Occupied
+    };
+
+    using SeatMap = gf::Array2D<Seat>;
+
+    SeatMap compute_initial_seat_map(const WorldState& state)
+    {
+      SeatMap seat_map(state.map.ground.size(), Seat::Free);
+
+      for (const TownState& town : state.map.towns) {
+        for (const gf::Vec2I position : gf::position_range({ TownDiameter, TownDiameter })) {
+          seat_map(town.position + position) = Seat::Occupied;
+        }
+      }
+
+      for (const LocalityState& locality : state.map.localities) {
+        for (const gf::Vec2I position : gf::position_range({ LocalityDiameter, LocalityDiameter })) {
+          seat_map(locality.position + position) = Seat::Occupied;
+        }
+      }
+
+      for (const gf::Vec2I position : state.network.railway) {
+
+      }
+
+      return seat_map;
+    }
+
+
+
+    /*
+     * TODO:
+     * - init with towns, localities, network
+     * - use for generating initial positions of actors
+     */
+
+    gf::Vec2I compute_animal_valid_position(const WorldState& state, const WorldRegion& region, gf::Random* random)
+    {
+      const BackgroundMap& background_map = state.map.from_floor(Floor::Ground); // TODO: parameter?
+
+      for (;;) {
+        const std::size_t position_index = random->compute_uniform_integer(region.points.size());
+        assert(position_index < region.points.size());
+
+        const gf::Vec2I position = region.points[position_index];
+
+        if (!fw::is_walkable(background_map(position).decoration)) {
+          continue;
+        }
+
+        if (std::ranges::contains(state.actors, position, &ActorState::position)) {
+          continue;
+        }
+
+        return position;
+      }
+
+      return {};
+    }
+
+    void compute_animals_in_regions(WorldState& state, const std::vector<WorldRegion>& regions, gf::Random* random, std::string_view name, std::size_t density)
+    {
+      std::size_t overall_count = 0;
+
+      for (const WorldRegion& region : regions) {
+        const std::size_t count = region.points.size() / density + 1;
+        overall_count += count;
+
+        for (std::size_t i = 0; i < count; ++i) {
+
+          const gf::Vec2I position = compute_animal_valid_position(state, region, random);
+
+          ActorState animal = {};
+          animal.data = name;
+          animal.position = position;
+          animal.floor = Floor::Ground; // TODO: parameter?
+
+          AnimalFeature feature;
+          feature.mounted_by = NoIndex;
+          animal.feature = feature;
+
+          const uint32_t id = static_cast<uint32_t>(state.actors.size());
+          state.actors.push_back(animal);
+
+          Date next_turn = state.current_date;
+          next_turn.add_seconds(random->compute_uniform_integer<uint16_t>(1, 100));
+          state.scheduler.queue.push({next_turn, TaskType::Actor, id});
+        }
+      }
+
+      gf::Log::info("\t{}: {}", name, overall_count);
+    }
+
+    void compute_animals(WorldState& state, const WorldRegions& regions, gf::Random* random)
+    {
+      compute_animals_in_regions(state, regions.desert_regions, random, "Snake", 1000);
+    }
+
+
+    /*
+     * Hero
+     */
+
     gf::Vec2I compute_starting_position(const NetworkState& network)
     {
       const gf::Vec2I center = WorldSize / 2;
@@ -1772,6 +1882,10 @@ namespace fw {
       cow_next_turn.add_seconds(1);
       state.scheduler.queue.push({cow_next_turn, TaskType::Actor, 1});
     }
+
+    compute_animals(state, regions, random);
+
+    gf::Log::info("actors: {}", state.actors.size());
 
     for (const auto& [ index, train ] : gf::enumerate(state.network.trains)) {
       Date date = state.current_date;

@@ -1,8 +1,6 @@
 #ifndef FW_WORLD_MODEL_H
 #define FW_WORLD_MODEL_H
 
-#include <atomic>
-
 #include <gf2/core/Model.h>
 #include <gf2/core/Random.h>
 
@@ -30,6 +28,9 @@ namespace fw {
     bool is_walkable(Floor floor, gf::Vec2I position) const;
 
     void update_current_task_in_queue(uint16_t seconds);
+
+
+    bool check() const;
 
   private:
     gf::Random* m_random = nullptr;

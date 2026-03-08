@@ -597,6 +597,7 @@ namespace fw {
   {
     for (const auto& [ index, actor ] : gf::enumerate(state.actors)) {
       FloorMap& floor = from_floor(actor.floor);
+      assert(floor.reverse.valid(actor.position));
       floor.reverse(actor.position).actor_index = uint32_t(index);
     }
   }

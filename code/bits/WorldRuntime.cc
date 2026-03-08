@@ -48,7 +48,10 @@ namespace fw {
         for (int32_t j = -1; j <= 1; ++j) {
           const gf::Vec2I neighbor = { i, j };
           const gf::Vec2I neighbor_position = position + neighbor;
-          map.ground.reverse(neighbor_position).train_index = train_index;
+          assert(map.ground.reverse.valid(neighbor_position));
+          ReverseMapCell& cell = map.ground.reverse(neighbor_position);
+          assert(cell.train_index == NoIndex || train_index == NoIndex);
+          cell.train_index = train_index;
         }
       }
 

@@ -17,8 +17,8 @@ namespace fw {
     gf::Id id = gf::InvalidId;
     const T* origin = nullptr;
 
-    DataReference& operator=(std::string other) {
-      tag = std::move(other);
+    DataReference& operator=(std::string_view other) {
+      tag = other;
       id = gf::hash_string(tag);
       return *this;
     }
