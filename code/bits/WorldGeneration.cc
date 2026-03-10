@@ -1628,19 +1628,23 @@ namespace fw {
       SeatMap seat_map(state.map.ground.size(), Seat::Free);
 
       for (const TownState& town : state.map.towns) {
-        for (const gf::Vec2I position : gf::position_range({ TownDiameter, TownDiameter })) {
-          seat_map(town.position + position) = Seat::Occupied;
+        for (const gf::Vec2I offset : gf::position_range({ TownDiameter, TownDiameter })) {
+          seat_map(town.position + offset) = Seat::Occupied;
         }
       }
 
       for (const LocalityState& locality : state.map.localities) {
-        for (const gf::Vec2I position : gf::position_range({ LocalityDiameter, LocalityDiameter })) {
-          seat_map(locality.position + position) = Seat::Occupied;
+        for (const gf::Vec2I offset : gf::position_range({ LocalityDiameter, LocalityDiameter })) {
+          seat_map(locality.position + offset) = Seat::Occupied;
         }
       }
 
-      for (const gf::Vec2I position : state.network.railway) {
+      constexpr gf::RectI network_area = gf::RectI::from_center_size({ 0, 0 },{ ReducedFactor, ReducedFactor });
 
+      for (const gf::Vec2I position : state.network.railway) {
+        for (const gf::Vec2I offset : gf::rectangle_range(network_area)) {
+          seat_map(position + offset) = Seat::Occupied;
+        }
       }
 
       return seat_map;
@@ -1650,11 +1654,10 @@ namespace fw {
 
     /*
      * TODO:
-     * - init with towns, localities, network
      * - use for generating initial positions of actors
      */
 
-    gf::Vec2I compute_animal_valid_position(const WorldState& state, const WorldRegion& region, gf::Random* random)
+    gf::Vec2I compute_animal_valid_position(const WorldState& state, const WorldRegion& region, const SeatMap& seat_map, gf::Random* random)
     {
       const BackgroundMap& background_map = state.map.from_floor(Floor::Ground); // TODO: parameter?
 
@@ -1668,7 +1671,7 @@ namespace fw {
           continue;
         }
 
-        if (std::ranges::contains(state.actors, position, &ActorState::position)) {
+        if (seat_map(position) == Seat::Occupied) {
           continue;
         }
 
@@ -1678,7 +1681,7 @@ namespace fw {
       return {};
     }
 
-    void compute_animals_in_regions(WorldState& state, const std::vector<WorldRegion>& regions, gf::Random* random, std::string_view name, std::size_t density)
+    void compute_animals_in_regions(WorldState& state, const std::vector<WorldRegion>& regions, SeatMap& seat_map, gf::Random* random, std::string_view name, std::size_t density)
     {
       std::size_t overall_count = 0;
 
@@ -1688,7 +1691,8 @@ namespace fw {
 
         for (std::size_t i = 0; i < count; ++i) {
 
-          const gf::Vec2I position = compute_animal_valid_position(state, region, random);
+          const gf::Vec2I position = compute_animal_valid_position(state, region, seat_map, random);
+          seat_map(position) = Seat::Occupied;
 
           ActorState animal = {};
           animal.data = name;
@@ -1711,9 +1715,9 @@ namespace fw {
       gf::Log::info("\t{}: {}", name, overall_count);
     }
 
-    void compute_animals(WorldState& state, const WorldRegions& regions, gf::Random* random)
+    void compute_animals(WorldState& state, const WorldRegions& regions, SeatMap& seat_map, gf::Random* random)
     {
-      compute_animals_in_regions(state, regions.desert_regions, random, "Snake", 1000);
+      compute_animals_in_regions(state, regions.desert_regions, seat_map, random, "Snake", 1000);
     }
 
 
@@ -1883,7 +1887,8 @@ namespace fw {
       state.scheduler.queue.push({cow_next_turn, TaskType::Actor, 1});
     }
 
-    compute_animals(state, regions, random);
+    SeatMap seat_map = compute_initial_seat_map(state);
+    compute_animals(state, regions, seat_map, random);
 
     gf::Log::info("actors: {}", state.actors.size());
 
