@@ -4,7 +4,6 @@
 #include <cstdint>
 
 #include "Action.h"
-#include "ActorData.h"
 #include "ActorState.h"
 #include "Behavior.h"
 #include "Index.h"
@@ -22,36 +21,6 @@ namespace fw {
     constexpr gf::Time Cooldown = gf::milliseconds(20);
 
     constexpr int32_t IdleDistance = 100;
-
-    constexpr Floor compute_floor_down(Floor floor)
-    {
-      switch (floor) {
-        case Floor::Underground:
-          return Floor::Underground;
-        case Floor::Ground:
-          return Floor::Underground;
-        case Floor::Upstairs:
-          return Floor::Ground;
-      }
-
-      assert(false);
-      return Floor::Ground;
-    }
-
-    constexpr Floor compute_floor_up(Floor floor)
-    {
-      switch (floor) {
-        case Floor::Underground:
-          return Floor::Ground;
-        case Floor::Ground:
-          return Floor::Upstairs;
-        case Floor::Upstairs:
-          return Floor::Upstairs;
-      }
-
-      assert(false);
-      return Floor::Ground;
-    }
 
   }
 
@@ -98,7 +67,7 @@ namespace fw {
 
       if (current_task.type == TaskType::Actor) {
         assert(current_task.index < state.actors.size());
-        gf::Log::debug("[SCHEDULER] {}: Update actor {}", state.current_date.to_string(), current_task.index);
+        // gf::Log::debug("[SCHEDULER] {}: Update actor {}", state.current_date.to_string(), current_task.index);
         ActorState& actor = state.actors[current_task.index];
 
         const Action action = select_behavior(*this, actor, m_random);
@@ -115,7 +84,7 @@ namespace fw {
 
       if (current_task.type == TaskType::Train) {
         assert(current_task.index < state.network.trains.size());
-        gf::Log::debug("[SCHEDULER] {}: Update train {}", state.current_date.to_string(), current_task.index);
+        // gf::Log::debug("[SCHEDULER] {}: Update train {}", state.current_date.to_string(), current_task.index);
 
         if (update_train(state.network.trains[current_task.index], current_task.index)) {
           need_cooldown = true;
@@ -177,7 +146,7 @@ namespace fw {
     state.scheduler.queue.pop();
     task.date.add_seconds(seconds);
 
-    gf::Log::debug("\tNext turn: {}", task.date.to_string());
+    // gf::Log::debug("\tNext turn: {}", task.date.to_string());
 
     state.scheduler.queue.push(task);
   }
