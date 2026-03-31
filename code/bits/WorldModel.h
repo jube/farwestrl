@@ -22,6 +22,7 @@ namespace fw {
     void bind(WorldGenerationAnalysis& analysis);
 
     void update(gf::Time time) override;
+    bool is_running() const { return m_phase == ModelPhase::Running; }
 
     uint32_t index_of(ActorState& actor) const;
 
@@ -35,12 +36,12 @@ namespace fw {
   private:
     gf::Random* m_random = nullptr;
 
-    enum class Phase {
+    enum class ModelPhase {
       Running,
       Cooldown,
     };
 
-    Phase m_phase = Phase::Running;
+    ModelPhase m_phase = ModelPhase::Running;
     gf::Time m_cooldown;
 
     void update_date();

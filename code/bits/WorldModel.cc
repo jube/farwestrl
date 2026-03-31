@@ -38,12 +38,12 @@ namespace fw {
 
   void WorldModel::update(gf::Time time)
   {
-    if (m_phase == Phase::Cooldown) {
+    if (m_phase == ModelPhase::Cooldown) {
       m_cooldown += time;
 
       if (m_cooldown > Cooldown) {
         m_cooldown -= Cooldown;
-        m_phase = Phase::Running;
+        m_phase = ModelPhase::Running;
       }
 
       return;
@@ -95,7 +95,7 @@ namespace fw {
     }
 
     if (need_cooldown) {
-      m_phase = Phase::Cooldown;
+      m_phase = ModelPhase::Cooldown;
     }
   }
 

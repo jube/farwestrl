@@ -46,6 +46,7 @@ target("farwestrl")
 target("world-generation")
     set_kind("binary")
     add_files("code/world-generation.cc")
+    add_includedirs("$(builddir)/config")
     add_deps("farwestrl0")
     set_rundir("$(projectdir)/run")
 
