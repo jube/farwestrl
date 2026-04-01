@@ -30,6 +30,7 @@ namespace fw {
     DataLabel label;
     gf::Color color;
     char16_t picture;
+    bool can_idle;
     ActorDataFeature feature;
   };
 

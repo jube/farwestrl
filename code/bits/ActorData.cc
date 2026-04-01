@@ -18,10 +18,6 @@ namespace fw {
   {
     json.at("label").get_to(data.label);
 
-    std::string raw_color;
-    json.at("color").get_to(raw_color);
-    data.color = to_rbga(raw_color);
-
     std::string raw_picture;
     json.at("picture").get_to(raw_picture);
     const std::u32string utf32 = gf::to_utf32(raw_picture);
@@ -29,6 +25,12 @@ namespace fw {
     const char32_t picture = utf32.front();
     assert(picture < 0x10000);
     data.picture = static_cast<char16_t>(picture);
+
+    std::string raw_color;
+    json.at("color").get_to(raw_color);
+    data.color = to_rbga(raw_color);
+
+    json.at("can_idle").get_to(data.can_idle);
 
     ActorType type = ActorType::None;
 

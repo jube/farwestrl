@@ -158,6 +158,7 @@ namespace fw {
     for (auto [ index, actor ] : gf::enumerate(state.actors)) {
       const FloorMap& floor_map = runtime.map.from_floor(actor.floor);
 
+      // TODO: check for mount
       if (floor_map.reverse(actor.position).actor_index != index) {
         gf::Log::debug("CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", actor.position.x, actor.position.y, index, floor_map.reverse(actor.position).actor_index);
         return false;

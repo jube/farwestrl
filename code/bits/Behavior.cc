@@ -60,6 +60,7 @@ namespace fw {
 
   }
 
+  constexpr int32_t IdleDistance = 100;
 
   Action select_behavior(const WorldModel& model, ActorState& actor, gf::Random* random)
   {
@@ -67,6 +68,15 @@ namespace fw {
 
     if (model.index_of(actor) == 0) {
       return model.runtime.hero.action;
+    }
+
+    if (actor.data->can_idle) {
+      const int32_t distance = gf::manhattan_distance(actor.position, model.state.hero().position);
+
+      if (distance > IdleDistance) {
+        const uint16_t idle_time = IdleTime + random->compute_uniform_integer(IdleTime / 10);
+        return make_action<IdleAction>(idle_time);
+      }
     }
 
     switch (actor.data->label.id) {
