@@ -74,7 +74,7 @@ namespace fw {
       const int32_t distance = gf::manhattan_distance(actor.position, model.state.hero().position);
 
       if (distance > IdleDistance) {
-        const uint16_t idle_time = IdleTime + random->compute_uniform_integer(IdleTime / 10);
+        const uint16_t idle_time = (distance / 2 + random->compute_uniform_integer(distance / 10)) * StraightWalkTime;
         return make_action<IdleAction>(idle_time);
       }
     }
