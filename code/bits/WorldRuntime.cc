@@ -50,7 +50,7 @@ namespace fw {
           const gf::Vec2I neighbor_position = position + neighbor;
           assert(map.ground.reverse.valid(neighbor_position));
           ReverseMapCell& cell = map.ground.reverse(neighbor_position);
-          assert(cell.train_index == NoIndex || train_index == NoIndex);
+          assert(cell.train_index == NoIndex || train_index == NoIndex || cell.train_index == train_index);
           cell.train_index = train_index;
         }
       }
@@ -92,7 +92,7 @@ namespace fw {
   void WorldRuntime::bind_train(const WorldState& state)
   {
     for (const auto& [ train_index, train ] : gf::enumerate(state.network.trains)) {
-      set_reverse_train(train, uint32_t(train_index));
+      set_reverse_train(train, static_cast<uint32_t>(train_index));
     }
   }
 
