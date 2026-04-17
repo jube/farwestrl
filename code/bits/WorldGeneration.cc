@@ -1718,6 +1718,9 @@ namespace fw {
     void compute_animals(WorldState& state, const WorldRegions& regions, SeatMap& seat_map, gf::Random* random)
     {
       compute_animals_in_regions(state, regions.desert_regions, seat_map, random, "Snake", 1000);
+      compute_animals_in_regions(state, regions.mountain_regions, seat_map, random, "Scorpion", 1000);
+      compute_animals_in_regions(state, regions.prairie_regions, seat_map, random, "Coyote", 2000);
+      compute_animals_in_regions(state, regions.forest_regions, seat_map, random, "Grizzli", 2000);
     }
 
 

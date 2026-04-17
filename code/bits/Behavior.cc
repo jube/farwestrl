@@ -83,8 +83,17 @@ namespace fw {
       case "Cow"_id:
         return select_cow_behavior(model, actor, random);
 
+      case "Coyote"_id:
+        return select_snake_behavior(model, actor, random); // TODO
+
+      case "Grizzli"_id:
+        return select_snake_behavior(model, actor, random); // TODO
+
       case "Snake"_id:
         return select_snake_behavior(model, actor, random);
+
+      case "Scorpion"_id:
+        return select_snake_behavior(model, actor, random); // TODO
 
       default:
         assert(false);
