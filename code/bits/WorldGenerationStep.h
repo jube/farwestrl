@@ -40,6 +40,7 @@ namespace fw {
     MapMinimap,
     Network,
 
+    FirstTurn,
     End,
   };
 

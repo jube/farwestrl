@@ -64,6 +64,8 @@ namespace fw {
           return "Generating the minimaps";
         case WorldGenerationStep::Network:
           return "Tracing the railway network";
+        case WorldGenerationStep::FirstTurn:
+          return "Starting the world";
         case WorldGenerationStep::End:
           return "The end!";
       }

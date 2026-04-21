@@ -6,6 +6,7 @@
 
 #include <gf2/core/Clock.h>
 #include <gf2/core/Log.h>
+#include <gf2/core/Time.h>
 
 #include "Colors.h"
 #include "FarWestScene.h"
@@ -128,6 +129,12 @@ namespace fw {
 
       m_model.bind(m_analysis);
 
+      if (choice == AdventureChoice::New) {
+        m_analysis.set_step(WorldGenerationStep::FirstTurn);
+        m_model.update(gf::milliseconds(16));
+      }
+
+      m_analysis.set_step(WorldGenerationStep::End);
       m_analysis.print_analysis();
     });
   }

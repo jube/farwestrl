@@ -59,6 +59,8 @@ namespace fw {
           return "MapMinimap";
         case WorldGenerationStep::Network:
           return "Network";
+        case WorldGenerationStep::FirstTurn:
+          return "FirstTurn";
         case WorldGenerationStep::End:
           return "End";
       }
@@ -76,7 +78,7 @@ namespace fw {
       m_current_clock.restart();
     } else {
       std::size_t index = static_cast<std::size_t>(previous);
-      assert(index <m_step_times.size());
+      assert(index < m_step_times.size());
       m_step_times[index] = m_current_clock.restart();
     }
   }

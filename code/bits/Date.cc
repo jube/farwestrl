@@ -37,7 +37,7 @@ namespace fw {
       }
 
       days += month_day.day;
-      assert(days < DaysInYear);
+      assert(days <= DaysInYear);
 
       return days;
     }

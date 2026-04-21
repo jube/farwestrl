@@ -1706,9 +1706,7 @@ namespace fw {
           const uint32_t id = static_cast<uint32_t>(state.actors.size());
           state.actors.push_back(animal);
 
-          Date next_turn = state.current_date;
-          next_turn.add_seconds(random->compute_uniform_integer<uint16_t>(1, 100));
-          state.scheduler.queue.push({next_turn, TaskType::Actor, id});
+          state.scheduler.queue.push({state.current_date, TaskType::Actor, id});
         }
       }
 
@@ -1866,29 +1864,34 @@ namespace fw {
 
     analysis.set_step(WorldGenerationStep::Hero);
 
-    ActorState hero = generate_hero(state, random);
-    compute_hero_fov(hero.position, state.map.ground);
-
-    state.actors.push_back(hero);
-    state.scheduler.queue.push({state.current_date, TaskType::Actor, 0});
-
-    analysis.set_step(WorldGenerationStep::Actors);
-
     {
-      ActorState cow = {};
-      cow.data = "Cow";
-      cow.position = hero.position + gf::dirx(10);
+      ActorState hero = generate_hero(state, random);
+      compute_hero_fov(hero.position, state.map.ground);
 
-      AnimalFeature feature;
-      feature.mounted_by = NoIndex;
-      cow.feature = feature;
+      state.actors.push_back(hero);
 
-      state.actors.push_back(cow);
+      Date next_turn = state.current_date;
+      next_turn.add_seconds(1);
+      state.scheduler.queue.push({next_turn, TaskType::Actor, 0});
 
-      Date cow_next_turn = state.current_date;
-      cow_next_turn.add_seconds(1);
-      state.scheduler.queue.push({cow_next_turn, TaskType::Actor, 1});
+      analysis.set_step(WorldGenerationStep::Actors);
     }
+
+    // {
+    //   ActorState cow = {};
+    //   cow.data = "Cow";
+    //   cow.position = hero.position + gf::dirx(10);
+    //
+    //   AnimalFeature feature;
+    //   feature.mounted_by = NoIndex;
+    //   cow.feature = feature;
+    //
+    //   state.actors.push_back(cow);
+    //
+    //   Date cow_next_turn = state.current_date;
+    //   cow_next_turn.add_seconds(1);
+    //   state.scheduler.queue.push({cow_next_turn, TaskType::Actor, 1});
+    // }
 
     SeatMap seat_map = compute_initial_seat_map(state);
     compute_animals(state, regions, seat_map, random);
