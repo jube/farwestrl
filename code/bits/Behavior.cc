@@ -50,12 +50,15 @@ namespace fw {
       return make_action<GrazeAction>(gf::displacement(orientation));
     }
 
-    Action select_snake_behavior([[maybe_unused]] const WorldModel& model, ActorState& actor, gf::Random* random)
+    Action select_snake_behavior([[maybe_unused]] const WorldModel& model, [[maybe_unused]] ActorState& actor, gf::Random* random)
     {
       assert(actor.feature.type() == ActorType::Animal);
 
       const gf::Orientation orientation = random_orientation(random);
-      return make_action<GrazeAction>(gf::displacement(orientation));
+
+      // TODO: check for preferred biome
+
+      return make_action<WanderAction>(gf::displacement(orientation));
     }
 
   }

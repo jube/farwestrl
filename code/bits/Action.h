@@ -18,6 +18,7 @@ namespace fw {
     Dismount,
     Reload,
     Graze,
+    Wander,
   };
 
   struct IdleAction {
@@ -41,6 +42,10 @@ namespace fw {
     gf::Vec2I displacement = { 0, 0 };
   };
 
+  struct WanderAction {
+    gf::Vec2I displacement = { 0, 0 };
+  };
+
 
   template<typename T, typename ... Args>
   T make_action(Args&& ... args)
@@ -49,7 +54,7 @@ namespace fw {
   }
 
 
-  using Action = gf::TaggedVariant<ActionType, IdleAction, MoveAction, MountAction, DismountAction, ReloadAction, GrazeAction>;
+  using Action = gf::TaggedVariant<ActionType, IdleAction, MoveAction, MountAction, DismountAction, ReloadAction, GrazeAction, WanderAction>;
 
   enum class ActionResult : uint8_t {
     Failure,

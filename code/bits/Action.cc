@@ -366,6 +366,21 @@ namespace fw {
       model.update_current_task_in_queue(GrazeTime);
       return ActionResult::Success;
     }
+
+    // Wander
+
+    ActionResult compute_wander_action(WorldModel& model, ActorState& actor, const WanderAction& action)
+    {
+      const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
+      const gf::Vec2I new_position = actor.position + displacement;
+
+      if (model.is_walkable(actor.floor, new_position)) {
+        apply_move(model, actor, new_position);
+      }
+
+      model.update_current_task_in_queue(WanderTime);
+      return ActionResult::Success;
+    }
   }
 
   ActionResult compute_action(WorldModel& model, ActorState& actor, const Action& action)
@@ -386,6 +401,8 @@ namespace fw {
         return compute_reload_action(model, actor, action.from<ActionType::Reload>());
       case ActionType::Graze:
         return compute_graze_action(model, actor, action.from<ActionType::Graze>());
+      case ActionType::Wander:
+        return compute_wander_action(model, actor, action.from<ActionType::Wander>());
     }
 
     return ActionResult::Failure;
