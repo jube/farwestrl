@@ -70,7 +70,7 @@ namespace fw {
         // gf::Log::debug("[SCHEDULER] {}: Update actor {}", state.current_date.to_string(), current_task.index);
         ActorState& actor = state.actors[current_task.index];
 
-        const Action action = select_behavior(*this, actor, m_random);
+        const Action action = m_behavior_manager.select_behavior(*this, actor, m_random);
         const ActionResult result = compute_action(*this, actor, action);
 
         if (result == ActionResult::Success && view.contains(actor.position)) {

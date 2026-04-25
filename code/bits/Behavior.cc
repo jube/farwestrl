@@ -10,6 +10,7 @@
 namespace fw {
 
   namespace {
+
     /*
      * Helpers
      */
@@ -33,42 +34,98 @@ namespace fw {
     }
 
     /*
-     * Behaviors
+     * Action behaviors
      */
 
-    Action select_cow_behavior([[maybe_unused]] const WorldModel& model, ActorState& actor, gf::Random* random)
-    {
-      assert(actor.feature.type() == ActorType::Animal);
+    using BehaviorBase = gf::BehaviorNode<BehaviorBlackboard>;
 
-      if (actor.feature.from<ActorType::Animal>().mounted_by != NoIndex) {
-        return make_action<IdleAction>(IdleTime);
+    // Generic action
+
+    class ActionBehavior : public BehaviorBase {
+    public:
+      ActionBehavior(Action action)
+      : m_action(std::move(action))
+      {
       }
 
-      // TODO: change this when group behavior is added
+      gf::BehaviorStatus process(BehaviorBlackboard& blackboard) const override
+      {
+        blackboard.action = m_action;
+        return gf::BehaviorStatus::Running;
+      }
 
-      const gf::Orientation orientation = random_orientation(random);
-      return make_action<GrazeAction>(gf::displacement(orientation));
+    private:
+      Action m_action;
+    };
+
+    // Wander
+
+    class WanderBehavior : public BehaviorBase {
+    public:
+
+      gf::BehaviorStatus process(BehaviorBlackboard& blackboard) const override
+      {
+        const gf::Orientation orientation = random_orientation(blackboard.random);
+        // TODO: check for preferred biome
+        blackboard.action =  make_action<WanderAction>(gf::displacement(orientation));
+        return gf::BehaviorStatus::Running;
+      }
+
+    };
+
+    /*
+     *
+     */
+
+    // IsMounted
+
+    class IsMountedBehavior : public BehaviorBase {
+    public:
+      gf::BehaviorStatus process(BehaviorBlackboard& blackboard) const override
+      {
+        if (blackboard.actor->feature.type() != ActorType::Animal) {
+          return gf::BehaviorStatus::Failure;
+        }
+
+        if (blackboard.actor->feature.from<ActorType::Animal>().mounted_by == NoIndex) {
+          return gf::BehaviorStatus::Failure;
+        }
+
+        return gf::BehaviorStatus::Success;
+      }
+    };
+
+    namespace bt = gf::behavior;
+
+    auto mountable_animal() {
+      return bt::sequence<BehaviorBlackboard>(
+        IsMountedBehavior(),
+        ActionBehavior(make_action<IdleAction>(IdleTime))
+      );
     }
 
-    Action select_snake_behavior([[maybe_unused]] const WorldModel& model, [[maybe_unused]] ActorState& actor, gf::Random* random)
-    {
-      assert(actor.feature.type() == ActorType::Animal);
-
-      const gf::Orientation orientation = random_orientation(random);
-
-      // TODO: check for preferred biome
-
-      return make_action<WanderAction>(gf::displacement(orientation));
+    auto lonely_animal() {
+      return bt::selector<BehaviorBlackboard>(
+        mountable_animal(),
+        WanderBehavior()
+      );
     }
 
+
+    constexpr int32_t IdleDistance = 100;
   }
 
-  constexpr int32_t IdleDistance = 100;
-
-  Action select_behavior(const WorldModel& model, ActorState& actor, gf::Random* random)
+  BehaviorManager::BehaviorManager()
   {
     using namespace gf::literals;
+    m_trees.emplace("Coyote"_id, lonely_animal());
+    m_trees.emplace("Grizzli"_id, lonely_animal());
+    m_trees.emplace("Snake"_id, lonely_animal());
+    m_trees.emplace("Scorpion"_id, lonely_animal());
+  }
 
+  Action BehaviorManager::select_behavior(const WorldModel& model, ActorState& actor, gf::Random* random)
+  {
     if (model.index_of(actor) == 0) {
       return model.runtime.hero.action;
     }
@@ -82,27 +139,22 @@ namespace fw {
       }
     }
 
-    switch (actor.data->label.id) {
-      case "Cow"_id:
-        return select_cow_behavior(model, actor, random);
+    BehaviorBlackboard blackboard = {
+      .model = &model,
+      .actor = &actor,
+      .random = random,
+      .action = {},
+    };
 
-      case "Coyote"_id:
-        return select_snake_behavior(model, actor, random); // TODO
-
-      case "Grizzli"_id:
-        return select_snake_behavior(model, actor, random); // TODO
-
-      case "Snake"_id:
-        return select_snake_behavior(model, actor, random);
-
-      case "Scorpion"_id:
-        return select_snake_behavior(model, actor, random); // TODO
-
-      default:
-        assert(false);
-        break;
+    if (auto iterator = m_trees.find(actor.data->label.id); iterator != m_trees.end()) {
+      auto& [ id, tree ] = *iterator;
+      [[maybe_unused]] gf::BehaviorStatus status = tree.process(blackboard);
+      assert(status == gf::BehaviorStatus::Running);
+      assert(blackboard.action);
+      return blackboard.action.value();
     }
 
+    gf::Log::debug("No behavior for '{}'", actor.data->label.tag);
     return make_action<IdleAction>(IdleTime);
   }
 

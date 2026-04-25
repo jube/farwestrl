@@ -5,6 +5,7 @@
 #include <gf2/core/Random.h>
 
 #include "ActorState.h"
+#include "Behavior.h"
 #include "WorldData.h"
 #include "WorldGenerationStep.h"
 #include "WorldRuntime.h"
@@ -43,6 +44,8 @@ namespace fw {
 
     ModelPhase m_phase = ModelPhase::Running;
     gf::Time m_cooldown;
+
+    BehaviorManager m_behavior_manager;
 
     void update_date();
     bool update_hero();
