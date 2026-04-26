@@ -1,6 +1,7 @@
 #ifndef FW_MAP_CELL_BIOME_H
 #define FW_MAP_CELL_BIOME_H
 
+#include <cstddef>
 #include <cstdint>
 
 namespace fw {
