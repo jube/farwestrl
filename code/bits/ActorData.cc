@@ -14,6 +14,17 @@ namespace fw {
     { ActorType::Animal, "animal" },
   })
 
+  NLOHMANN_JSON_SERIALIZE_ENUM( MapCellBiome, {
+    { MapCellBiome::None, nullptr },
+    { MapCellBiome::Prairie, "prairie" },
+    { MapCellBiome::Desert, "desert" },
+    { MapCellBiome::Forest, "forest" },
+    { MapCellBiome::Mountain, "mountain" },
+    { MapCellBiome::Water, "water" },
+    { MapCellBiome::Underground, "underground" },
+    { MapCellBiome::Building, "building" },
+  })
+
   void from_json(const nlohmann::json& json, ActorData& data)
   {
     json.at("label").get_to(data.label);
@@ -50,6 +61,7 @@ namespace fw {
         {
           AnimalDataFeature feature = {};
           json.at("can_be_mounted").get_to(feature.can_be_mounted);
+          json.at("biome").get_to(feature.biome);
 
           data.feature = feature;
         }

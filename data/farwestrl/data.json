@@ -2,13 +2,13 @@
   "actors": [
     { "label": "Hero",      "picture": "@", "color": "#000000", "can_idle": false,  "type": "human" },
 
-    { "label": "Bison",     "picture": "b", "color": "#AA5500", "can_idle": false,  "type": "animal", "can_be_mounted": true  },
-    { "label": "Coyote",    "picture": "c", "color": "#BEBEBE", "can_idle": true,   "type": "animal", "can_be_mounted": false },
-    { "label": "Cow",       "picture": "c", "color": "#783F21", "can_idle": false,  "type": "animal", "can_be_mounted": true  },
-    { "label": "Grizzli",   "picture": "g", "color": "#714520", "can_idle": true,   "type": "animal", "can_be_mounted": false },
-    { "label": "Horse",     "picture": "h", "color": "#AB6A0F", "can_idle": true,   "type": "animal", "can_be_mounted": true  },
-    { "label": "Scorpion",  "picture": "s", "color": "#303030", "can_idle": true,   "type": "animal", "can_be_mounted": false },
-    { "label": "Snake",     "picture": "s", "color": "#8DE874", "can_idle": true,   "type": "animal", "can_be_mounted": false }
+    { "label": "Bison",     "picture": "b", "color": "#AA5500", "can_idle": false,  "type": "animal", "can_be_mounted": true,  "biome": "prairie" },
+    { "label": "Coyote",    "picture": "c", "color": "#818181", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "prairie" },
+    { "label": "Cow",       "picture": "c", "color": "#783F21", "can_idle": false,  "type": "animal", "can_be_mounted": true,  "biome": "prairie" },
+    { "label": "Grizzli",   "picture": "g", "color": "#714520", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "forest" },
+    { "label": "Horse",     "picture": "h", "color": "#AB6A0F", "can_idle": true,   "type": "animal", "can_be_mounted": true,  "biome": "prairie" },
+    { "label": "Scorpion",  "picture": "s", "color": "#303030", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "moutain" },
+    { "label": "Snake",     "picture": "s", "color": "#8DE874", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "desert" }
   ],
   "items": [
     { "label": "Adams Revolver", "picture": "§", "color": "#222222", "type": "firearm", "caliber": 44, "capacity": 5, "reload_time": 15, "url": "https://en.wikipedia.org/wiki/Adams_(revolver)" },

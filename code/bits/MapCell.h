@@ -7,23 +7,9 @@
 #include <gf2/core/Flags.h>
 #include <gf2/core/TypeTraits.h>
 
+#include "MapCellBiome.h"
+
 namespace fw {
-
-  enum class MapCellBiome : uint8_t {
-    None,
-
-    Prairie,
-    Desert,
-    Forest,
-    Moutain,
-
-    Water,
-
-    Underground,
-    Building,
-  };
-
-  inline constexpr std::size_t MapCellBiomeCount = 8;
 
   enum class MapCellProperty : uint8_t {
     None      = 0x00,

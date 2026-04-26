@@ -7,6 +7,7 @@
 #include <gf2/core/TaggedVariant.h>
 
 #include "DataLabel.h"
+#include "MapCellBiome.h"
 
 namespace fw {
 
@@ -21,6 +22,7 @@ namespace fw {
   };
 
   struct AnimalDataFeature {
+    MapCellBiome biome;
     bool can_be_mounted;
   };
 

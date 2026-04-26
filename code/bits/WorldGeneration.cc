@@ -128,7 +128,7 @@ namespace fw {
           case MapCellBiome::Forest:
             color = type == ImageType::Basic || is_walkable(cell.decoration) ? ForestColor : gf::darker(gf::Green, 0.7f);
             break;
-          case MapCellBiome::Moutain:
+          case MapCellBiome::Mountain:
             color = type == ImageType::Basic || is_walkable(cell.decoration) ? MountainColor : gf::darker(MountainColor, 0.5f);
             break;
           case MapCellBiome::Water:
@@ -258,7 +258,7 @@ namespace fw {
           }
         } else {
           if (raw_cell.moisture < MoistureHiThreshold) {
-            cell.region = MapCellBiome::Moutain;
+            cell.region = MapCellBiome::Mountain;
 
             // cliffs are put later
           } else {
@@ -296,7 +296,7 @@ namespace fw {
       gf::Array2D<Type> map(WorldSize, Ground);
 
       for (const gf::Vec2I position : state.ground.position_range()) {
-        if (state.ground(position).region == MapCellBiome::Moutain) {
+        if (state.ground(position).region == MapCellBiome::Mountain) {
           if (random->compute_bernoulli(MoutainThreshold)) {
             map(position) = Cliff;
           }
@@ -332,7 +332,7 @@ namespace fw {
 
       for (int i = 0; i < MoutainIterations; ++i) {
         for (const gf::Vec2I position : map.position_range()) {
-          if (state.ground(position).region != MapCellBiome::Moutain) {
+          if (state.ground(position).region != MapCellBiome::Mountain) {
             continue;
           }
 
@@ -371,7 +371,7 @@ namespace fw {
       };
 
       for (const gf::Vec2I position : map.position_range()) {
-        if (state.ground(position).region != MapCellBiome::Moutain) {
+        if (state.ground(position).region != MapCellBiome::Mountain) {
           continue;
         }
 
@@ -398,7 +398,7 @@ namespace fw {
       for (const gf::Vec2I position : map.position_range()) {
         if (map(position) == Cliff) {
           state.ground(position).decoration = MapCellDecoration::Cliff;
-        } else if (state.ground(position).region == MapCellBiome::Moutain && is_on_side(position)) {
+        } else if (state.ground(position).region == MapCellBiome::Mountain && is_on_side(position)) {
           state.ground(position).decoration = MapCellDecoration::Cliff;
         }
       }
@@ -1268,7 +1268,7 @@ namespace fw {
             return desert_regions;
           case MapCellBiome::Forest:
             return forest_regions;
-          case MapCellBiome::Moutain:
+          case MapCellBiome::Mountain:
             return mountain_regions;
           default:
             break;

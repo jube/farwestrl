@@ -211,7 +211,7 @@ namespace fw {
           case MapCellBiome::Forest:
             background_color = ForestColor;
             break;
-          case MapCellBiome::Moutain:
+          case MapCellBiome::Mountain:
             background_color = MountainColor;
             break;
           case MapCellBiome::Water:
@@ -676,7 +676,7 @@ namespace fw {
           case MapCellBiome::Forest:
             color = ForestColor;
             break;
-          case MapCellBiome::Moutain:
+          case MapCellBiome::Mountain:
             color = MountainColor;
             break;
           case MapCellBiome::Water:
