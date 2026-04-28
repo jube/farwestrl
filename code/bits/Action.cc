@@ -374,10 +374,22 @@ namespace fw {
       const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
       const gf::Vec2I new_position = actor.position + displacement;
 
-      if (model.is_walkable(actor.floor, new_position)) {
-        apply_move(model, actor, new_position);
+      if (actor.feature.type() == ActorType::Animal) {
+        const AnimalDataFeature& animal_data_feature = actor.data->feature.from<ActorType::Animal>();
+
+        if (animal_data_feature.biome != model.state.map.from_floor(actor.floor)(new_position).region) {
+          // the new position is not on the preferred biome of the animal
+          model.update_current_task_in_queue(WanderIdleTime);
+          return ActionResult::Failure;
+        }
       }
 
+      if (!model.is_walkable(actor.floor, new_position)) {
+        model.update_current_task_in_queue(WanderIdleTime);
+        return ActionResult::Failure;
+      }
+
+      apply_move(model, actor, new_position);
       model.update_current_task_in_queue(WanderTime);
       return ActionResult::Success;
     }

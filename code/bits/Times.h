@@ -17,6 +17,7 @@ namespace fw {
   constexpr uint16_t GrazeTime = 100;
   constexpr uint16_t IdleTime = 100;
   constexpr uint16_t WanderTime = 50;
+  constexpr uint16_t WanderIdleTime = 25;
 
 }
 
