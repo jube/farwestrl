@@ -66,7 +66,6 @@ namespace fw {
       gf::BehaviorStatus process(BehaviorBlackboard& blackboard) const override
       {
         const gf::Orientation orientation = random_orientation(blackboard.random);
-        // TODO: check for preferred biome
         blackboard.action =  make_action<WanderAction>(gf::displacement(orientation));
         return gf::BehaviorStatus::Running;
       }
@@ -147,7 +146,7 @@ namespace fw {
     };
 
     if (auto iterator = m_trees.find(actor.data->label.id); iterator != m_trees.end()) {
-      auto& [ id, tree ] = *iterator;
+      const auto& [ id, tree ] = *iterator;
       [[maybe_unused]] gf::BehaviorStatus status = tree.process(blackboard);
       assert(status == gf::BehaviorStatus::Running);
       assert(blackboard.action);

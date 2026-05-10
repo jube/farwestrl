@@ -61,6 +61,21 @@ namespace fw {
     return ar | feature.mounted_by;
   }
 
+  enum class GroupType : uint8_t {
+    Herd, // for herbivores
+    Pack, // for carnivores
+  };
+
+  struct GroupFeature {
+    GroupType type;
+    std::vector<uint32_t> members;
+  };
+
+  template<typename Archive>
+  Archive& operator|(Archive& ar, gf::MaybeConst<GroupFeature, Archive>& feature)
+  {
+    return ar | feature.type | feature.members;
+  }
 
   using ActorFeature = gf::TaggedVariant<ActorType, HumanFeature, AnimalFeature>;
 
