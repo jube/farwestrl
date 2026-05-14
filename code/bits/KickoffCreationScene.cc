@@ -26,6 +26,8 @@ namespace fw {
           return "Choosing a date";
         case WorldGenerationStep::Terrain:
           return "Generating the terrain";
+        case WorldGenerationStep::Rivers:
+          return "Digging the rivers";
         case WorldGenerationStep::Biomes:
           return "Determining the biomes";
         case WorldGenerationStep::Moutains:
@@ -41,7 +43,7 @@ namespace fw {
         case WorldGenerationStep::Regions:
           return "Listing regions";
         case WorldGenerationStep::Underground:
-          return "Digging underground";
+          return "Excavating underground";
         case WorldGenerationStep::Hero:
           return "Raising the hero";
         case WorldGenerationStep::Actors:

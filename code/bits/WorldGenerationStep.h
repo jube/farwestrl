@@ -19,6 +19,7 @@ namespace fw {
     // generation
     Date,
     Terrain,
+    Rivers,
     Biomes,
     Moutains,
     Towns,

@@ -24,6 +24,7 @@
 #include "Date.h"
 #include "MapBuilding.h"
 #include "MapCell.h"
+#include "MapCellBiome.h"
 #include "MapState.h"
 #include "Names.h"
 #include "Settings.h"
@@ -39,6 +40,15 @@ namespace fw {
 
     constexpr int32_t WorldPaddingSize = 150;
 
+    constexpr double RiverMinMoisture = 0.2;
+    constexpr double RiverSourceMinMoisture = 0.7;
+    constexpr int RiverMouthMinDistance = 3000;
+    constexpr int RiverSourceMinDistance = 1500;
+    constexpr float RiverSlopeFactor = 10000.0f;
+    constexpr int RiverRadiusMin = 12;
+    constexpr int RiverRadiusMax = RiverRadiusMin + 10;
+    constexpr std::size_t RiverPart = 800;
+
     constexpr double AltitudeThreshold = 0.55;
     constexpr double MoistureLoThreshold = 0.45;
     constexpr double MoistureHiThreshold = 0.55;
@@ -51,6 +61,7 @@ namespace fw {
     constexpr int MoutainSurvivalThreshold = 6;
     constexpr int MoutainBirthThreshold    = 8;
     constexpr int MoutainIterations        = 7;
+
 
     constexpr int32_t ReducedFactor = 3;
 
@@ -66,6 +77,7 @@ namespace fw {
     constexpr int CliffThreshold = 2;
 
     constexpr float SlopeFactor = 225.0f;
+    constexpr float RiverPenalty = 10.0f;
     constexpr float RailBlockPenalty = 1.5f;
     constexpr float DoubleRailBlockPenalty = 5.0f;
 
@@ -205,11 +217,159 @@ namespace fw {
       return raw;
     }
 
-    float distance_with_slope(const RawWorld& raw, gf::Vec2I position, gf::Vec2I neighbor)
+    float distance_for_rivers(const RawWorld& raw, gf::Vec2I position, gf::Vec2I neighbor)
     {
+      neighbor = gf::clamp(neighbor, { 0, 0 }, raw.size() - 1);
+
+      if (position == neighbor) {
+        return 1e10;
+      }
+
       const float distance = gf::euclidean_distance<float>(position, neighbor);
-      const float slope = static_cast<float>(std::abs(raw(to_map(position)).altitude - raw(to_map(neighbor)).altitude)) / distance;
-      return distance * (1 + SlopeFactor * gf::square(slope));
+      const float slope = static_cast<float>(std::abs(raw(position).altitude - raw(neighbor).altitude)) / distance;
+
+      const float value = distance * (1 + RiverSlopeFactor * gf::square(slope));
+
+      const double moisture = raw(neighbor).moisture;
+
+      if (moisture < MoistureLoThreshold) {
+        return value * 10;
+      }
+
+      if (moisture < MoistureHiThreshold) {
+        return value * 5;
+      }
+
+      return value;
+    }
+
+    struct River {
+      std::vector<gf::Vec2I> path;
+    };
+
+    std::vector<River> generate_rivers(const RawWorld& raw, gf::Random* random)
+    {
+      std::vector<River> rivers;
+
+      auto compute_random_source = [&]() {
+        constexpr gf::RectI area = gf::RectI::from_size(WorldSize).shrink_by(WorldBasicSize / 4);
+
+        for (;;) {
+          const gf::Vec2I source = random->compute_position(area);
+          const double moisture = raw(source).moisture;
+
+          if (moisture > RiverSourceMinMoisture) {
+            return source;
+          }
+        }
+      };
+
+      auto compute_random_out = [&]() {
+        gf::Vec2I out = random->compute_position(gf::RectI::from_size(WorldSize));
+
+        if (random->compute_bernoulli(0.5)) {
+          // push it horizontally
+          if (random->compute_bernoulli(0.5)) {
+            out.x = 0;
+          } else {
+            out.x = WorldBasicSize - 1;
+          }
+        } else {
+          // push it vertically
+          if (random->compute_bernoulli(0.5)) {
+            out.y = 0;
+          } else {
+            out.y = WorldBasicSize - 1;
+          }
+        }
+
+        return out;
+      };
+
+      // compute river points
+
+      std::array<gf::Vec2I, 3> points;
+      std::size_t tries = 0;
+
+      for (;;) {
+        points[0] = compute_random_out();
+        points[1] = compute_random_source();
+        points[2] = compute_random_source();
+
+        ++tries;
+
+        if (gf::square_distance(points[0], points[1]) < gf::square(RiverMouthMinDistance)) {
+          continue;
+        }
+
+        if (gf::square_distance(points[0], points[2]) < gf::square(RiverMouthMinDistance)) {
+          continue;
+        }
+
+        if (gf::square_distance(points[1], points[2]) < gf::square(RiverSourceMinDistance)) {
+          continue;
+        }
+
+        break;
+      }
+
+      gf::Log::debug("\tFound river points after {} tries", tries);
+
+      // compute the rivers
+
+      gf::GridMap grid = gf::GridMap::make_orthogonal(WorldSize);
+
+      for (const gf::Vec2I position : raw.position_range()) {
+        if (raw(position).moisture < RiverMinMoisture) {
+          grid.set_walkable(position, false);
+        }
+      }
+
+      for (const gf::Vec2I source : { points[1], points[2] }) {
+        std::vector<gf::Vec2I> river = grid.compute_route(source, points[0], [&](gf::Vec2I position, gf::Vec2I neighbor) {
+          return distance_for_rivers(raw, position, neighbor);
+        });
+
+        gf::Log::debug("\triver: length = {}", river.size());
+
+        rivers.emplace_back(std::move(river));
+      }
+
+      return rivers;
+    }
+
+    RawWorld modify_raw_with_rivers(const RawWorld& raw, const std::vector<River>& rivers, gf::Random* random)
+    {
+      RawWorld new_raw(raw);
+
+      for (const River& river : rivers) {
+        const int radius = random->compute_uniform_integer(RiverRadiusMin, RiverRadiusMax);
+        const int radius_square = gf::square(radius);
+
+        for (const gf::Vec2I position : river.path) {
+          // elevate humidity around the river
+
+          new_raw(position).moisture = 1.0; // std::max(new_raw(position).moisture, std::min(raw(position).moisture * 1.5, 1.0));
+          const double height = new_raw(position).moisture;
+          const double factor = height / radius_square;
+
+
+          for (const gf::Vec2I neighbor : gf::neighbor_square_range(position, radius)) {
+            if (!raw.valid(neighbor)) {
+              continue;
+            }
+
+            const int distance_square = gf::square_distance(position, neighbor);
+
+            if (distance_square < radius_square) {
+              double moisture_offset = factor * (radius_square - distance_square);
+              new_raw(neighbor).moisture = std::max(new_raw(neighbor).moisture, raw(neighbor).moisture + moisture_offset);
+            }
+          }
+        }
+      }
+
+      return new_raw;
     }
 
 
@@ -223,7 +383,7 @@ namespace fw {
      * herbs.
      */
 
-    MapState generate_outline(const RawWorld& raw, gf::Random* random)
+    MapState generate_outline(const RawWorld& raw, gf::Random* random, const std::vector<River>& rivers)
     {
       MapState state = {};
       state.ground = { WorldSize };
@@ -266,6 +426,20 @@ namespace fw {
 
             if (is_on_side(position) || random->compute_bernoulli(ForestTreeProbability * raw_cell.moisture)) {
               cell.decoration = MapCellDecoration::Tree;
+            }
+          }
+        }
+      }
+
+      for (const River& river : rivers) {
+        for (const auto [ index, position ] : gf::enumerate(river.path)) {
+          state.ground(position).region = MapCellBiome::Water;
+
+          const int width = 1 + static_cast<int>(index / RiverPart);
+
+          for (const gf::Vec2I neighbor : gf::neighbor_diamond_range(position, width)) {
+            if (state.ground.valid(neighbor)) {
+              state.ground(neighbor).region = MapCellBiome::Water;
             }
           }
         }
@@ -409,7 +583,6 @@ namespace fw {
       }
 
     }
-
 
     /*
      * Step 3. Generate towns and localities.
@@ -726,6 +899,13 @@ namespace fw {
       return grid;
     }
 
+    float distance_with_slope_reduced(const RawWorld& raw, gf::Vec2I position, gf::Vec2I neighbor)
+    {
+      const float distance = gf::euclidean_distance<float>(position, neighbor);
+      const float slope = static_cast<float>(std::abs(raw(to_map(position)).altitude - raw(to_map(neighbor)).altitude)) / distance;
+      return distance * (1 + SlopeFactor * gf::square(slope));
+    }
+
     NetworkState generate_network(const RawWorld& raw, MapState& state, const WorldPlaces& places, gf::Random* random)
     {
       // initialize the grid
@@ -786,7 +966,13 @@ namespace fw {
 
         const std::size_t j = (i + 1) % places.towns.size();
         auto path = grid.compute_route(places.towns[i].rail_departure, places.towns[j].rail_arrival, [&](gf::Vec2I position, gf::Vec2I neighbor) {
-          return distance_with_slope(raw, position, neighbor);
+          const float distance = distance_with_slope_reduced(raw, position, neighbor);
+
+          if (state.ground(to_map(neighbor)).region == MapCellBiome::Water) {
+            return distance * RiverPenalty;
+          }
+
+          return distance;
         });
 
         for (const gf::Vec2I point : path) {
@@ -916,7 +1102,11 @@ namespace fw {
       std::vector<gf::Vec2I> roads;
 
       const auto distance_function = [&](gf::Vec2I position, gf::Vec2I neighbor) {
-        const float distance = distance_with_slope(raw, position, neighbor);
+        const float distance = distance_with_slope_reduced(raw, position, neighbor);
+
+        if (state.ground(to_map(neighbor)).region == MapCellBiome::Water) {
+          return RiverPenalty * distance;
+        }
 
         if (grid.blocked(neighbor)) {
           if (grid.blocked(position)) {
@@ -1826,11 +2016,16 @@ namespace fw {
 
     gf::Log::info("Starting generation...");
     analysis.set_step(WorldGenerationStep::Terrain);
-    const RawWorld raw = generate_raw(random);
+    const RawWorld primitive_raw = generate_raw(random);
     gf::Log::info("- raw ({:g}s)", clock.elapsed_time().as_seconds());
 
+    analysis.set_step(WorldGenerationStep::Rivers);
+    const std::vector<River> rivers = generate_rivers(primitive_raw, random);
+    const RawWorld raw = modify_raw_with_rivers(primitive_raw, rivers, random);
+    gf::Log::info("- rivers ({:g}s)", clock.elapsed_time().as_seconds());
+
     analysis.set_step(WorldGenerationStep::Biomes);
-    state.map = generate_outline(raw, random);
+    state.map = generate_outline(raw, random, rivers);
     gf::Log::info("- outline ({:g}s)", clock.elapsed_time().as_seconds());
 
     analysis.set_step(WorldGenerationStep::Moutains);

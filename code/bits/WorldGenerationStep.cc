@@ -21,6 +21,8 @@ namespace fw {
           return "Date";
         case WorldGenerationStep::Terrain:
           return "Terrain";
+        case WorldGenerationStep::Rivers:
+          return "Rivers";
         case WorldGenerationStep::Biomes:
           return "Biomes";
         case WorldGenerationStep::Moutains:
