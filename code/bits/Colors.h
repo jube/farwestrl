@@ -13,6 +13,8 @@ namespace fw {
   inline constexpr gf::Color ForestColor = 0x4A6A4D;
   inline constexpr gf::Color MountainColor = 0x8B5A2B;
 
+  inline constexpr gf::Color BridgeColor = 0xB68E65;
+
   inline constexpr gf::Color RockColor = gf::gray(0.25f);
   inline constexpr gf::Color DirtColor = 0xB69F66;
 

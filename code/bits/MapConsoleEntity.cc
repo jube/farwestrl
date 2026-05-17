@@ -193,8 +193,8 @@ namespace fw {
 
         if (index != NoIndex) {
           const ActorState& mounted_by = state->actors[index];
-          actor_style.color.background = mounted_by.data->color;
-          actor_style.effect = gf::ConsoleEffect::alpha(0.2f);
+          actor_style.color.background = mounted_by.data->color * gf::opaque(0.2f);
+          actor_style.effect = gf::ConsoleEffect::alpha();
           actor_picture = to_uppercase_ascii(actor_picture);
         }
       }

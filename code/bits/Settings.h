@@ -45,6 +45,8 @@ namespace fw {
   constexpr double RoadColorProbability = 0.7;
   constexpr double StreetColorProbability = 0.8;
 
+  constexpr int MinimapMiNWaterTile = 6;
+
 }
 
 #endif // FW_SETTINGS_H

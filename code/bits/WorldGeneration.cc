@@ -56,7 +56,7 @@ namespace fw {
     constexpr double PrairieHerbProbability = 0.2;
     constexpr double DesertCactusProbability = 0.02;
     constexpr double ForestTreeProbability = 0.25;
-    constexpr double WaterWaveProbability = 0.05;
+    constexpr double WaterWaveProbability = 0.2;
 
     constexpr float MoutainThreshold       = 0.4f;
     constexpr int MoutainSurvivalThreshold = 6;
@@ -440,16 +440,35 @@ namespace fw {
           const int width = 1 + static_cast<int>(index / RiverPart);
 
           for (const gf::Vec2I neighbor : gf::neighbor_diamond_range(position, width)) {
-            if (state.ground.valid(neighbor)) {
-              MapCell& cell = state.ground(neighbor);
-              cell.region = MapCellBiome::Water;
+            if (!state.ground.valid(neighbor)) {
+              continue;
+            }
 
-              if (random->compute_bernoulli(WaterWaveProbability)) {
-                cell.decoration = MapCellDecoration::Wave;
-              } else {
-                cell.decoration = MapCellDecoration::None;
+            MapCell& cell = state.ground(neighbor);
+
+            if (cell.region == MapCellBiome::Water) {
+              continue;
+            }
+
+            cell.region = MapCellBiome::Water;
+
+            bool has_neighbor_wave = false;
+
+            for (const gf::Vec2I river_neighbor : state.ground.compute_8_neighbors_range(neighbor)) {
+              const MapCell& river_cell = state.ground(river_neighbor);
+
+              if (river_cell.decoration == MapCellDecoration::Wave) {
+                has_neighbor_wave = true;
+                break;
               }
             }
+
+            if (!has_neighbor_wave && random->compute_bernoulli(WaterWaveProbability)) {
+              cell.decoration = MapCellDecoration::Wave;
+            } else {
+              cell.decoration = MapCellDecoration::None;
+            }
+
           }
         }
       }

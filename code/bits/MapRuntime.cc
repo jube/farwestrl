@@ -11,13 +11,13 @@
 
 #include "Colors.h"
 #include "MapCell.h"
+#include "MapCellBiome.h"
 #include "MapState.h"
 #include "MapBuilding.h"
 #include "NetworkState.h"
 #include "Settings.h"
 #include "Utils.h"
 #include "WorldState.h"
-#include "gf2/core/Color.h"
 
 namespace fw {
 
@@ -326,10 +326,7 @@ namespace fw {
 
   void MapRuntime::bind_railway(const WorldState& state)
   {
-    gf::ConsoleStyle style;
-    style.color.foreground = gf::Black;
-    style.color.background = gf::Transparent;
-    style.effect = gf::ConsoleEffect::none();
+    gf::ConsoleStyle default_style = gf::Black;
 
     const std::vector<gf::Vec2I>& railway = state.network.railway;
 
@@ -351,12 +348,15 @@ namespace fw {
           const gf::Vec2I neighbor(i, j);
           const gf::Vec2I neighbor_position = position + neighbor;
 
-          gf::console_write_picture(ground.console, neighbor_position, plan[neighbor.y + 1][neighbor.x + 1], style);
+          gf::ConsoleStyle style = default_style;
 
           if (state.map.ground(neighbor_position).region == MapCellBiome::Water) {
+            // put a wooden bridge
             ground.background(neighbor_position).properties.set(RuntimeMapCellProperty::Walkable);
-            gf::console_write_background(ground.console, neighbor_position, gf::Gray);
+            style = { gf::Black, BridgeColor };
           }
+
+          gf::console_write_picture(ground.console, neighbor_position, plan[neighbor.y + 1][neighbor.x + 1], style);
         }
       }
     }
@@ -373,14 +373,14 @@ namespace fw {
           const gf::Vec2I neighbor(i, j);
           const gf::Vec2I neighbor_position = position + neighbor;
 
-          if (random->compute_bernoulli(RoadColorProbability)) {
-            gf::Color color = gf::lighter(gf::gray(0.9f), random->compute_uniform_float(0.0f, ColorLighterBound));
-            gf::console_write_background(ground.console, neighbor_position, color, road_effect);
-          }
-
           if (state.map.ground(neighbor_position).region == MapCellBiome::Water) {
             ground.background(neighbor_position).properties.set(RuntimeMapCellProperty::Walkable);
-            gf::console_write_picture(ground.console, neighbor_position, ' ', { gf::Transparent, gf::Gray });
+            gf::console_write_picture(ground.console, neighbor_position, ' ', { gf::Transparent, BridgeColor });
+          } else {
+            if (random->compute_bernoulli(RoadColorProbability)) {
+              gf::Color color = gf::lighter(gf::gray(0.9f), random->compute_uniform_float(0.0f, ColorLighterBound));
+              gf::console_write_background(ground.console, neighbor_position, color, road_effect);
+            }
           }
         }
       }
@@ -390,7 +390,11 @@ namespace fw {
 
   void MapRuntime::bind_towns(const WorldState& state, gf::Random* random)
   {
-    const gf::ConsoleEffect street_effect = gf::ConsoleEffect::alpha(0.5f);
+    const gf::ConsoleEffect street_effect = gf::ConsoleEffect::alpha();
+
+    auto compute_street_blend_color = [random]() {
+      return gf::lighter(StreetColor, random->compute_uniform_float(0.0f, ColorLighterBound)) * gf::opaque(0.5f);
+    };
 
     for (const TownState& town : state.map.towns) {
       const gf::RectI town_space = gf::RectI::from_position_size(town.position, { TownDiameter, TownDiameter });
@@ -403,7 +407,7 @@ namespace fw {
         const float probability = 0.1f * gf::ease_out_quint(factor);
 
         if (random->compute_bernoulli(probability)) {
-          gf::Color color = gf::lighter(StreetColor, random->compute_uniform_float(0.0f, ColorLighterBound));
+          const gf::Color color = compute_street_blend_color();
           gf::console_write_background(ground.console, position, color, street_effect);
         }
       }
@@ -424,18 +428,18 @@ namespace fw {
         const gf::Vec2I position = horizontal_position + gf::dirx(i);
 
         if (random->compute_bernoulli(StreetColorProbability)) {
-          const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+          const gf::Color color = compute_street_blend_color();
           gf::console_write_background(ground.console, position, color, street_effect);
         }
 
         if (position.x != vertical_position.x) {
           if (random->compute_bernoulli(StreetColorProbability)) {
-            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            const gf::Color color = compute_street_blend_color();
             gf::console_write_background(ground.console, position + gf::diry(-1), color, street_effect);
           }
 
           if (random->compute_bernoulli(StreetColorProbability)) {
-            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            const gf::Color color = compute_street_blend_color();
             gf::console_write_background(ground.console, position + gf::diry(+1), color, street_effect);
           }
         }
@@ -446,18 +450,18 @@ namespace fw {
         const gf::Vec2I position = vertical_position + gf::diry(i);
 
         if (random->compute_bernoulli(StreetColorProbability)) {
-          const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+          const gf::Color color = compute_street_blend_color();
           gf::console_write_background(ground.console, position, color, street_effect);
         }
 
         if (position.y != horizontal_position.y) {
           if (random->compute_bernoulli(StreetColorProbability)) {
-            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            const gf::Color color = compute_street_blend_color();
             gf::console_write_background(ground.console, position + gf::dirx(-1), color, street_effect);
           }
 
           if (random->compute_bernoulli(StreetColorProbability)) {
-            const gf::Color color = gf::lighter(StreetColor, random->compute_normal_float(0.0f, ColorLighterBound));
+            const gf::Color color = compute_street_blend_color();
             gf::console_write_background(ground.console, position + gf::dirx(+1), color, street_effect);
           }
         }
@@ -672,36 +676,40 @@ namespace fw {
           ++count[index];
         }
 
-        const auto iterator = std::max_element(std::begin(count), std::end(count));
-        const std::ptrdiff_t index = iterator - std::begin(count);
-        assert(0 <= index && std::size_t(index) < count.size());
-        const MapCellBiome region = static_cast<MapCellBiome>(index);
+        if (count[static_cast<std::size_t>(MapCellBiome::Water)] > MinimapMiNWaterTile) {
+          color = gf::Azure;
+        } else {
+          const auto iterator = std::max_element(std::begin(count), std::end(count));
+          const std::ptrdiff_t index = iterator - std::begin(count);
+          assert(0 <= index && std::size_t(index) < count.size());
+          const MapCellBiome region = static_cast<MapCellBiome>(index);
 
-        switch (region) {
-          case MapCellBiome::None:
-            color = gf::Transparent;
-            break;
-          case MapCellBiome::Prairie:
-            color = PrairieColor;
-            break;
-          case MapCellBiome::Desert:
-            color = DesertColor;
-            break;
-          case MapCellBiome::Forest:
-            color = ForestColor;
-            break;
-          case MapCellBiome::Mountain:
-            color = MountainColor;
-            break;
-          case MapCellBiome::Water:
-            color = gf::Azure; // TODO
-            break;
-          case MapCellBiome::Underground:
-            color = DirtColor;
-            break;
-          case MapCellBiome::Building:
-            color = StreetColor; // TODO
-            break;
+          switch (region) {
+            case MapCellBiome::None:
+              color = gf::Transparent;
+              break;
+            case MapCellBiome::Prairie:
+              color = PrairieColor;
+              break;
+            case MapCellBiome::Desert:
+              color = DesertColor;
+              break;
+            case MapCellBiome::Forest:
+              color = ForestColor;
+              break;
+            case MapCellBiome::Mountain:
+              color = MountainColor;
+              break;
+            case MapCellBiome::Water:
+              color = gf::Azure; // TODO
+              break;
+            case MapCellBiome::Underground:
+              color = DirtColor;
+              break;
+            case MapCellBiome::Building:
+              color = StreetColor; // TODO
+              break;
+          }
         }
 
         gf::console_write_background(console, position, color);
