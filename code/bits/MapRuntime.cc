@@ -147,6 +147,10 @@ namespace fw {
           character = generate_character({ u'φ', u'ψ', u'¥' }, random);
           foreground_color = gf::darker(gf::Green, 0.7f);
           break;
+        case MapCellDecoration::Wave:
+          character = u'~';
+          foreground_color = gf::darker(gf::Azure, 0.5f);
+          break;
         case MapCellDecoration::Cliff:
           {
             const uint8_t neighbor_bits = compute_neighbor_bits<MapCellDecoration, &MapCell::decoration>(state, position, MapCellDecoration::Cliff);
@@ -230,7 +234,7 @@ namespace fw {
         const auto [ character, foreground_color ] = compute_decoration(state, position, cell.decoration, background_color, random);
         gf::console_write_picture(map.console, position, character, { foreground_color, background_color });
 
-        if (!is_walkable(cell.decoration)) {
+        if (!is_walkable(cell.decoration) || cell.region == MapCellBiome::Water) {
           map.background(position).properties.reset(RuntimeMapCellProperty::Walkable);
         }
       }
@@ -348,6 +352,11 @@ namespace fw {
           const gf::Vec2I neighbor_position = position + neighbor;
 
           gf::console_write_picture(ground.console, neighbor_position, plan[neighbor.y + 1][neighbor.x + 1], style);
+
+          if (state.map.ground(neighbor_position).region == MapCellBiome::Water) {
+            ground.background(neighbor_position).properties.set(RuntimeMapCellProperty::Walkable);
+            gf::console_write_background(ground.console, neighbor_position, gf::Gray);
+          }
         }
       }
     }
@@ -367,6 +376,11 @@ namespace fw {
           if (random->compute_bernoulli(RoadColorProbability)) {
             gf::Color color = gf::lighter(gf::gray(0.9f), random->compute_uniform_float(0.0f, ColorLighterBound));
             gf::console_write_background(ground.console, neighbor_position, color, road_effect);
+          }
+
+          if (state.map.ground(neighbor_position).region == MapCellBiome::Water) {
+            ground.background(neighbor_position).properties.set(RuntimeMapCellProperty::Walkable);
+            gf::console_write_picture(ground.console, neighbor_position, ' ', { gf::Transparent, gf::Gray });
           }
         }
       }

@@ -32,6 +32,7 @@ namespace fw {
 
     Cactus = 0x4000,
     Tree,
+    Wave,
 
     // not walkable and not transparent
 

@@ -23,6 +23,8 @@ int main() {
   model.bind(analysis);
   analysis.print_analysis();
 
+  return 0;
+
   gf::Clock clock;
 
   for (;;) {

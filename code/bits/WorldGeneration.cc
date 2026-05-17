@@ -56,6 +56,7 @@ namespace fw {
     constexpr double PrairieHerbProbability = 0.2;
     constexpr double DesertCactusProbability = 0.02;
     constexpr double ForestTreeProbability = 0.25;
+    constexpr double WaterWaveProbability = 0.05;
 
     constexpr float MoutainThreshold       = 0.4f;
     constexpr int MoutainSurvivalThreshold = 6;
@@ -265,7 +266,8 @@ namespace fw {
       };
 
       auto compute_random_out = [&]() {
-        gf::Vec2I out = random->compute_position(gf::RectI::from_size(WorldSize));
+        constexpr gf::RectI area = gf::RectI::from_size(WorldSize).shrink_by(WorldBasicSize / 8);
+        gf::Vec2I out = random->compute_position(area);
 
         if (random->compute_bernoulli(0.5)) {
           // push it horizontally
@@ -439,7 +441,14 @@ namespace fw {
 
           for (const gf::Vec2I neighbor : gf::neighbor_diamond_range(position, width)) {
             if (state.ground.valid(neighbor)) {
-              state.ground(neighbor).region = MapCellBiome::Water;
+              MapCell& cell = state.ground(neighbor);
+              cell.region = MapCellBiome::Water;
+
+              if (random->compute_bernoulli(WaterWaveProbability)) {
+                cell.decoration = MapCellDecoration::Wave;
+              } else {
+                cell.decoration = MapCellDecoration::None;
+              }
             }
           }
         }
@@ -906,6 +915,20 @@ namespace fw {
       return distance * (1 + SlopeFactor * gf::square(slope));
     }
 
+    bool has_water_nearby(const MapState& state, gf::Vec2I position) {
+      if (state.ground(position).region == MapCellBiome::Water) {
+        return true;
+      }
+
+      for (const gf::Vec2I neighbor : state.ground.compute_8_neighbors_range(position)) {
+        if (state.ground(neighbor).region == MapCellBiome::Water) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     NetworkState generate_network(const RawWorld& raw, MapState& state, const WorldPlaces& places, gf::Random* random)
     {
       // initialize the grid
@@ -968,7 +991,7 @@ namespace fw {
         auto path = grid.compute_route(places.towns[i].rail_departure, places.towns[j].rail_arrival, [&](gf::Vec2I position, gf::Vec2I neighbor) {
           const float distance = distance_with_slope_reduced(raw, position, neighbor);
 
-          if (state.ground(to_map(neighbor)).region == MapCellBiome::Water) {
+          if (has_water_nearby(state, to_map(neighbor))) {
             return distance * RiverPenalty;
           }
 
@@ -1104,7 +1127,7 @@ namespace fw {
       const auto distance_function = [&](gf::Vec2I position, gf::Vec2I neighbor) {
         const float distance = distance_with_slope_reduced(raw, position, neighbor);
 
-        if (state.ground(to_map(neighbor)).region == MapCellBiome::Water) {
+        if (has_water_nearby(state, to_map(neighbor))) {
           return RiverPenalty * distance;
         }
 
