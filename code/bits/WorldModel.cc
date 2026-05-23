@@ -127,7 +127,7 @@ namespace fw {
 
     const BackgroundMap& background_map = state.map.from_floor(floor);
 
-    if (!fw::is_walkable(background_map(position).decoration)) {
+    if (!fw::is_walkable(background_map(position).decoration)) { // TODO: necessary?
       return false;
     }
 

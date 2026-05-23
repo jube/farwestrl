@@ -20,7 +20,6 @@ namespace fw {
     { MapCellBiome::Desert, "desert" },
     { MapCellBiome::Forest, "forest" },
     { MapCellBiome::Mountain, "mountain" },
-    { MapCellBiome::Water, "water" },
     { MapCellBiome::Underground, "underground" },
     { MapCellBiome::Building, "building" },
   })

@@ -14,13 +14,11 @@ namespace fw {
     Forest,
     Mountain,
 
-    Water,
-
     Underground,
     Building,
   };
 
-  inline constexpr std::size_t MapCellBiomeCount = 8;
+  inline constexpr std::size_t MapCellBiomeCount = 7;
 
 }
 

@@ -136,24 +136,47 @@ namespace fw {
             color = PrairieColor;
             break;
           case MapCellBiome::Desert:
-            color = type == ImageType::Basic || is_walkable(cell.decoration) ? DesertColor : gf::darker(gf::Green, 0.3f);
+            color = DesertColor;
             break;
           case MapCellBiome::Forest:
-            color = type == ImageType::Basic || is_walkable(cell.decoration) ? ForestColor : gf::darker(gf::Green, 0.7f);
+            color = ForestColor;
             break;
           case MapCellBiome::Mountain:
-            color = type == ImageType::Basic || is_walkable(cell.decoration) ? MountainColor : gf::darker(MountainColor, 0.5f);
-            break;
-          case MapCellBiome::Water:
-            color = gf::Azure; // TODO
+            color = MountainColor;
             break;
           case MapCellBiome::Underground:
-            color = type == ImageType::Basic || is_walkable(cell.decoration) ? DirtColor : RockColor;
+            color = DirtColor;
             break;
           case MapCellBiome::Building:
-            color = type == ImageType::Basic || is_walkable(cell.decoration) ? StreetColor : gf::darker(StreetColor, 0.5f);
+            color = StreetColor;
             break;
+        }
 
+        if (type != ImageType::Basic) {
+          switch (cell.decoration) {
+            case MapCellDecoration::None:
+            case MapCellDecoration::FloorDown:
+            case MapCellDecoration::FloorUp:
+            case MapCellDecoration::Herb:
+            case MapCellDecoration::Wall:
+              // nothing
+              break;
+            case MapCellDecoration::Cactus:
+              color = gf::darker(gf::Green, 0.3f);
+              break;
+            case MapCellDecoration::Tree:
+              color = gf::darker(gf::Green, 0.7f);
+              break;
+            case MapCellDecoration::Water:
+              color = gf::Azure;
+              break;
+            case MapCellDecoration::Cliff:
+              color = gf::darker(MountainColor, 0.5f);
+              break;
+            case MapCellDecoration::Rock:
+              color = RockColor;
+              break;
+          }
         }
 
         image.put_pixel(position, color);
@@ -291,14 +314,14 @@ namespace fw {
       // compute river points
 
       std::array<gf::Vec2I, 3> points;
-      std::size_t tries = 0;
+      std::size_t round = 0;
 
       for (;;) {
         points[0] = compute_random_out();
         points[1] = compute_random_source();
         points[2] = compute_random_source();
 
-        ++tries;
+        ++round;
 
         if (gf::square_distance(points[0], points[1]) < gf::square(RiverMouthMinDistance)) {
           continue;
@@ -315,7 +338,7 @@ namespace fw {
         break;
       }
 
-      gf::Log::debug("\tFound river points after {} tries", tries);
+      gf::Log::debug("\tFound river points after {} rounds", round);
 
       // compute the rivers
 
@@ -435,7 +458,7 @@ namespace fw {
 
       for (const River& river : rivers) {
         for (const auto [ index, position ] : gf::enumerate(river.path)) {
-          state.ground(position).region = MapCellBiome::Water;
+          state.ground(position).decoration = MapCellDecoration::Water;
 
           const int width = 1 + static_cast<int>(index / RiverPart);
 
@@ -445,30 +468,7 @@ namespace fw {
             }
 
             MapCell& cell = state.ground(neighbor);
-
-            if (cell.region == MapCellBiome::Water) {
-              continue;
-            }
-
-            cell.region = MapCellBiome::Water;
-
-            bool has_neighbor_wave = false;
-
-            for (const gf::Vec2I river_neighbor : state.ground.compute_8_neighbors_range(neighbor)) {
-              const MapCell& river_cell = state.ground(river_neighbor);
-
-              if (river_cell.decoration == MapCellDecoration::Wave) {
-                has_neighbor_wave = true;
-                break;
-              }
-            }
-
-            if (!has_neighbor_wave && random->compute_bernoulli(WaterWaveProbability)) {
-              cell.decoration = MapCellDecoration::Wave;
-            } else {
-              cell.decoration = MapCellDecoration::None;
-            }
-
+            cell.decoration = MapCellDecoration::Water;
           }
         }
       }
@@ -732,7 +732,17 @@ namespace fw {
       }
 
       for (const gf::Vec2I neighbor : state.ground.square_range(position, radius)) {
-        if (!state.ground.valid(neighbor) || state.ground(neighbor).region != MapCellBiome::Prairie) {
+        if (!state.ground.valid(neighbor)) {
+          return false;
+        }
+
+        const MapCell& cell = state.ground(neighbor);
+
+        if (cell.region != MapCellBiome::Prairie) {
+          return false;
+        }
+
+        if (cell.decoration == MapCellDecoration::Water) {
           return false;
         }
       }
@@ -935,12 +945,12 @@ namespace fw {
     }
 
     bool has_water_nearby(const MapState& state, gf::Vec2I position) {
-      if (state.ground(position).region == MapCellBiome::Water) {
+      if (state.ground(position).decoration == MapCellDecoration::Water) {
         return true;
       }
 
       for (const gf::Vec2I neighbor : state.ground.compute_8_neighbors_range(position)) {
-        if (state.ground(neighbor).region == MapCellBiome::Water) {
+        if (state.ground(neighbor).decoration == MapCellDecoration::Water) {
           return true;
         }
       }

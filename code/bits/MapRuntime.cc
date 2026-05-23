@@ -18,6 +18,7 @@
 #include "Settings.h"
 #include "Utils.h"
 #include "WorldState.h"
+#include "gf2/core/Color.h"
 
 namespace fw {
 
@@ -147,9 +148,9 @@ namespace fw {
           character = generate_character({ u'φ', u'ψ', u'¥' }, random);
           foreground_color = gf::darker(gf::Green, 0.7f);
           break;
-        case MapCellDecoration::Wave:
-          character = u'~';
-          foreground_color = gf::darker(gf::Azure, 0.5f);
+        case MapCellDecoration::Water:
+          character = gf::ConsoleChar::FullBlock;
+          foreground_color = gf::Azure;
           break;
         case MapCellDecoration::Cliff:
           {
@@ -190,7 +191,7 @@ namespace fw {
           character = gf::ConsoleChar::FullBlock;
           foreground_color = RockColor;
           break;
-      }
+        }
 
       return { character, foreground_color };
     }
@@ -218,9 +219,6 @@ namespace fw {
           case MapCellBiome::Mountain:
             background_color = MountainColor;
             break;
-          case MapCellBiome::Water:
-            background_color = gf::Azure; // TODO
-            break;
           case MapCellBiome::Underground:
             background_color = DirtColor;
             break;
@@ -234,7 +232,7 @@ namespace fw {
         const auto [ character, foreground_color ] = compute_decoration(state, position, cell.decoration, background_color, random);
         gf::console_write_picture(map.console, position, character, { foreground_color, background_color });
 
-        if (!is_walkable(cell.decoration) || cell.region == MapCellBiome::Water) {
+        if (!is_walkable(cell.decoration)) {
           map.background(position).properties.reset(RuntimeMapCellProperty::Walkable);
         }
       }
@@ -350,7 +348,7 @@ namespace fw {
 
           gf::ConsoleStyle style = default_style;
 
-          if (state.map.ground(neighbor_position).region == MapCellBiome::Water) {
+          if (state.map.ground(neighbor_position).decoration == MapCellDecoration::Water) {
             // put a wooden bridge
             ground.background(neighbor_position).properties.set(RuntimeMapCellProperty::Walkable);
             style = { gf::Black, BridgeColor };
@@ -373,7 +371,7 @@ namespace fw {
           const gf::Vec2I neighbor(i, j);
           const gf::Vec2I neighbor_position = position + neighbor;
 
-          if (state.map.ground(neighbor_position).region == MapCellBiome::Water) {
+          if (state.map.ground(neighbor_position).decoration == MapCellDecoration::Water) {
             ground.background(neighbor_position).properties.set(RuntimeMapCellProperty::Walkable);
             gf::console_write_picture(ground.console, neighbor_position, ' ', { gf::Transparent, BridgeColor });
           } else {
@@ -676,41 +674,35 @@ namespace fw {
           ++count[index];
         }
 
-        if (count[static_cast<std::size_t>(MapCellBiome::Water)] > MinimapMiNWaterTile) {
-          color = gf::Azure;
-        } else {
-          const auto iterator = std::max_element(std::begin(count), std::end(count));
-          const std::ptrdiff_t index = iterator - std::begin(count);
-          assert(0 <= index && std::size_t(index) < count.size());
-          const MapCellBiome region = static_cast<MapCellBiome>(index);
+        const auto iterator = std::max_element(std::begin(count), std::end(count));
+        const std::ptrdiff_t index = iterator - std::begin(count);
+        assert(0 <= index && std::size_t(index) < count.size());
+        const MapCellBiome region = static_cast<MapCellBiome>(index);
 
-          switch (region) {
-            case MapCellBiome::None:
-              color = gf::Transparent;
-              break;
-            case MapCellBiome::Prairie:
-              color = PrairieColor;
-              break;
-            case MapCellBiome::Desert:
-              color = DesertColor;
-              break;
-            case MapCellBiome::Forest:
-              color = ForestColor;
-              break;
-            case MapCellBiome::Mountain:
-              color = MountainColor;
-              break;
-            case MapCellBiome::Water:
-              color = gf::Azure; // TODO
-              break;
-            case MapCellBiome::Underground:
-              color = DirtColor;
-              break;
-            case MapCellBiome::Building:
-              color = StreetColor; // TODO
-              break;
-          }
+        switch (region) {
+          case MapCellBiome::None:
+            color = gf::Transparent;
+            break;
+          case MapCellBiome::Prairie:
+            color = PrairieColor;
+            break;
+          case MapCellBiome::Desert:
+            color = DesertColor;
+            break;
+          case MapCellBiome::Forest:
+            color = ForestColor;
+            break;
+          case MapCellBiome::Mountain:
+            color = MountainColor;
+            break;
+          case MapCellBiome::Underground:
+            color = DirtColor;
+            break;
+          case MapCellBiome::Building:
+            color = StreetColor; // TODO
+            break;
         }
+
 
         gf::console_write_background(console, position, color);
       }
