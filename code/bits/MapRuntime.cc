@@ -149,8 +149,35 @@ namespace fw {
           foreground_color = gf::darker(gf::Green, 0.7f);
           break;
         case MapCellDecoration::Water:
-          character = gf::ConsoleChar::FullBlock;
-          foreground_color = gf::Azure;
+          {
+            const uint8_t neighbor_bits = compute_neighbor_bits<MapCellDecoration, &MapCell::decoration>(state, position, MapCellDecoration::Water);
+
+            // clang-format off
+            constexpr char16_t BlockCharacters[] = {
+                                                    // WSEN
+              gf::ConsoleChar::FullBlock,           // 0000
+              gf::ConsoleChar::UpperHalfBlock,      // 0001
+              gf::ConsoleChar::RightHalfBlock,      // 0010
+              u'\u25E5' /* '◥' */,                  // 0011
+              gf::ConsoleChar::LowerHalfBlock,      // 0100
+              gf::ConsoleChar::FullBlock,           // 0101
+              u'\u25E2' /* '◢' */,                  // 0110
+              gf::ConsoleChar::FullBlock,           // 0111
+              gf::ConsoleChar::LeftHalfBlock,       // 1000
+              u'\u25E4' /* '◤' */,                  // 1001
+              gf::ConsoleChar::FullBlock,           // 1010
+              gf::ConsoleChar::FullBlock,           // 1011
+              u'\u25E3' /* '◣' */,                  // 1100
+              gf::ConsoleChar::FullBlock,           // 1101
+              gf::ConsoleChar::FullBlock,           // 1110
+              gf::ConsoleChar::FullBlock,           // 1111
+            };
+            // clang-format on
+
+            assert(neighbor_bits < std::size(BlockCharacters));
+            character = BlockCharacters[neighbor_bits];
+            foreground_color = gf::Azure;
+          }
           break;
         case MapCellDecoration::Cliff:
           {

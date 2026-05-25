@@ -88,10 +88,10 @@ namespace fw {
 
     constexpr std::size_t RegionMinimumSize = 400;
 
-    constexpr gf::Vec2I EightNeighbors[] = {
+    constexpr gf::Vec2I NineArea[] = {
       // clang-format off
       { -1, -1 }, {  0, -1 }, { +1, -1 },
-      { -1,  0 },             { +1,  0 },
+      { -1,  0 }, {  0,  0 }, { +1,  0 },
       { -1, +1 }, {  0, +1 }, { +1, +1 },
       // clang-format on
     };
@@ -1028,9 +1028,7 @@ namespace fw {
         });
 
         for (const gf::Vec2I point : path) {
-          grid.set_walkable(point, false);
-
-          for (const gf::Vec2I relative_neighbor : EightNeighbors) {
+          for (const gf::Vec2I relative_neighbor : NineArea) {
             grid.set_walkable(point + relative_neighbor, false);
           }
         }
@@ -1103,8 +1101,12 @@ namespace fw {
       }
 
       for (const gf::Vec2I position : network.railway) {
-        for (const gf::Vec2I relative_neighbor : EightNeighbors) {
-          state.ground(position + relative_neighbor).decoration = MapCellDecoration::None;
+        for (const gf::Vec2I relative_neighbor : NineArea) {
+          MapCell& cell = state.ground(position + relative_neighbor);
+
+          if (cell.decoration != MapCellDecoration::Water) {
+            cell.decoration = MapCellDecoration::None;
+          }
         }
       }
 

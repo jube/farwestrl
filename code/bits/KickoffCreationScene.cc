@@ -35,7 +35,7 @@ namespace fw {
         case WorldGenerationStep::Towns:
           return "Determining town locations";
         case WorldGenerationStep::Rails:
-          return "Consructing railways";
+          return "Constructing railways";
         case WorldGenerationStep::Roads:
           return "Making roads";
         case WorldGenerationStep::Buildings:
