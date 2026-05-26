@@ -116,7 +116,7 @@ namespace fw {
     position.y += 2;
 
     gf::ConsoleStyle stat_style;
-    stat_style.effect = gf::ConsoleEffect::add();
+    stat_style.effect = gf::ConsoleEffect::none();
     stat_style.color.foreground = gf::Black;
     stat_style.color.background = gf::Transparent;
 

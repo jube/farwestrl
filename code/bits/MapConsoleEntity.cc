@@ -259,6 +259,7 @@ namespace fw {
       uint32_t offset = 0;
       gf::Vec2I picture_position = { 0, 0 };
       gf::Direction direction = gf::Direction::Center;
+      gf::Vec2I step = { 0, 0 };
 
       for (const std::u16string_view part : TrainPicture) {
         const uint32_t index = runtime->network.next_position(train.railway_index, offset);
@@ -266,7 +267,7 @@ namespace fw {
         const gf::Vec2I position = runtime->network.railway[index];
 
         const uint32_t prev_index = runtime->network.prev_position(index);
-        assert(next_index < runtime->network.railway.size());
+        assert(prev_index < runtime->network.railway.size());
         const gf::Vec2I prev_position = runtime->network.railway[prev_index];
 
         assert(gf::manhattan_distance(position, prev_position) == 1);
@@ -274,15 +275,16 @@ namespace fw {
         if (direction == gf::Direction::Center || index % 3 == 2) {
           direction = undisplacement(prev_position - position);
           picture_position = position;
+          step = position - prev_position;
         }
 
         const char16_t picture0 = rotate_picture(part[0], direction);
         const char16_t picture1 = rotate_picture(part[1], direction);
         const char16_t picture2 = rotate_picture(part[2], direction);
 
+        gf::console_write_picture(console, picture_position - view.position() + gf::perp(step), picture0, train_style);
         gf::console_write_picture(console, picture_position - view.position(), picture1, train_style);
-        gf::console_write_picture(console, picture_position - view.position(), picture1, train_style);
-        gf::console_write_picture(console, picture_position - view.position(), picture1, train_style);
+        gf::console_write_picture(console, picture_position - view.position() - gf::perp(step), picture2, train_style);
 
         picture_position -= gf::displacement(direction);
         ++offset;
