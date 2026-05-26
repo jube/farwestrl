@@ -22,6 +22,48 @@ namespace fw {
 
     constexpr int32_t ViewRelaxation = 5;
 
+    using namespace std::literals;
+
+    constexpr std::array TrainPicture = {
+      u"◢█◣"sv,
+      u"▐◘▌"sv,
+      u"▐█▌"sv,
+      u"▐█▌"sv,
+      u"███"sv,
+      u"███"sv,
+      u"◥█◤"sv,
+      u" ║ "sv,
+      u"◢█◣"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"◥█◤"sv,
+      u" ║ "sv,
+      u"◢█◣"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"◥█◤"sv,
+      u" ║ "sv,
+      u"◢█◣"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"███"sv,
+      u"◥█◤"sv,
+      u"   "sv
+      u"   "sv
+    };
+
+
     constexpr int32_t TrainSize = 3;
     using RailPart = std::array<std::u16string_view, TrainSize>;
 
@@ -215,6 +257,42 @@ namespace fw {
 
     for (const TrainState& train : state->network.trains) {
       uint32_t offset = 0;
+      gf::Vec2I picture_position = { 0, 0 };
+      gf::Direction direction = gf::Direction::Center;
+
+      for (const std::u16string_view part : TrainPicture) {
+        const uint32_t index = runtime->network.next_position(train.railway_index, offset);
+        assert(index < runtime->network.railway.size());
+        const gf::Vec2I position = runtime->network.railway[index];
+
+        const uint32_t prev_index = runtime->network.prev_position(index);
+        assert(next_index < runtime->network.railway.size());
+        const gf::Vec2I prev_position = runtime->network.railway[prev_index];
+
+        assert(gf::manhattan_distance(position, prev_position) == 1);
+
+        if (direction == gf::Direction::Center || index % 3 == 2) {
+          direction = undisplacement(prev_position - position);
+          picture_position = position;
+        }
+
+        const char16_t picture0 = rotate_picture(part[0], direction);
+        const char16_t picture1 = rotate_picture(part[1], direction);
+        const char16_t picture2 = rotate_picture(part[2], direction);
+
+        gf::console_write_picture(console, picture_position - view.position(), picture1, train_style);
+        gf::console_write_picture(console, picture_position - view.position(), picture1, train_style);
+        gf::console_write_picture(console, picture_position - view.position(), picture1, train_style);
+
+        picture_position -= gf::displacement(direction);
+        ++offset;
+      }
+    }
+
+
+#if 0
+    for (const TrainState& train : state->network.trains) {
+      uint32_t offset = 0;
 
       for (char part_character : Train) {
         const uint32_t index = runtime->network.next_position(train.railway_index, offset);
@@ -243,6 +321,8 @@ namespace fw {
               continue;
             }
 
+            gf::Log::debug("part_character: {} | index: {} | position: {},{} | neighbor: {},{} | neighbor_position: {},{}", part_character, index, position.x, position.y, neighbor.x, neighbor.y, neighbor_position.x, neighbor_position.y);
+
             gf::console_write_picture(console, neighbor_position - view.position(), compute_train_part(part, neighbor + 1, direction), train_style);
           }
         }
@@ -250,7 +330,7 @@ namespace fw {
         offset += 3;
       }
     }
-
+#endif
   }
 
 }
