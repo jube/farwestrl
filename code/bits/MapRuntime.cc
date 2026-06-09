@@ -658,14 +658,14 @@ namespace fw {
         //     WSEN
         case 0b0001: return u'│';
         case 0b0010: return u'─';
-        case 0b0011: return u'└';
+        case 0b0011: return u'╰';
         case 0b0100: return u'│';
         case 0b0101: return u'│';
-        case 0b0110: return u'┌';
+        case 0b0110: return u'╭';
         case 0b1000: return u'─';
-        case 0b1001: return u'┘';
+        case 0b1001: return u'╯';
         case 0b1010: return u'─';
-        case 0b1100: return u'┐';
+        case 0b1100: return u'╮';
         default:
           gf::Log::debug("bits: {:b}", bits);
           assert(false);
@@ -758,7 +758,9 @@ namespace fw {
     }
 
     Minimap compute_ground_minimap(const WorldState& state, int factor) {
-      Minimap minimap = compute_base_minimap(state.map.ground, factor);
+      const BackgroundMap& ground = state.map.ground;
+
+      Minimap minimap = compute_base_minimap(ground, factor);
 
       // towns
 
@@ -819,6 +821,27 @@ namespace fw {
       for (const gf::Vec2I position : minimap_roads) {
         const gf::Color background = minimap.console(position).parts[0].background; // TODO
         gf::console_write_background(minimap.console, position, gf::darker(background, 0.2f / factor));
+      }
+
+      // river
+
+      for (const gf::Vec2I position : ground.position_range()) {
+        if (ground(position).decoration != MapCellDecoration::Water) {
+          continue;
+        }
+
+        std::size_t count = 0;
+
+        for (gf::Vec2I neighbor : ground.compute_8_neighbors_range(position)) {
+          if (ground(neighbor).decoration != MapCellDecoration::Water) {
+            ++count;
+            break;
+          }
+        }
+
+        if (count == 0) {
+          gf::console_write_background(minimap.console, position / factor, gf::Azure);
+        }
       }
 
       return minimap;
