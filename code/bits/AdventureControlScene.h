@@ -25,14 +25,14 @@ namespace fw {
   private:
     static gf::ActionGroupSettings compute_settings();
 
-    void update_grid();
+    void update_reduced_background();
 
     FarWest* m_game = nullptr;
     gf::ActionGroup m_action_group;
     std::optional<gf::Vec2I> m_mouse;
 
     Date m_last_grid_update = {};
-    gf::Array2D<RuntimeMapCell> m_grid;
+    gf::Array2D<RuntimeMapCell> m_reduced_background;
     std::vector<gf::Vec2I> m_computed_path;
   };
 

@@ -163,7 +163,7 @@ namespace fw {
       return;
     }
 
-    update_grid();
+    update_reduced_background();
 
     const WorldState* state = m_game->state();
     WorldRuntime* runtime = m_game->runtime();
@@ -185,7 +185,7 @@ namespace fw {
 
     const FloorMap& runtime_map = runtime->map.from_floor(floor);
 
-    if (!runtime_map.reverse(target).empty() || !m_grid(target).walkable()) {
+    if (!runtime_map.reverse(target).empty() || !m_reduced_background(target).walkable()) {
       m_computed_path.clear();
       return;
     }
@@ -194,8 +194,9 @@ namespace fw {
 
     if (runtime->hero.moves.empty()) {
       gf::Log::debug("computing path to {},{}", target.x, target.y);
+      gf::OrthogonalGrid grid(WorldSize, { 1, 1 });
 
-      m_computed_path = gf::compute_route_astar(m_grid, runtime->map.grid, state->hero().position, target, [](gf::Vec2I position, gf::Vec2I neighbor) {
+      m_computed_path = gf::compute_route_astar(m_reduced_background, grid, state->hero().position, target, [](gf::Vec2I position, gf::Vec2I neighbor) {
         const int32_t distance = gf::manhattan_distance(position, neighbor);
 
         if (distance == 2) {
@@ -234,7 +235,7 @@ namespace fw {
     }
   }
 
-  void AdventureControlScene::update_grid()
+  void AdventureControlScene::update_reduced_background()
   {
     const WorldState* state = m_game->state();
 
@@ -242,17 +243,17 @@ namespace fw {
       return;
     }
 
-    gf::Log::debug("update grid");
+    gf::Log::debug("update reduced map");
 
     const WorldRuntime* runtime = m_game->runtime();
     const Floor hero_floor = state->hero().floor;
     const FloorMap& floor_map = runtime->map.from_floor(hero_floor);
 
-    m_grid = floor_map.background;
+    m_reduced_background = floor_map.background;
 
     for (const ActorState& actor : state->actors) {
       if (actor.floor == hero_floor) {
-        m_grid(actor.position).properties.reset(RuntimeMapCellProperty::Walkable);
+        m_reduced_background(actor.position).properties.reset(RuntimeMapCellProperty::Walkable);
       }
     }
 
@@ -271,7 +272,7 @@ namespace fw {
               const gf::Vec2I neighbor = { i, j };
               const gf::Vec2I neighbor_position = position + neighbor;
 
-              m_grid(neighbor_position).properties.reset(RuntimeMapCellProperty::Walkable);
+              m_reduced_background(neighbor_position).properties.reset(RuntimeMapCellProperty::Walkable);
             }
           }
 
@@ -285,13 +286,13 @@ namespace fw {
     const gf::Vec2I view_se = view.position_at(gf::Orientation::SouthEast) + 1;
 
     for (int x = view_nw.x; x <= view_se.x; ++x) {
-      m_grid({ x, view_nw.y }).properties.reset(RuntimeMapCellProperty::Walkable);
-      m_grid({ x, view_se.y }).properties.reset(RuntimeMapCellProperty::Walkable);
+      m_reduced_background({ x, view_nw.y }).properties.reset(RuntimeMapCellProperty::Walkable);
+      m_reduced_background({ x, view_se.y }).properties.reset(RuntimeMapCellProperty::Walkable);
     }
 
     for (int y = view_nw.y; y <= view_se.y; ++y) {
-      m_grid({ view_nw.x, y }).properties.reset(RuntimeMapCellProperty::Walkable);
-      m_grid({ view_se.x, y }).properties.reset(RuntimeMapCellProperty::Walkable);
+      m_reduced_background({ view_nw.x, y }).properties.reset(RuntimeMapCellProperty::Walkable);
+      m_reduced_background({ view_se.x, y }).properties.reset(RuntimeMapCellProperty::Walkable);
     }
 
     m_last_grid_update = state->current_date;

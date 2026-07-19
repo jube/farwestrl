@@ -74,13 +74,6 @@ namespace fw {
   };
 
   struct MapRuntime {
-    MapRuntime()
-    : grid(WorldSize, { 1, 1 })
-    {
-    }
-
-    gf::OrthogonalGrid grid;
-
     FloorMap underground;
     FloorMap ground;
 
