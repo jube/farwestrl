@@ -185,30 +185,32 @@ namespace fw {
 
     const FloorMap& runtime_map = runtime->map.from_floor(floor);
 
-    if (runtime_map.reverse(target).empty() && runtime_map.background(target).walkable()) {
-      using gf::operators::operator|;
+    if (!runtime_map.reverse(target).empty() || !m_grid(target).walkable()) {
+      m_computed_path.clear();
+      return;
+    }
 
-      if (runtime->hero.moves.empty()) {
-        gf::Log::debug("computing path to {},{}", target.x, target.y);
+    using gf::operators::operator|;
 
-        m_computed_path = gf::compute_route_astar(runtime_map.background, runtime->map.grid, state->hero().position, target, [](gf::Vec2I position, gf::Vec2I neighbor) {
-          // TODO: take the scenery into account
-          const int32_t distance = gf::manhattan_distance(position, neighbor);
+    if (runtime->hero.moves.empty()) {
+      gf::Log::debug("computing path to {},{}", target.x, target.y);
 
-          if (distance == 2) {
-            return gf::Sqrt2;
-          }
+      m_computed_path = gf::compute_route_astar(m_grid, runtime->map.grid, state->hero().position, target, [](gf::Vec2I position, gf::Vec2I neighbor) {
+        const int32_t distance = gf::manhattan_distance(position, neighbor);
 
-          return 1.0f;
-        }, gf::CellNeighborQuery::Valid | gf::CellNeighborQuery::Diagonal);
+        if (distance == 2) {
+          return gf::Sqrt2;
+        }
 
-        gf::Log::debug("path computed");
-      }
+        return 1.0f;
+      }, gf::CellNeighborQuery::Valid | gf::CellNeighborQuery::Diagonal);
 
-      if (!m_computed_path.empty()) {
-        std::reverse(m_computed_path.begin(), m_computed_path.end());
-        m_computed_path.pop_back();
-      }
+      gf::Log::debug("path computed");
+    }
+
+    if (!m_computed_path.empty()) {
+      std::reverse(m_computed_path.begin(), m_computed_path.end());
+      m_computed_path.pop_back();
     }
   }
 
@@ -250,7 +252,7 @@ namespace fw {
 
     for (const ActorState& actor : state->actors) {
       if (actor.floor == hero_floor) {
-        m_grid(actor.position).properties.set(RuntimeMapCellProperty::Walkable);
+        m_grid(actor.position).properties.reset(RuntimeMapCellProperty::Walkable);
       }
     }
 
@@ -269,7 +271,7 @@ namespace fw {
               const gf::Vec2I neighbor = { i, j };
               const gf::Vec2I neighbor_position = position + neighbor;
 
-              m_grid(neighbor_position).properties.set(RuntimeMapCellProperty::Walkable);
+              m_grid(neighbor_position).properties.reset(RuntimeMapCellProperty::Walkable);
             }
           }
 
@@ -283,13 +285,13 @@ namespace fw {
     const gf::Vec2I view_se = view.position_at(gf::Orientation::SouthEast) + 1;
 
     for (int x = view_nw.x; x <= view_se.x; ++x) {
-      m_grid({ x, view_nw.y }).properties.set(RuntimeMapCellProperty::Walkable);
-      m_grid({ x, view_se.y }).properties.set(RuntimeMapCellProperty::Walkable);
+      m_grid({ x, view_nw.y }).properties.reset(RuntimeMapCellProperty::Walkable);
+      m_grid({ x, view_se.y }).properties.reset(RuntimeMapCellProperty::Walkable);
     }
 
     for (int y = view_nw.y; y <= view_se.y; ++y) {
-      m_grid({ view_nw.x, y }).properties.set(RuntimeMapCellProperty::Walkable);
-      m_grid({ view_se.x, y }).properties.set(RuntimeMapCellProperty::Walkable);
+      m_grid({ view_nw.x, y }).properties.reset(RuntimeMapCellProperty::Walkable);
+      m_grid({ view_se.x, y }).properties.reset(RuntimeMapCellProperty::Walkable);
     }
 
     m_last_grid_update = state->current_date;
