@@ -281,9 +281,11 @@ namespace fw {
       }
     }
 
-    const gf::RectI view = runtime->compute_view();
-    const gf::Vec2I view_nw = view.position_at(gf::Orientation::NorthWest) - 1;
-    const gf::Vec2I view_se = view.position_at(gf::Orientation::SouthEast) + 1;
+    const std::optional<gf::RectI> maybe_view = gf::RectI::from_size(WorldSize).intersection(runtime->compute_view());
+    assert(maybe_view.has_value());
+    const gf::RectI view = maybe_view.value();
+    const gf::Vec2I view_nw = view.position_at(gf::Orientation::NorthWest);
+    const gf::Vec2I view_se = view.position_at(gf::Orientation::SouthEast);
 
     for (int x = view_nw.x; x <= view_se.x; ++x) {
       m_reduced_background({ x, view_nw.y }).properties.reset(RuntimeMapCellProperty::Walkable);

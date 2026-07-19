@@ -32,7 +32,9 @@ namespace fw {
 
   gf::RectI WorldRuntime::compute_view() const
   {
-    return gf::RectI::from_center_size(view_center, GameBoxSize);
+    gf::RectI view = gf::RectI::from_center_size(view_center, GameBoxSize);
+    view.offset = gf::clamp(view.offset, { 0, 0 }, WorldSize - GameBoxSize);
+    return view;
   }
 
   void WorldRuntime::set_reverse_train(const TrainState& train, uint32_t train_index)

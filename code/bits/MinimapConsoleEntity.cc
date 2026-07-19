@@ -29,18 +29,14 @@ namespace fw {
 
   void MinimapConsoleEntity::render(gf::Console& console)
   {
-    const FloorMap& floor = m_game->runtime()->map.from_floor(m_game->state()->hero().floor);
-    const Minimap& minimap = floor.minimaps[m_zoom_level];
+    const Floor floor = m_game->state()->hero().floor;
+    const FloorMap& map = m_game->runtime()->map.from_floor(floor);
+    const Minimap& minimap = map.minimaps[m_zoom_level];
     gf::Console minimap_console = minimap.console;
 
     const gf::Vec2I hero_position = m_game->state()->hero().position / minimap.factor;
 
-    gf::ConsoleStyle hero_style;
-    hero_style.color.foreground = gf::Black;
-    hero_style.color.background = gf::Transparent;
-    hero_style.effect = gf::ConsoleEffect::none();
-
-    gf::console_write_picture(minimap_console, hero_position, u'@', hero_style);
+    gf::console_write_picture(minimap_console, hero_position, u'@', gf::Black);
 
     for (const gf::Vec2I position : minimap.explored.position_range()) {
       gf::console_write_background(minimap_console, position, gf::gray(minimap.explored(position)), gf::ConsoleEffect::multiply());

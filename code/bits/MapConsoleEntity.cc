@@ -188,6 +188,8 @@ namespace fw {
     const BackgroundMap& map = state->map.from_floor(hero.floor);
 
     for (const gf::Vec2I position : gf::rectangle_range(view)) {
+      // TODO: verify the position is in the map or clamp the view
+
       const MapCell& cell = map(position);
 
       if (cell.visible()) {
