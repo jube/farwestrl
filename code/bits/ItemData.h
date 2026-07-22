@@ -16,6 +16,7 @@ namespace fw {
     None,
     Firearm,
     Ammunition,
+    MeleeWeapon,
   };
 
   struct FirearmDataFeature {
@@ -28,7 +29,11 @@ namespace fw {
     int8_t caliber;
   };
 
-  using ItemDataFeature = gf::TaggedVariant<ItemType, FirearmDataFeature, AmmunitionDataFeature>;
+  struct MeleeWeaponDataFeature {
+
+  };
+
+  using ItemDataFeature = gf::TaggedVariant<ItemType, FirearmDataFeature, AmmunitionDataFeature, MeleeWeaponDataFeature>;
 
   struct ItemData {
     DataLabel label;

@@ -15,6 +15,9 @@
     { "label": "Beaumont-Adams Revolver", "picture": "§", "color": "#222222", "type": "firearm", "caliber": 36, "capacity": 5, "reload_time": 15, "url": "https://en.wikipedia.org/wiki/Beaumont%E2%80%93Adams_revolver" },
     { "label": "Colt Dragoon Revolver", "picture": "§", "color": "#222222", "type": "firearm", "caliber": 44, "capacity": 6, "reload_time": 15 },
 
-    { "label": ".44 Ammunitions", "picture": "•", "color": "#808080", "type": "ammunition", "caliber": 44 }
+    { "label": ".44 Ammunitions", "picture": "•", "color": "#808080", "type": "ammunition", "caliber": 44 },
+
+    { "label": "Knife", "picture": "-", "color": "#C0C0C0", "type": "melee_weapon" },
+    { "label": "Machete", "picture": "/", "color": "#C0C0C0", "type": "melee_weapon" }
   ]
 }

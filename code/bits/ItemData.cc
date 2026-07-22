@@ -12,6 +12,7 @@ namespace fw {
     { ItemType::None, nullptr },
     { ItemType::Firearm, "firearm" },
     { ItemType::Ammunition, "ammunition" },
+    { ItemType::MeleeWeapon, "melee_weapon" },
   })
 
   void from_json(const nlohmann::json& json, ItemData& data)
@@ -52,6 +53,13 @@ namespace fw {
           json.at("caliber").get_to(feature.caliber);
           data.feature = feature;
         }
+        break;
+      case ItemType::MeleeWeapon:
+        {
+          MeleeWeaponDataFeature feature;
+          data.feature = feature;
+        }
+        break;
     }
 
   }
