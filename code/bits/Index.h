@@ -8,6 +8,7 @@
 namespace fw {
 
   constexpr uint32_t NoIndex = std::numeric_limits<uint32_t>::max();
+  constexpr uint32_t HeroIndex = 0;
 
 }
 

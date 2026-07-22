@@ -3,6 +3,8 @@
 
 #include <gf2/core/ConsoleEntity.h>
 
+#include "Date.h"
+
 namespace fw {
   class FarWest;
 
@@ -15,6 +17,19 @@ namespace fw {
 
   private:
     FarWest* m_game = nullptr;
+    Date m_latest_update = {};
+
+    struct Element {
+      char16_t picture;
+      std::string name;
+      gf::Color foreground;
+      gf::Color background;
+      gf::Vec2I position;
+      int32_t distance;
+    };
+
+    std::vector<Element> m_actors;
+
   };
 
 }

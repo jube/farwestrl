@@ -7,6 +7,7 @@
 #include <gf2/core/Vec2.h>
 
 #include "Date.h"
+#include "Index.h"
 
 namespace fw {
 
@@ -35,7 +36,7 @@ namespace fw {
     bool is_hero_turn() const
     {
       const Task& top = queue.top();
-      return top.type == TaskType::Actor && top.index == 0;
+      return top.type == TaskType::Actor && top.index == HeroIndex;
     }
 
   };

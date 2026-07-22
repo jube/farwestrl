@@ -190,6 +190,7 @@ namespace fw {
         BackgroundMap& state_map = state.map.from_floor(hero.floor);
         const std::vector<gf::Vec2I> explored = compute_hero_fov(hero.position, state_map);
 
+        // update minimap thanks to field of view
         FloorMap& runtime_map = runtime.map.from_floor(hero.floor);
         runtime_map.update_minimap_explored(explored);
 
