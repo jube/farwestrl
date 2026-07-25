@@ -16,6 +16,9 @@ namespace fw {
     void render(gf::Console& console) override;
 
   private:
+    void update_scanning();
+    void render_scanning(gf::Console& console);
+
     FarWest* m_game = nullptr;
     Date m_latest_update = {};
 

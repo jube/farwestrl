@@ -29,7 +29,6 @@ namespace fw {
 
     FarWest* m_game = nullptr;
     gf::ActionGroup m_action_group;
-    std::optional<gf::Vec2I> m_mouse;
 
     Date m_last_grid_update = {};
     gf::Array2D<RuntimeMapCell> m_reduced_background;

@@ -9,6 +9,15 @@
 
 namespace fw {
 
+  namespace {
+
+    constexpr gf::Vec2I ContextualContentSize = ContextualBoxSize - 2;
+
+    constexpr int32_t ScanningActorHeight = 18;
+    constexpr int32_t ScanningItemHeight = 6;
+    static_assert(ScanningActorHeight + ScanningItemHeight + 1 == ContextualContentSize.y);
+  }
+
   ContextualConsoleEntity::ContextualConsoleEntity(FarWest* game)
   : m_game(game)
   {
@@ -17,7 +26,6 @@ namespace fw {
   void ContextualConsoleEntity::update([[maybe_unused]] gf::Time time)
   {
     const WorldState* state = m_game->state();
-    const WorldRuntime* runtime = m_game->runtime();
     const Date current_date = state->current_date;
 
     if (m_latest_update == current_date) {
@@ -27,6 +35,29 @@ namespace fw {
     if (!state->scheduler.is_hero_turn()) {
       return;
     }
+
+    update_scanning();
+
+    m_latest_update = current_date;
+  }
+
+  void ContextualConsoleEntity::render(gf::Console& console)
+  {
+    gf::ConsoleStyle contextual_box_style;
+    contextual_box_style.color.foreground = gf::Gray;
+    gf::console_draw_frame(console, ContextualBox, contextual_box_style);
+
+    gf::Console contextual_console(ContextualContentSize);
+
+    render_scanning(contextual_console);
+
+    gf::console_blit_to(contextual_console, console, ContextualBoxPosition + 1);
+  }
+
+  void ContextualConsoleEntity::update_scanning()
+  {
+    const WorldState* state = m_game->state();
+    const WorldRuntime* runtime = m_game->runtime();
 
     const gf::Vec2I hero_position = state->hero().position;
     const gf::RectI view_zone = gf::RectI::from_center_size(hero_position, { 2 * HeroVisionRange, 2 * HeroVisionRange });
@@ -81,38 +112,42 @@ namespace fw {
     gf::Log::debug("actors nearby: {}", m_actors.size());
 
     // TODO: same with items
-
-    m_latest_update = current_date;
   }
 
-  void ContextualConsoleEntity::render(gf::Console& console)
+  void ContextualConsoleEntity::render_scanning(gf::Console& console)
   {
-    [[maybe_unused]] WorldState* state = m_game->state();
-
-    gf::ConsoleStyle contextual_box_style;
-    contextual_box_style.color.foreground = gf::Gray;
-    gf::console_draw_frame(console, ContextualBox, contextual_box_style);
-
-    constexpr gf::Vec2I ContextualContentSize = ContextualBoxSize - 2;
-    constexpr int32_t ScanHeight = ContextualContentSize.y / 2;
-
-    gf::Console contextual_console(ContextualContentSize);
-
     int32_t count = 0;
     gf::Vec2I position = { 0, 0 };
 
+    const WorldRuntime* runtime = m_game->runtime();
+
+    gf::Vec2I target = { -1, -1 };
+
+    if (runtime->mouse.has_value()) {
+      target = runtime->mouse.value()  + runtime->compute_view().position();
+    }
+
     for (const Element& element : m_actors) {
-      gf::console_write_picture(contextual_console, position + gf::diry(count), element.picture, { element.foreground, element.background });
-      gf::console_print_text(contextual_console, position + gf::diry(count) + gf::dirx(2), gf::ConsoleAlignment::Left, m_game->style(), "{} ({}m)", element.name, element.distance);
+      if (element.position == target) {
+        gf::console_write_picture(console, position, u'→', gf::White);
+      }
+
+      gf::console_write_picture(console, position + gf::dirx(1), element.picture, { element.foreground, element.background });
+      gf::console_print_text(console, position + gf::dirx(3), gf::ConsoleAlignment::Left, m_game->style(), "{} ({}m)", element.name, element.distance);
 
       ++count;
 
-      if (count >= ScanHeight) {
+      if (count >= ScanningActorHeight) {
         break;
       }
+
+      ++position.y;
     }
 
-    gf::console_blit_to(contextual_console, console, ContextualBoxPosition + 1);
+    position.y = ScanningActorHeight;
+    gf::console_draw_horizontal_line(console, position, ContextualContentSize.y - 2, gf::Gray);
+
   }
+
 
 }

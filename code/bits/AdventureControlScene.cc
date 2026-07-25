@@ -56,10 +56,12 @@ namespace fw {
       const gf::MouseMovedEvent mouse_moved_event = event.from<gf::EventType::MouseMoved>();
       const gf::Vec2I position = m_game->point_to(mouse_moved_event.position);
 
+      WorldRuntime* runtime = m_game->runtime();
+
       if (GameBox.contains(position)) {
-        m_mouse = position;
+        runtime->mouse = position;
       } else {
-        m_mouse = std::nullopt;
+        runtime->mouse = std::nullopt;
       }
     }
   }
@@ -124,7 +126,7 @@ namespace fw {
     if (m_action_group.active("go"_id)) {
       if (runtime->hero.moves.empty()) {
         runtime->hero.moves = std::move(m_computed_path);
-        m_mouse = std::nullopt;
+        runtime->mouse = std::nullopt;
       }
     }
 
@@ -158,7 +160,9 @@ namespace fw {
 
   void AdventureControlScene::update([[maybe_unused]] gf::Time time)
   {
-    if (!m_mouse) {
+    WorldRuntime* runtime = m_game->runtime();
+
+    if (!runtime->mouse) {
       m_computed_path.clear();
       return;
     }
@@ -166,9 +170,8 @@ namespace fw {
     update_reduced_background();
 
     const WorldState* state = m_game->state();
-    WorldRuntime* runtime = m_game->runtime();
 
-    const gf::Vec2I target = *m_mouse + runtime->compute_view().position();
+    const gf::Vec2I target = runtime->mouse.value() + runtime->compute_view().position();
 
     if (!m_computed_path.empty() && m_computed_path.front() == target) {
       return;
@@ -230,8 +233,8 @@ namespace fw {
       gf::console_write_picture(console, position - view.position(), u'·', style);
     }
 
-    if (m_mouse) {
-      gf::console_write_picture(console, m_mouse.value(), '+', style);
+    if (runtime->mouse) {
+      gf::console_write_picture(console, runtime->mouse.value(), '+', style);
     }
   }
 

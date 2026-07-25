@@ -20,6 +20,7 @@ namespace fw {
   struct WorldRuntime {
     Phase phase = Phase::Noon;
     gf::Vec2I view_center;
+    std::optional<gf::Vec2I> mouse;
     HeroRuntime hero;
     MapRuntime map;
     NetworkRuntime network;
