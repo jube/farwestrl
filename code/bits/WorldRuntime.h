@@ -25,10 +25,6 @@ namespace fw {
     MapRuntime map;
     NetworkRuntime network;
 
-    std::vector<std::size_t> actors_by_distance;
-
-    void sort_actors_by_distance(const std::vector<ActorState>& actors);
-
     gf::RectI compute_view() const;
 
     void set_reverse_train(const TrainState& train, uint32_t train_index);

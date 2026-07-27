@@ -2,33 +2,12 @@
 
 #include <cassert>
 
-#include <algorithm>
-#include <numeric>
-
 #include "MapRuntime.h"
 #include "NetworkState.h"
 #include "Settings.h"
 #include "WorldState.h"
 
 namespace fw {
-
-  void WorldRuntime::sort_actors_by_distance(const std::vector<ActorState>& actors)
-  {
-    assert(!actors.empty());
-
-    if (actors_by_distance.size() != actors.size()) {
-      actors_by_distance.resize(actors.size());
-      std::iota(actors_by_distance.begin(), actors_by_distance.end(), 0);
-    }
-
-    const ActorState& hero_actor = actors.front();
-
-    std::sort(actors_by_distance.begin(), actors_by_distance.end(), [&](std::size_t lhs, std::size_t rhs) {
-      assert(lhs < actors.size());
-      assert(rhs < actors.size());
-      return gf::manhattan_distance(actors[lhs].position, hero_actor.position) < gf::manhattan_distance(actors[rhs].position, hero_actor.position);
-    });
-  }
 
   gf::RectI WorldRuntime::compute_view() const
   {
@@ -69,7 +48,6 @@ namespace fw {
     analysis.set_step(WorldGenerationStep::Network);
     bind_network(state);
     bind_train(state);
-    sort_actors_by_distance(state.actors);
   }
 
   void WorldRuntime::bind_network(const WorldState& state) {
