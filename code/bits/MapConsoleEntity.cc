@@ -60,100 +60,7 @@ namespace fw {
       u"███"sv,
       u"◥█◤"sv,
       u"   "sv
-      u"   "sv
     };
-
-
-    constexpr int32_t TrainSize = 3;
-    using RailPart = std::array<std::u16string_view, TrainSize>;
-
-    constexpr RailPart LocomotiveFront = {{
-      u"◢█◣",
-      u"▐◘▌",
-      u"▐█▌",
-    }};
-
-    constexpr RailPart LocomotiveBack = {{
-      u"▐█▌",
-      u"███",
-      u"███",
-    }};
-
-    constexpr RailPart Coupler = {{
-      u"◥█◤",
-      u" • ",
-      u"◢█◣",
-    }};
-
-    constexpr RailPart WagonFront = {{
-      u"███",
-      u"███",
-      u"███",
-    }};
-
-    constexpr RailPart WagonBack = {{
-      u"███",
-      u"███",
-      u"███",
-    }};
-
-    constexpr RailPart WagonEnd = {{
-      u"███",
-      u"███",
-      u"◥█◤",
-    }};
-
-    constexpr std::string_view Train = "lLCwWCwWCwWE";
-    static_assert(Train.length() == TrainLength);
-
-    const RailPart& compute_train_basic_part(char part_character)
-    {
-      switch (part_character) {
-        case 'l':
-          return LocomotiveFront;
-        case 'L':
-          return LocomotiveBack;
-        case 'C':
-          return Coupler;
-        case 'w':
-          return WagonFront;
-        case 'W':
-          return WagonBack;
-        case 'E':
-          return WagonEnd;
-      }
-
-      assert(false);
-      return Coupler;
-    }
-
-    char16_t compute_train_part(const RailPart& part, gf::Vec2I position, gf::Direction direction)
-    {
-      assert(0 <= position.x && position.x < TrainSize);
-      assert(0 <= position.y && position.y < TrainSize);
-
-      char16_t picture = u'#';
-
-      switch (direction) {
-        case gf::Direction::Up:
-          picture = part[position.y][position.x];
-          break;
-        case gf::Direction::Right:
-          picture = part[TrainSize - position.x - 1][position.y];
-          break;
-        case gf::Direction::Down:
-          picture = part[TrainSize - position.y - 1][TrainSize - position.x - 1];
-          break;
-        case gf::Direction::Left:
-          picture = part[position.x][TrainSize - position.y - 1];
-          break;
-        default:
-          assert(false);
-          break;
-      }
-
-      return rotate_picture(picture, direction);
-    }
 
   }
 
@@ -293,48 +200,6 @@ namespace fw {
       }
     }
 
-
-#if 0
-    for (const TrainState& train : state->network.trains) {
-      uint32_t offset = 0;
-
-      for (char part_character : Train) {
-        const uint32_t index = runtime->network.next_position(train.railway_index, offset);
-        assert(index < runtime->network.railway.size());
-        const gf::Vec2I position = runtime->network.railway[index];
-
-        const uint32_t next_index = runtime->network.prev_position(index);
-        assert(next_index < runtime->network.railway.size());
-        const gf::Vec2I next_position = runtime->network.railway[next_index];
-
-        assert(gf::manhattan_distance(position, next_position) == 1);
-        const gf::Direction direction = undisplacement(next_position - position);
-
-        const RailPart& part = compute_train_basic_part(part_character);
-
-        for (int32_t i = -1; i <= 1; ++i) {
-          for (int32_t j = -1; j <= 1; ++j) {
-            const gf::Vec2I neighbor = { i, j };
-            const gf::Vec2I neighbor_position = position + neighbor;
-
-            if (!view.contains(neighbor_position)) {
-              continue;
-            }
-
-            if (!map(neighbor_position).visible()) {
-              continue;
-            }
-
-            gf::Log::debug("part_character: {} | index: {} | position: {},{} | neighbor: {},{} | neighbor_position: {},{}", part_character, index, position.x, position.y, neighbor.x, neighbor.y, neighbor_position.x, neighbor_position.y);
-
-            gf::console_write_picture(console, neighbor_position - view.position(), compute_train_part(part, neighbor + 1, direction), train_style);
-          }
-        }
-
-        offset += 3;
-      }
-    }
-#endif
   }
 
 }
