@@ -99,7 +99,7 @@ namespace fw {
     }
   }
 
-  uint32_t WorldModel::index_of(ActorState& actor) const
+  uint32_t WorldModel::index_of(const ActorState& actor) const
   {
     const std::ptrdiff_t offset = &actor - state.actors.data();
     assert(offset >= 0);

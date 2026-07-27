@@ -15,7 +15,7 @@ namespace fw {
 
   struct BehaviorBlackboard {
     const WorldModel* model = nullptr;
-    ActorState* actor = nullptr;
+    const ActorState* actor = nullptr;
     gf::Random* random = nullptr;
     std::optional<Action> action;
   };
@@ -24,7 +24,7 @@ namespace fw {
   public:
     BehaviorManager();
 
-    Action select_behavior(const WorldModel& model, ActorState& actor, gf::Random* random);
+    Action select_behavior(const WorldModel& model, const ActorState& actor, gf::Random* random);
 
   private:
     std::map<gf::Id, gf::behavior::AnyBehavior<BehaviorBlackboard>> m_trees;

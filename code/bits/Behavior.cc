@@ -123,7 +123,7 @@ namespace fw {
     m_trees.emplace("Scorpion"_id, lonely_animal());
   }
 
-  Action BehaviorManager::select_behavior(const WorldModel& model, ActorState& actor, gf::Random* random)
+  Action BehaviorManager::select_behavior(const WorldModel& model, const ActorState& actor, gf::Random* random)
   {
     if (model.index_of(actor) == 0) {
       return model.runtime.hero.action;

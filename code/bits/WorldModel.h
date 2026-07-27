@@ -25,7 +25,7 @@ namespace fw {
     void update(gf::Time time) override;
     bool is_running() const { return m_phase == ModelPhase::Running; }
 
-    uint32_t index_of(ActorState& actor) const;
+    uint32_t index_of(const ActorState& actor) const;
 
     bool is_walkable(Floor floor, gf::Vec2I position) const;
 
