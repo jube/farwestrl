@@ -2,6 +2,7 @@
 
 #include <gf2/core/ConsoleOperations.h>
 
+#include "DisplayData.h"
 #include "FarWest.h"
 #include "Index.h"
 #include "Settings.h"
@@ -58,11 +59,9 @@ namespace fw {
   {
     const WorldState* state = m_game->state();
     const WorldRuntime* runtime = m_game->runtime();
-
-    const gf::Vec2I hero_position = state->hero().position;
-    const gf::RectI view_zone = gf::RectI::from_center_size(hero_position, { 2 * HeroVisionRange, 2 * HeroVisionRange });
-
-    const Floor floor = state->hero().floor;
+    const Location location = state->hero().location();
+    const gf::RectI view_zone = gf::RectI::from_center_size(location.position, { 2 * HeroVisionRange, 2 * HeroVisionRange });
+    const Floor floor = location.floor;
     const BackgroundMap& background_map = state->map.from_floor(floor);
     const FloorMap& floor_map = runtime->map.from_floor(floor);
 
@@ -82,30 +81,38 @@ namespace fw {
       }
 
       assert(cell.actor_index < state->actors.size());
-      const ActorState& actor_state = state->actors[cell.actor_index];
+      const ActorState& actor = state->actors[cell.actor_index];
 
-      if (actor_state.floor != floor) {
-        continue;
-      }
-
-      const ActorType actor_type = actor_state.feature.type();
-
-      if (actor_type != ActorType::Human && actor_type != ActorType::Animal) {
-        continue;
-      }
-
-      const ActorData* actor_data = actor_state.data.origin;
-
-      const Element element = {
-        .picture = actor_data->picture,
-        .name = actor_data->label.tag,
-        .foreground = actor_data->color,
-        .background = floor_map.console(position).parts[0].background,
-        .position = position,
-        .distance = static_cast<int32_t>(gf::euclidean_distance(hero_position, position))
+      auto create_element = [&](const DisplayData& display) -> Element {
+        return {
+          .picture = display.picture,
+          .name = actor.data->label.tag,
+          .foreground = display.color,
+          .background = floor_map.console(position).parts[0].background,
+          .position = position,
+          .distance = static_cast<int32_t>(gf::euclidean_distance(location.position, position))
+        };
       };
 
-      m_actors.push_back(element);
+      switch (actor.feature.type()) {
+        case ActorType::None:
+        case ActorType::Group:
+        case ActorType::Train:
+          break;
+        case ActorType::Human:
+        {
+          const HumanDataFeature& data = actor.data->feature.from<ActorType::Human>();
+          m_actors.push_back(create_element(data.display));
+          break;
+        }
+        case ActorType::Animal:
+        {
+          const AnimalDataFeature& data = actor.data->feature.from<ActorType::Animal>();
+          m_actors.push_back(create_element(data.display));
+          break;
+        }
+      }
+
     }
 
     std::ranges::sort(m_actors, {}, &Element::distance);

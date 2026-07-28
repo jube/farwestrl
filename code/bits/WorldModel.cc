@@ -7,11 +7,9 @@
 #include "ActorState.h"
 #include "Behavior.h"
 #include "Index.h"
-#include "MapCell.h"
 #include "MapRuntime.h"
 #include "MapState.h"
 #include "SchedulerState.h"
-#include "Times.h"
 #include "WorldGenerationStep.h"
 
 namespace fw {
@@ -19,8 +17,6 @@ namespace fw {
   namespace {
 
     constexpr gf::Time Cooldown = gf::milliseconds(20);
-
-    constexpr int32_t IdleDistance = 100;
 
   }
 
@@ -65,33 +61,18 @@ namespace fw {
 
       const Task& current_task = state.scheduler.queue.top();
 
-      if (current_task.type == TaskType::Actor) {
-        assert(current_task.index < state.actors.size());
-        // gf::Log::debug("[SCHEDULER] {}: Update actor {}", state.current_date.to_string(), current_task.index);
-        ActorState& actor = state.actors[current_task.index];
+      assert(current_task.index < state.actors.size());
+      // gf::Log::debug("[SCHEDULER] {}: Update actor {}", state.current_date.to_string(), current_task.index);
+      ActorState& actor = state.actors[current_task.index];
 
-        const Action action = m_behavior_manager.select_behavior(*this, actor, m_random);
-        const ActionResult result = compute_action(*this, actor, action);
+      const Action action = m_behavior_manager.select_behavior(*this, actor, m_random);
+      const ActionResult result = compute_action(*this, actor, action);
 
-        if (result == ActionResult::Success && view.contains(actor.position)) {
-          need_cooldown = true;
-        }
-
-        assert(check());
-
-        continue;
+      if (result == ActionResult::Success && view.contains(actor.location().position)) {
+        need_cooldown = true;
       }
 
-      if (current_task.type == TaskType::Train) {
-        assert(current_task.index < state.network.trains.size());
-        // gf::Log::debug("[SCHEDULER] {}: Update train {}", state.current_date.to_string(), current_task.index);
-
-        if (update_train(state.network.trains[current_task.index], current_task.index)) {
-          need_cooldown = true;
-        }
-
-        continue;
-      }
+      assert(check());
     }
 
     if (need_cooldown) {
@@ -156,12 +137,21 @@ namespace fw {
   {
     // check actors
     for (auto [ index, actor ] : gf::enumerate(state.actors)) {
-      const FloorMap& floor_map = runtime.map.from_floor(actor.floor);
-
-      // TODO: check for mount
-      if (floor_map.reverse(actor.position).actor_index != index) {
-        gf::Log::debug("CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", actor.position.x, actor.position.y, index, floor_map.reverse(actor.position).actor_index);
-        return false;
+      switch (actor.feature.type()) {
+        case ActorType::None:
+        case ActorType::Group:
+        case ActorType::Train:
+          break;
+        case ActorType::Human:
+          if (!check_human(index, actor.feature.from<ActorType::Human>())) {
+            return false;
+          }
+          break;
+        case ActorType::Animal:
+          if (!check_animal(index, actor.feature.from<ActorType::Animal>())) {
+            return false;
+          }
+          break;
       }
     }
 
@@ -170,8 +160,11 @@ namespace fw {
 
   bool WorldModel::update_hero()
   {
+    ActorState& hero = state.hero();
+    const Location location = hero.location();
+
     if (!runtime.hero.moves.empty()) {
-      runtime.hero.action = make_action<MoveAction>(runtime.hero.moves.back() - state.hero().position);
+      runtime.hero.action = make_action<MoveAction>(runtime.hero.moves.back() - location.position);
       runtime.hero.moves.pop_back();
     }
 
@@ -181,20 +174,19 @@ namespace fw {
 
     gf::Log::debug("[SCHEDULER] {}: Update hero", state.current_date.to_string());
 
-    ActorState& hero = state.hero();
-    const Floor floor = hero.floor;
     const ActionResult result = compute_action(*this, hero, runtime.hero.action);
 
     if (runtime.hero.action.type() == ActionType::Move) {
       if (result == ActionResult::Success) {
-        BackgroundMap& state_map = state.map.from_floor(hero.floor);
-        const std::vector<gf::Vec2I> explored = compute_hero_fov(hero.position, state_map);
+        const Location new_location = hero.location();
+        BackgroundMap& state_map = state.map.from_floor(new_location.floor);
+        const std::vector<gf::Vec2I> explored = compute_hero_fov(new_location.position, state_map);
 
         // update minimap thanks to field of view
-        FloorMap& runtime_map = runtime.map.from_floor(hero.floor);
+        FloorMap& runtime_map = runtime.map.from_floor(new_location.floor);
         runtime_map.update_minimap_explored(explored);
 
-        if (hero.floor != floor) {
+        if (new_location.floor != location.floor) {
           runtime.hero.moves.clear();
         }
       } else {
@@ -207,30 +199,29 @@ namespace fw {
     return result == ActionResult::Success;
   }
 
-  bool WorldModel::update_train(TrainState& train, uint32_t train_index)
+  bool WorldModel::check_human(std::size_t index, const HumanFeature& feature) const
   {
-    runtime.set_reverse_train(train, NoIndex);
+    const FloorMap& floor_map = runtime.map.from_floor(feature.location.floor);
 
-    const uint32_t new_index = runtime.network.prev_position(train.railway_index);
-    assert(new_index < runtime.network.railway.size());
-    const gf::Vec2I new_position = runtime.network.railway[new_index];
-
-    train.railway_index = new_index;
-
-    runtime.set_reverse_train(train, train_index);
-
-    if (auto iterator = std::find_if(state.network.stations.begin(), state.network.stations.end(), [new_index](const StationState& station) {
-      return station.index == new_index;
-    }); iterator != state.network.stations.end()) {
-      update_current_task_in_queue(iterator->stop_time);
-    } else {
-      update_current_task_in_queue(TrainTime);
+    if (feature.mounting != NoIndex) {
+      index = feature.mounting;
     }
 
-    const int32_t distance_to_hero = gf::chebyshev_distance(new_position, state.hero().position);
+    if (floor_map.reverse(feature.location.position).actor_index != index) {
+      gf::Log::debug("HUMAN CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", feature.location.position.x, feature.location.position.y, index, floor_map.reverse(feature.location.position).actor_index);
+      return false;
+    }
 
-    if (distance_to_hero > IdleDistance) {
-      return false; // do not cooldown
+    return true;
+  }
+
+  bool WorldModel::check_animal(std::size_t index, const AnimalFeature& feature) const
+  {
+    const FloorMap& floor_map = runtime.map.from_floor(feature.location.floor);
+
+    if (floor_map.reverse(feature.location.position).actor_index != index) {
+      gf::Log::debug("ANIMAL CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", feature.location.position.x, feature.location.position.y, index, floor_map.reverse(feature.location.position).actor_index);
+      return false;
     }
 
     return true;

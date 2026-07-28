@@ -177,16 +177,16 @@ namespace fw {
       return;
     }
 
-    const Floor floor = state->hero().floor;
+    const Location location = state->hero().location();
 
-    const BackgroundMap& state_map = state->map.from_floor(floor);
+    const BackgroundMap& state_map = state->map.from_floor(location.floor);
 
     if (!state_map(target).explored()) {
       m_computed_path.clear();
       return;
     }
 
-    const FloorMap& runtime_map = runtime->map.from_floor(floor);
+    const FloorMap& runtime_map = runtime->map.from_floor(location.floor);
 
     if (!runtime_map.reverse(target).empty() || !m_reduced_background(target).walkable()) {
       m_computed_path.clear();
@@ -199,7 +199,7 @@ namespace fw {
       gf::Log::debug("computing path to {},{}", target.x, target.y);
       gf::OrthogonalGrid grid(WorldSize, { 1, 1 });
 
-      m_computed_path = gf::compute_route_astar(m_reduced_background, grid, state->hero().position, target, [](gf::Vec2I position, gf::Vec2I neighbor) {
+      m_computed_path = gf::compute_route_astar(m_reduced_background, grid, location.position, target, [](gf::Vec2I position, gf::Vec2I neighbor) {
         const int32_t distance = gf::manhattan_distance(position, neighbor);
 
         if (distance == 2) {
@@ -249,38 +249,54 @@ namespace fw {
     gf::Log::debug("update reduced map");
 
     const WorldRuntime* runtime = m_game->runtime();
-    const Floor hero_floor = state->hero().floor;
-    const FloorMap& floor_map = runtime->map.from_floor(hero_floor);
+    const Location location = state->hero().location();
+
+    const FloorMap& floor_map = runtime->map.from_floor(location.floor);
 
     m_reduced_background = floor_map.background;
 
     for (const ActorState& actor : state->actors) {
-      if (actor.floor == hero_floor) {
-        m_reduced_background(actor.position).properties.reset(RuntimeMapCellProperty::Walkable);
-      }
-    }
+      switch (actor.feature.type()) {
+        case ActorType::None:
+          break;
+        case ActorType::Human:
+        case ActorType::Animal:
+        {
+          const Location actor_location = actor.location();
 
-    if (hero_floor == Floor::Ground) {
-      for (const TrainState& train : state->network.trains) {
-        uint32_t offset = 0;
+          if (actor_location.floor == location.floor) {
+            m_reduced_background(actor_location.position).properties.reset(RuntimeMapCellProperty::Walkable);
+          }
+          break;
+        }
 
-        for (uint32_t k = 0; k < TrainLength; ++k) {
-          const uint32_t index = runtime->network.next_position(train.railway_index, offset);
-          assert(index < runtime->network.railway.size());
-          const gf::Vec2I position = runtime->network.railway[index];
+        case ActorType::Group:
+          break;
+        case ActorType::Train:
+          if (location.floor == Floor::Ground) {
+            const TrainFeature& feature = actor.feature.from<ActorType::Train>();
+            uint32_t offset = 0;
+
+            for (uint32_t k = 0; k < TrainLength; ++k) {
+              const uint32_t index = runtime->network.next_position(feature.railway_index, offset);
+              assert(index < runtime->network.railway.size());
+              const gf::Vec2I position = runtime->network.railway[index];
 
 
-          for (int32_t i = -1; i <= 1; ++i) {
-            for (int32_t j = -1; j <= 1; ++j) {
-              const gf::Vec2I neighbor = { i, j };
-              const gf::Vec2I neighbor_position = position + neighbor;
+              for (int32_t i = -1; i <= 1; ++i) {
+                for (int32_t j = -1; j <= 1; ++j) {
+                  const gf::Vec2I neighbor = { i, j };
+                  const gf::Vec2I neighbor_position = position + neighbor;
 
-              m_reduced_background(neighbor_position).properties.reset(RuntimeMapCellProperty::Walkable);
+                  m_reduced_background(neighbor_position).properties.reset(RuntimeMapCellProperty::Walkable);
+                }
+              }
+
+              offset += 3;
             }
           }
 
-          offset += 3;
-        }
+          break;
       }
     }
 

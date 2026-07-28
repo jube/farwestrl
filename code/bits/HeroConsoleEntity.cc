@@ -111,7 +111,7 @@ namespace fw {
     position.y += 2;
 
     gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=health>HP</>:");
-    gf::console_print_picture(console, position + gf::dirx(2), gf::ConsoleAlignment::Left, m_game->style(), "<style=health>{}</><style=non_health>{}</>", health_bar(feature.health), health_bar(MaxHealth - feature.health));
+    gf::console_print_picture(console, position + gf::dirx(2), gf::ConsoleAlignment::Left, m_game->style(), "<style=health>{}</><style=non_health>{}</>", health_bar(feature.body.health), health_bar(MaxHealth - feature.body.health));
 
     position.y += 2;
 
@@ -134,30 +134,30 @@ namespace fw {
       ++position.y;
     };
 
-    print_attribute_stat("FOR", "force", feature.force, "Intensity", ForceColor, feature.intensity);
-    print_attribute_stat("DEX", "dexterity", feature.dexterity, "Precision", DexterityColor, feature.precision);
-    print_attribute_stat("CON", "constitution", feature.constitution, "Endurance", ConstitutionColor, feature.endurance);
+    print_attribute_stat("FOR", "force", feature.body.force, "Intensity", ForceColor, feature.body.intensity);
+    print_attribute_stat("DEX", "dexterity", feature.body.dexterity, "Precision", DexterityColor, feature.body.precision);
+    print_attribute_stat("CON", "constitution", feature.body.constitution, "Endurance", ConstitutionColor, feature.body.endurance);
 
     ++position.y;
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Weapon</>: {}", hero.weapon.data ? hero.weapon.data->label.tag : "-");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Weapon</>: {}", feature.weapon.data ? feature.weapon.data->label.tag : "-");
     ++position.y;
 
-    if (hero.ammunition.data) {
-      assert(hero.ammunition.data->feature.type() == ItemType::Ammunition);
-      const AmmunitionDataFeature& ammunition = hero.ammunition.data->feature.from<ItemType::Ammunition>();
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: .{} × {}", ammunition.caliber, hero.ammunition.count); // only for firearms
+    if (feature.ammunition.data) {
+      assert(feature.ammunition.data->feature.type() == ItemType::Ammunition);
+      const AmmunitionDataFeature& ammunition = feature.ammunition.data->feature.from<ItemType::Ammunition>();
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: .{} × {}", ammunition.caliber, feature.ammunition.count); // only for firearms
 
-      assert(hero.weapon.data->feature.type() == ItemType::Firearm);
-      const FirearmDataFeature& firearm = hero.weapon.data->feature.from<ItemType::Firearm>();
+      assert(feature.weapon.data->feature.type() == ItemType::Firearm);
+      const FirearmDataFeature& firearm = feature.weapon.data->feature.from<ItemType::Firearm>();
 
       std::string cartridges;
 
-      for (int8_t i = 0; i < hero.weapon.cartridges; ++i) {
+      for (int8_t i = 0; i < feature.weapon.cartridges; ++i) {
         cartridges += "•";
       }
 
-      for (int8_t i = hero.weapon.cartridges; i < firearm.capacity; ++i) {
+      for (int8_t i = feature.weapon.cartridges; i < firearm.capacity; ++i) {
         cartridges += "○";
       }
 

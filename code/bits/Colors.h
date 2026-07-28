@@ -33,6 +33,7 @@ namespace fw {
   inline constexpr gf::Color NoonColor = 0xFFFF70;      // #FFFF70
   inline constexpr gf::Color NightlightColor = gf::White;
 
+  inline constexpr gf::Color TrainColor = gf::gray(0.1f);
 }
 
 #endif // FW_COLORS_H

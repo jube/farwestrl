@@ -7,6 +7,7 @@
 #include <gf2/core/TaggedVariant.h>
 
 #include "DataLabel.h"
+#include "DisplayData.h"
 #include "MapCellBiome.h"
 
 namespace fw {
@@ -15,28 +16,35 @@ namespace fw {
     None,
     Human,
     Animal,
+    Group,
+    Train,
   };
 
   struct HumanDataFeature {
-
+    DisplayData display;
   };
 
   struct AnimalDataFeature {
+    DisplayData display;
     MapCellBiome biome;
     bool can_be_mounted;
+    bool can_idle;
   };
 
-  using ActorDataFeature = gf::TaggedVariant<ActorType, HumanDataFeature, AnimalDataFeature>;
+  struct GroupDataFeature {
+  };
+
+  struct TrainDataFeature {
+  };
+
+  using ActorDataFeature = gf::TaggedVariant<ActorType, HumanDataFeature, AnimalDataFeature, GroupDataFeature, TrainDataFeature>;
 
   struct ActorData {
     DataLabel label;
-    gf::Color color;
-    char16_t picture;
-    bool can_idle;
     ActorDataFeature feature;
   };
 
-  void from_json(const nlohmann::json& j, ActorData& data);
+  void from_json(const nlohmann::json& json, ActorData& data);
 
 }
 

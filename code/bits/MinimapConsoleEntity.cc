@@ -29,12 +29,12 @@ namespace fw {
 
   void MinimapConsoleEntity::render(gf::Console& console)
   {
-    const Floor floor = m_game->state()->hero().floor;
-    const FloorMap& map = m_game->runtime()->map.from_floor(floor);
+    const Location location = m_game->state()->hero().location();
+    const FloorMap& map = m_game->runtime()->map.from_floor(location.floor);
     const Minimap& minimap = map.minimaps[m_zoom_level];
     gf::Console minimap_console = minimap.console;
 
-    const gf::Vec2I hero_position = m_game->state()->hero().position / minimap.factor;
+    const gf::Vec2I hero_position = location.position / minimap.factor;
 
     gf::console_write_picture(minimap_console, hero_position, u'@', gf::Black);
 

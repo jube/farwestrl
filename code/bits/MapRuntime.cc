@@ -112,8 +112,6 @@ namespace fw {
     analysis.set_step(WorldGenerationStep::MapBuildings);
     bind_buildings(state);
 
-    bind_reverse(state);
-
     analysis.set_step(WorldGenerationStep::MapMinimap);
     bind_minimaps(state);
   }
@@ -634,15 +632,6 @@ namespace fw {
       }
     }
 
-  }
-
-  void MapRuntime::bind_reverse(const WorldState& state)
-  {
-    for (const auto& [ index, actor ] : gf::enumerate(state.actors)) {
-      FloorMap& floor = from_floor(actor.floor);
-      assert(floor.reverse.valid(actor.position));
-      floor.reverse(actor.position).actor_index = uint32_t(index);
-    }
   }
 
   namespace {

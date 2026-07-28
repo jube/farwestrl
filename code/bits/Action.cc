@@ -2,8 +2,10 @@
 
 #include "ActorState.h"
 #include "MapCell.h"
+#include "NetworkState.h"
 #include "Times.h"
 #include "WorldModel.h"
+#include <cstdint>
 
 namespace fw {
 
@@ -12,28 +14,27 @@ namespace fw {
      * Helpers
      */
 
-    void apply_move(WorldModel& model, ActorState& actor, gf::Vec2I position) {
-      assert(gf::chebyshev_distance(actor.position, position) < 2);
+    void apply_move(WorldModel& model, Location& location, gf::Vec2I position) {
+      assert(gf::chebyshev_distance(location.position, position) < 2);
 
-      if (actor.position == position) {
+      if (location.position == position) {
         return;
       }
 
-      FloorMap& floor_map = model.runtime.map.from_floor(actor.floor);
+      FloorMap& floor_map = model.runtime.map.from_floor(location.floor);
 
-      assert(floor_map.reverse.valid(actor.position));
-      ReverseMapCell& old_reverse_cell = floor_map.reverse(actor.position);
+      assert(floor_map.reverse.valid(location.position));
+      ReverseMapCell& old_reverse_cell = floor_map.reverse(location.position);
 
       // gf::Log::debug("Actor: index = {}, reverse.actor_index = {}", model.index_of(actor), old_reverse_cell.actor_index);
 
       assert(old_reverse_cell.actor_index < model.state.actors.size());
-      assert(&actor == &model.state.actors[old_reverse_cell.actor_index]);
 
       assert(floor_map.reverse.valid(position));
       ReverseMapCell& new_reverse_cell = floor_map.reverse(position);
       assert(floor_map.reverse(position).actor_index == NoIndex);
 
-      actor.position = position;
+      location.position = position;
       std::swap(old_reverse_cell.actor_index, new_reverse_cell.actor_index);
 
       assert(model.check());
@@ -69,24 +70,24 @@ namespace fw {
       return Floor::Ground;
     }
 
-    void apply_change_floor(WorldModel& model, ActorState& actor, Floor new_floor)
+    void apply_change_floor(WorldModel& model, Location& location, Floor new_floor)
     {
-      gf::Log::debug("Want to change floor: {} -> {}", int(actor.floor), int(new_floor));
+      gf::Log::debug("Want to change floor: {} -> {}", int(location.floor), int(new_floor));
 
-      if (actor.floor == new_floor) {
+      if (location.floor == new_floor) {
         return;
       }
 
-      if (actor.feature.type() == ActorType::Human && actor.feature.from<ActorType::Human>().mounting != NoIndex) {
-        // actor is mounted, no floor change possible
-        return;
-      }
+      // if (actor.feature.type() == ActorType::Human && actor.feature.from<ActorType::Human>().mounting != NoIndex) {
+      //   // actor is mounted, no floor change possible
+      //   return;
+      // }
 
-      FloorMap& old_floor_map = model.runtime.map.from_floor(actor.floor);
+      FloorMap& old_floor_map = model.runtime.map.from_floor(location.floor);
       FloorMap& new_floor_map = model.runtime.map.from_floor(new_floor);
 
-      ReverseMapCell& old_map_cell = old_floor_map.reverse(actor.position);
-      ReverseMapCell& new_map_cell = new_floor_map.reverse(actor.position);
+      ReverseMapCell& old_map_cell = old_floor_map.reverse(location.position);
+      ReverseMapCell& new_map_cell = new_floor_map.reverse(location.position);
 
       if (new_map_cell.actor_index != NoIndex) {
         // there is already an actor on the target cell
@@ -96,24 +97,22 @@ namespace fw {
       gf::Log::debug("Change floor!");
 
       std::swap(old_map_cell.actor_index, new_map_cell.actor_index);
-      actor.floor = new_floor;
+      location.floor = new_floor;
     }
 
-    ActionResult compute_move_human_action(WorldModel& model, ActorState& actor, gf::Vec2I position)
+    ActionResult compute_move_human_action(WorldModel& model, HumanFeature& feature, gf::Vec2I position)
     {
-      assert(actor.feature.type() == ActorType::Human);
-
-      if (!model.is_walkable(actor.floor, position)) {
+      if (!model.is_walkable(feature.location.floor, position)) {
         return ActionResult::Failure;
       }
 
-      const int32_t move_length = gf::manhattan_length(actor.position - position);
-      const uint32_t mount_index = actor.feature.from<ActorType::Human>().mounting;
+      const int32_t move_length = gf::manhattan_length(feature.location.position - position);
+      const uint32_t mount_index = feature.mounting;
 
       if (mount_index == NoIndex) {
         // the human is not mouting an animal
 
-        apply_move(model, actor, position);
+        apply_move(model, feature.location, position);
 
         if (move_length == 2) {
           model.update_current_task_in_queue(DiagonalWalkTime);
@@ -124,8 +123,12 @@ namespace fw {
         // the humain is mouting an animal
 
         ActorState& mount = model.state.actors[mount_index];
-        apply_move(model, mount, position);
-        actor.position = position;
+
+        assert(mount.feature.type() == ActorType::Animal);
+        AnimalFeature& mount_feature = mount.feature.from<ActorType::Animal>();
+
+        apply_move(model, mount_feature.location, position);
+        feature.location.position = position;
 
         if (move_length == 2) {
           model.update_current_task_in_queue(DiagonalWalkTime); // TODO: change the time according to mount
@@ -152,35 +155,52 @@ namespace fw {
 
     // Move
 
+    void maybe_change_floor(WorldModel& model, Location& location)
+    {
+      const MapCellDecoration decoration = model.state.map.from_floor(location.floor)(location.position).decoration;
+
+      switch (decoration) {
+        case MapCellDecoration::FloorDown:
+          apply_change_floor(model, location, compute_floor_down(location.floor));
+          break;
+        case MapCellDecoration::FloorUp:
+          apply_change_floor(model, location, compute_floor_up(location.floor));
+          break;
+        default:
+          break;
+      }
+    }
+
     ActionResult compute_move_action(WorldModel& model, ActorState& actor, const MoveAction& action)
     {
       const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
-      const gf::Vec2I new_position = actor.position + displacement;
 
-      ActionResult result = ActionResult::Failure;
+      switch (actor.feature.type()) {
+        case ActorType::None:
+        case ActorType::Group:
+        case ActorType::Train:
+          break;
+        case ActorType::Human:
+        {
+          HumanFeature& feature = actor.feature.from<ActorType::Human>();
+          const gf::Vec2I new_position = feature.location.position + displacement;
+          const ActionResult result = compute_move_human_action(model, feature, new_position);
 
-      if (actor.feature.type() == ActorType::Human) {
-        result = compute_move_human_action(model, actor, new_position);
-      }
+          if (result == ActionResult::Success) {
+            maybe_change_floor(model, feature.location);
+          }
 
-      // TODO: animals and others
-
-      if (result == ActionResult::Success) {
-        const MapCellDecoration decoration = model.state.map.from_floor(actor.floor)(actor.position).decoration;
-
-        switch (decoration) {
-          case MapCellDecoration::FloorDown:
-            apply_change_floor(model, actor, compute_floor_down(actor.floor));
-            break;
-          case MapCellDecoration::FloorUp:
-            apply_change_floor(model, actor, compute_floor_up(actor.floor));
-            break;
-          default:
-            break;
+          return result;
+        }
+        case ActorType::Animal:
+        {
+          [[maybe_unused]] AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
+          // TODO
+          return ActionResult::Success;
         }
       }
 
-      return result;
+      return ActionResult::Failure;
     }
 
     // Mount
@@ -188,13 +208,12 @@ namespace fw {
     ActionResult compute_mount_action(WorldModel& model, ActorState& actor, [[maybe_unused]] const MountAction& action)
     {
       assert(actor.feature.type() == ActorType::Human);
+      HumanFeature& feature = actor.feature.from<ActorType::Human>();
 
-      FloorMap& floor_map = model.runtime.map.from_floor(actor.floor);
+      FloorMap& floor_map = model.runtime.map.from_floor(feature.location.floor);
+      ReverseMapCell& actor_cell = floor_map.reverse(feature.location.position);
 
-      HumanFeature& actor_feature = actor.feature.from<ActorType::Human>();
-      ReverseMapCell& actor_cell = floor_map.reverse(actor.position);
-
-      if (actor_feature.mounting != NoIndex) {
+      if (feature.mounting != NoIndex) {
         // the hero is already mouting an animal
         return ActionResult::Failure;
       }
@@ -203,7 +222,7 @@ namespace fw {
 
       std::vector<uint32_t> actor_indices;
 
-      for (const gf::Vec2I neighbor : floor_map.reverse.compute_4_neighbors_range(actor.position)) {
+      for (const gf::Vec2I neighbor : floor_map.reverse.compute_4_neighbors_range(feature.location.position)) {
         const ReverseMapCell& cell = floor_map.reverse(neighbor);
 
         if (cell.actor_index == NoIndex) {
@@ -245,8 +264,8 @@ namespace fw {
 
         gf::Log::debug("Mount!");
 
-        actor_feature.mounting = animal_actor_index;
-        actor.position = animal_actor.position;
+        feature.mounting = animal_actor_index;
+        feature.location.position = animal_feature.location.position;
 
         std::swap(animal_feature.mounted_by, actor_cell.actor_index);
         model.update_current_task_in_queue(MountTime);
@@ -261,12 +280,11 @@ namespace fw {
     ActionResult compute_dismount_action(WorldModel& model, ActorState& actor, [[maybe_unused]] const DismountAction& action)
     {
       assert(actor.feature.type() == ActorType::Human);
+      HumanFeature& feature = actor.feature.from<ActorType::Human>();
 
-      FloorMap& floor_map = model.runtime.map.from_floor(actor.floor);
+      FloorMap& floor_map = model.runtime.map.from_floor(feature.location.floor);
 
-      HumanFeature& actor_feature = actor.feature.from<ActorType::Human>();
-
-      if (actor_feature.mounting == NoIndex) {
+      if (feature.mounting == NoIndex) {
         // the actor is not mouting an animal
         return ActionResult::Failure;
       }
@@ -275,8 +293,8 @@ namespace fw {
 
       std::optional<gf::Vec2I> maybe_position;
 
-      for (const gf::Vec2I neighbor : floor_map.reverse.compute_4_neighbors_range(actor.position)) {
-        if (!model.is_walkable(actor.floor, neighbor)) {
+      for (const gf::Vec2I neighbor : floor_map.reverse.compute_4_neighbors_range(feature.location.position)) {
+        if (!model.is_walkable(feature.location.floor, neighbor)) {
           continue;
         }
 
@@ -291,16 +309,16 @@ namespace fw {
         return ActionResult::Failure;
       }
 
-      actor.position = maybe_position.value();
-      ReverseMapCell& actor_cell = floor_map.reverse(actor.position);
+      feature.location.position = maybe_position.value();
+      ReverseMapCell& actor_cell = floor_map.reverse(feature.location.position);
       assert(actor_cell.actor_index == NoIndex);
       actor_cell.actor_index = model.index_of(actor);
 
-      ActorState& mount = model.state.actors[actor_feature.mounting];
+      ActorState& mount = model.state.actors[feature.mounting];
       assert(mount.feature.type() == ActorType::Animal);
       mount.feature.from<ActorType::Animal>().mounted_by = NoIndex;
 
-      actor_feature.mounting = NoIndex;
+      feature.mounting = NoIndex;
       model.update_current_task_in_queue(MountTime);
       return ActionResult::Success;
     }
@@ -310,37 +328,38 @@ namespace fw {
     ActionResult compute_reload_action(WorldModel& model, ActorState& actor, [[maybe_unused]] const ReloadAction& action)
     {
       assert(actor.feature.type() == ActorType::Human);
+      HumanFeature& feature = actor.feature.from<ActorType::Human>();
 
-      if (!actor.weapon.data || !actor.ammunition.data) {
+      if (!feature.weapon.data || !feature.ammunition.data) {
         // the actor has no weapon or no ammunition
         return ActionResult::Failure;
       }
 
-      if (actor.weapon.data->feature.type() != ItemType::Firearm) {
+      if (feature.weapon.data->feature.type() != ItemType::Firearm) {
         // the weapon is not a firearm
         return ActionResult::Failure;
       }
 
-      if (actor.ammunition.data->feature.type() != ItemType::Ammunition) {
+      if (feature.ammunition.data->feature.type() != ItemType::Ammunition) {
         // the ammunition is not really ammunition
         return ActionResult::Failure;
       }
 
-      const FirearmDataFeature& firearm = actor.weapon.data->feature.from<ItemType::Firearm>();
-      const AmmunitionDataFeature& ammunition = actor.ammunition.data->feature.from<ItemType::Ammunition>();
+      const FirearmDataFeature& firearm = feature.weapon.data->feature.from<ItemType::Firearm>();
+      const AmmunitionDataFeature& ammunition = feature.ammunition.data->feature.from<ItemType::Ammunition>();
 
       if (firearm.caliber != ammunition.caliber) {
         // the caliber differs
         return ActionResult::Failure;
       }
 
-      const int16_t needed_cartridges = firearm.capacity - actor.weapon.cartridges;
-      const int16_t loaded_cartriges = std::min(needed_cartridges, actor.ammunition.count);
+      const int16_t needed_cartridges = firearm.capacity - feature.weapon.cartridges;
+      const int16_t loaded_cartriges = std::min(needed_cartridges, feature.ammunition.count);
 
       if (loaded_cartriges > 0) {
         // there are enough cartridges
-        actor.weapon.cartridges += loaded_cartriges;
-        actor.ammunition.count -= loaded_cartriges;
+        feature.weapon.cartridges += loaded_cartriges;
+        feature.ammunition.count -= loaded_cartriges;
 
         model.state.add_message(fmt::format("<style=character>{}</> reloads its weapon with {} cartridges.", actor.feature.from<ActorType::Human>().name, loaded_cartriges));
 
@@ -356,11 +375,14 @@ namespace fw {
 
     ActionResult compute_graze_action(WorldModel& model, ActorState& actor, const GrazeAction& action)
     {
-      const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
-      const gf::Vec2I new_position = actor.position + displacement;
+      assert(actor.feature.type() == ActorType::Animal);
+      AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
 
-      if (model.is_walkable(actor.floor, new_position)) {
-        apply_move(model, actor, new_position);
+      const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
+      const gf::Vec2I new_position = feature.location.position + displacement;
+
+      if (model.is_walkable(feature.location.floor, new_position)) {
+        apply_move(model, feature.location, new_position);
       }
 
       model.update_current_task_in_queue(GrazeTime);
@@ -369,30 +391,79 @@ namespace fw {
 
     // Wander
 
-    ActionResult compute_wander_action(WorldModel& model, ActorState& actor, const WanderAction& action)
+    ActionResult compute_wander_move(WorldModel& model, Location& location, gf::Vec2I new_position)
     {
-      const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
-      const gf::Vec2I new_position = actor.position + displacement;
-
-      if (actor.feature.type() == ActorType::Animal) {
-        const AnimalDataFeature& animal_data_feature = actor.data->feature.from<ActorType::Animal>();
-
-        if (animal_data_feature.biome != model.state.map.from_floor(actor.floor)(new_position).region) {
-          // the new position is not on the preferred biome of the animal
-          model.update_current_task_in_queue(WanderIdleTime);
-          return ActionResult::Failure;
-        }
-      }
-
-      if (!model.is_walkable(actor.floor, new_position)) {
+      if (!model.is_walkable(location.floor, new_position)) {
         model.update_current_task_in_queue(WanderIdleTime);
         return ActionResult::Failure;
       }
 
-      apply_move(model, actor, new_position);
+      apply_move(model, location, new_position);
       model.update_current_task_in_queue(WanderTime);
       return ActionResult::Success;
     }
+
+    ActionResult compute_wander_action(WorldModel& model, ActorState& actor, const WanderAction& action)
+    {
+      const gf::Vec2I displacement = gf::clamp(action.displacement, -1, +1);
+
+      switch (actor.feature.type()) {
+        case ActorType::None:
+        case ActorType::Group:
+        case ActorType::Train:
+          break;
+        case ActorType::Human:
+        {
+          HumanFeature& feature = actor.feature.from<ActorType::Human>();
+          const gf::Vec2I new_position = feature.location.position + displacement;
+          return compute_wander_move(model, feature.location, new_position);
+        }
+        case ActorType::Animal:
+        {
+          AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
+          const gf::Vec2I new_position = feature.location.position + displacement;
+
+          const AnimalDataFeature& data = actor.data->feature.from<ActorType::Animal>();
+
+          if (data.biome != model.state.map.from_floor(feature.location.floor)(new_position).region) {
+            // the new position is not on the preferred biome of the animal
+            model.update_current_task_in_queue(WanderIdleTime);
+            return ActionResult::Failure;
+          }
+
+          return compute_wander_move(model, feature.location, new_position);
+        }
+      }
+
+      return ActionResult::Failure;
+    }
+
+    // Cruise
+
+    ActionResult compute_cruise_action(WorldModel& model, ActorState& actor, [[maybe_unused]] const CruiseAction& action)
+    {
+      assert(actor.feature.type() == ActorType::Train);
+      TrainFeature& feature = actor.feature.from<ActorType::Train>();
+      const uint32_t train_index = model.index_of(actor);
+
+      model.runtime.set_reverse_train(feature.railway_index, NoIndex);
+
+      const uint32_t new_index = model.runtime.network.prev_position(feature.railway_index);
+      assert(new_index < model.runtime.network.railway.size());
+      // const gf::Vec2I new_position = model.runtime.network.railway[new_index];
+      feature.railway_index = new_index;
+
+      model.runtime.set_reverse_train(feature.railway_index, train_index);
+
+      if (auto iterator = std::ranges::find(model.state.network.stations, new_index, &StationState::index); iterator != model.state.network.stations.end()) {
+        model.update_current_task_in_queue(iterator->stop_time);
+      } else {
+        model.update_current_task_in_queue(TrainTime);
+      }
+
+      return ActionResult::Success;
+    }
+
   }
 
   ActionResult compute_action(WorldModel& model, ActorState& actor, const Action& action)
@@ -415,7 +486,9 @@ namespace fw {
         return compute_graze_action(model, actor, action.from<ActionType::Graze>());
       case ActionType::Wander:
         return compute_wander_action(model, actor, action.from<ActionType::Wander>());
-    }
+      case ActionType::Cruise:
+        return compute_cruise_action(model, actor, action.from<ActionType::Cruise>());
+      }
 
     return ActionResult::Failure;
   }

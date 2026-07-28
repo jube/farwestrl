@@ -27,12 +27,12 @@ namespace fw {
 
     gf::RectI compute_view() const;
 
-    void set_reverse_train(const TrainState& train, uint32_t train_index);
+    void set_reverse_train(uint32_t railway_index, uint32_t train_index);
 
     void bind(const WorldData& data, const WorldState& state, gf::Random* random, WorldGenerationAnalysis& analysis);
 
     void bind_network(const WorldState& state);
-    void bind_train(const WorldState& state);
+    void bind_reverse(const WorldState& state);
   };
 
 }

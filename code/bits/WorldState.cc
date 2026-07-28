@@ -6,6 +6,7 @@
 #include <gf2/core/SerializationOps.h>
 #include <gf2/core/SerializationUtilities.h>
 
+#include "ActorData.h"
 #include "WorldData.h"
 
 namespace fw {
@@ -38,17 +39,22 @@ namespace fw {
     for (ActorState& actor : actors) {
       actor.data.bind_from(data.actors);
 
-      for (InventoryItemState& item : actor.inventory.items) {
-        item.data.bind_from(data.items);
+      if (actor.feature.type() == ActorType::Human) {
+        HumanFeature& feature = actor.feature.from<ActorType::Human>();
+
+        for (InventoryItemState& item : feature.inventory.items) {
+          item.data.bind_from(data.items);
+        }
+
+        if (feature.weapon.data) {
+          feature.weapon.data.bind_from(data.items);
+        }
+
+        if (feature.ammunition.data) {
+          feature.ammunition.data.bind_from(data.items);
+        }
       }
 
-      if (actor.weapon.data) {
-        actor.weapon.data.bind_from(data.items);
-      }
-
-      if (actor.ammunition.data) {
-        actor.ammunition.data.bind_from(data.items);
-      }
     }
 
     for (ItemState& item : items) {

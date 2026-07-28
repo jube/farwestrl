@@ -1094,12 +1094,6 @@ namespace fw {
         }
       }
 
-      // add the trains: at the beginning, one train arriving in each station
-
-      for (const StationState& station : network.stations) {
-        network.trains.push_back({ station.index });
-      }
-
       for (const gf::Vec2I position : network.railway) {
         for (const gf::Vec2I relative_neighbor : NineArea) {
           MapCell& cell = state.ground(position + relative_neighbor);
@@ -1940,17 +1934,17 @@ namespace fw {
 
           ActorState animal = {};
           animal.data = name;
-          animal.position = position;
-          animal.floor = Floor::Ground; // TODO: parameter?
 
           AnimalFeature feature;
+          feature.location.position = position;
+          feature.location.floor = Floor::Ground; // TODO: parameter?
           feature.mounted_by = NoIndex;
           animal.feature = feature;
 
           const uint32_t id = static_cast<uint32_t>(state.actors.size());
           state.actors.push_back(animal);
 
-          state.scheduler.queue.push({state.current_date, TaskType::Actor, id});
+          state.scheduler.queue.push({state.current_date, id});
         }
       }
 
@@ -2006,8 +2000,11 @@ namespace fw {
       return attribute;
     }
 
-    HumanFeature generate_human(gf::Random* random, int8_t age_min, int8_t age_max) {
+    HumanFeature generate_human(gf::Random* random, gf::Vec2I position, int8_t age_min, int8_t age_max) {
       HumanFeature human;
+      human.location.position = position;
+      human.location.floor = Floor::Ground;
+
       human.gender = generate_gender(random);
 
       switch (human.gender) {
@@ -2025,18 +2022,18 @@ namespace fw {
       human.age = random->compute_uniform_integer<int8_t>(age_min, age_max);
       human.birthday = generate_random_birthday(random);
 
-      human.health = MaxHealth - 1;
+      human.body.health = MaxHealth - 1;
 
-      human.force = generate_attribute(random);
-      human.dexterity = generate_attribute(random);
-      human.constitution = generate_attribute(random);
-      human.luck = generate_attribute(random);
+      human.body.force = generate_attribute(random);
+      human.body.dexterity = generate_attribute(random);
+      human.body.constitution = generate_attribute(random);
+      human.body.luck = generate_attribute(random);
 
-      human.intensity = random->compute_uniform_integer(50, 90);
-      human.precision = random->compute_uniform_integer(50, 90);
-      human.endurance = random->compute_uniform_integer(50, 90);
+      human.body.intensity = random->compute_uniform_integer(50, 90);
+      human.body.precision = random->compute_uniform_integer(50, 90);
+      human.body.endurance = random->compute_uniform_integer(50, 90);
 
-      gf::Log::info("Name: {} (Luck: {})", human.name, human.luck);
+      gf::Log::info("Name: {} (Luck: {})", human.name, human.body.luck);
 
       return human;
     }
@@ -2045,9 +2042,7 @@ namespace fw {
     {
       ActorState hero = {};
       hero.data = "Hero";
-      hero.position = compute_starting_position(state.network);
-
-      hero.feature = generate_human(random, 20, 40);
+      hero.feature = generate_human(random, compute_starting_position(state.network), 20, 40);
 
       // hero.weapon.data = "Colt Dragoon Revolver";
       // hero.weapon.cartridges = 0;
@@ -2115,16 +2110,18 @@ namespace fw {
 
     {
       ActorState hero = generate_hero(state, random);
-      compute_hero_fov(hero.position, state.map.ground);
+      compute_hero_fov(hero.location().position, state.map.ground);
 
+      assert(state.actors.empty());
       state.actors.push_back(hero);
 
       Date next_turn = state.current_date;
       next_turn.add_seconds(1);
-      state.scheduler.queue.push({next_turn, TaskType::Actor, 0});
+      state.scheduler.queue.push({next_turn, 0});
 
-      analysis.set_step(WorldGenerationStep::Actors);
     }
+
+    analysis.set_step(WorldGenerationStep::Actors);
 
     // {
     //   ActorState cow = {};
@@ -2142,16 +2139,30 @@ namespace fw {
     //   state.scheduler.queue.push({cow_next_turn, TaskType::Actor, 1});
     // }
 
+
+    // add the trains: at the beginning, one train arriving in each station
+
+    for (const StationState& station : state.network.stations) {
+      Date date = state.current_date;
+      date.add_seconds(station.stop_time);
+
+      ActorState train = {};
+      train.data = "Train";
+
+      TrainFeature feature;
+      feature.railway_index = station.index;
+      train.feature = feature;
+
+      const uint32_t index = static_cast<uint32_t>(state.actors.size());
+      state.actors.push_back(train);
+
+      state.scheduler.queue.push({ .date = date, .index = index });
+    }
+
     SeatMap seat_map = compute_initial_seat_map(state);
     compute_animals(state, regions, seat_map, random);
 
     gf::Log::info("actors: {}", state.actors.size());
-
-    for (const auto& [ index, train ] : gf::enumerate(state.network.trains)) {
-      Date date = state.current_date;
-      date.add_seconds(state.network.stations[index].stop_time);
-      state.scheduler.queue.push({ date, TaskType::Train, uint32_t(index) } );
-    }
 
     // state.add_message(fmt::format("Hello <style=character>{}</>!", human.name));
 

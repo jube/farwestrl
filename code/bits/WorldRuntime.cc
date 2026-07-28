@@ -16,14 +16,14 @@ namespace fw {
     return view;
   }
 
-  void WorldRuntime::set_reverse_train(const TrainState& train, uint32_t train_index)
+  void WorldRuntime::set_reverse_train(uint32_t railway_index, uint32_t train_index)
   {
     uint32_t offset = 0;
 
     for (std::size_t k = 0; k < TrainLength; ++k) {
-      const uint32_t railway_index = network.next_position(train.railway_index, offset);
-      assert(railway_index < network.railway.size());
-      const gf::Vec2I position = network.railway[railway_index];
+      const uint32_t next_railway_index = network.next_position(railway_index, offset);
+      assert(next_railway_index < network.railway.size());
+      const gf::Vec2I position = network.railway[next_railway_index];
 
       for (int32_t i = -1; i <= 1; ++i) {
         for (int32_t j = -1; j <= 1; ++j) {
@@ -31,8 +31,8 @@ namespace fw {
           const gf::Vec2I neighbor_position = position + neighbor;
           assert(map.ground.reverse.valid(neighbor_position));
           ReverseMapCell& cell = map.ground.reverse(neighbor_position);
-          assert(cell.train_index == NoIndex || train_index == NoIndex || cell.train_index == train_index);
-          cell.train_index = train_index;
+          assert(cell.actor_index == NoIndex || train_index == NoIndex || cell.actor_index == train_index);
+          cell.actor_index = train_index;
         }
       }
 
@@ -42,12 +42,13 @@ namespace fw {
 
   void WorldRuntime::bind([[maybe_unused]] const WorldData& data, const WorldState& state, gf::Random* random, WorldGenerationAnalysis& analysis)
   {
-    view_center = state.hero().position;
+    view_center = state.hero().location().position;
     map.bind(state, random, analysis);
 
     analysis.set_step(WorldGenerationStep::Network);
     bind_network(state);
-    bind_train(state);
+
+    bind_reverse(state);
   }
 
   void WorldRuntime::bind_network(const WorldState& state) {
@@ -69,10 +70,26 @@ namespace fw {
     assert(gf::manhattan_distance(network.railway.back(), network.railway.front()) == 1);
   }
 
-  void WorldRuntime::bind_train(const WorldState& state)
+  void WorldRuntime::bind_reverse(const WorldState& state)
   {
-    for (const auto& [ train_index, train ] : gf::enumerate(state.network.trains)) {
-      set_reverse_train(train, static_cast<uint32_t>(train_index));
+    for (const auto& [ index, actor ] : gf::enumerate(state.actors)) {
+      switch (actor.feature.type()) {
+        case ActorType::None:
+        case ActorType::Group:
+          break;
+        case ActorType::Train:
+          set_reverse_train(actor.feature.from<ActorType::Train>().railway_index, static_cast<uint32_t>(index));
+          break;
+        case ActorType::Human:
+        case ActorType::Animal:
+        {
+          const Location location = actor.location();
+          FloorMap& floor = map.from_floor(location.floor);
+          assert(floor.reverse.valid(location.position));
+          floor.reverse(location.position).actor_index = static_cast<uint32_t>(index);
+          break;
+        }
+      }
     }
   }
 

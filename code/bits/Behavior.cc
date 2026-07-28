@@ -73,7 +73,7 @@ namespace fw {
     };
 
     /*
-     *
+     * Condition behaviors
      */
 
     // IsMounted
@@ -110,6 +110,9 @@ namespace fw {
       );
     }
 
+    auto train_behavior() {
+      return ActionBehavior(make_action<CruiseAction>());
+    }
 
     constexpr int32_t IdleDistance = 100;
   }
@@ -121,6 +124,8 @@ namespace fw {
     m_trees.emplace("Grizzli"_id, lonely_animal());
     m_trees.emplace("Snake"_id, lonely_animal());
     m_trees.emplace("Scorpion"_id, lonely_animal());
+
+    m_trees.emplace("Train"_id, train_behavior());
   }
 
   Action BehaviorManager::select_behavior(const WorldModel& model, const ActorState& actor, gf::Random* random)
@@ -129,12 +134,17 @@ namespace fw {
       return model.runtime.hero.action;
     }
 
-    if (actor.data->can_idle) {
-      const int32_t distance = gf::manhattan_distance(actor.position, model.state.hero().position);
+    if (actor.feature.type() == ActorType::Animal) {
+      const AnimalDataFeature& data = actor.data->feature.from<ActorType::Animal>();
+      const AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
 
-      if (distance > IdleDistance) {
-        const uint16_t idle_time = (distance / 2 + random->compute_uniform_integer(distance / 10)) * StraightWalkTime;
-        return make_action<IdleAction>(idle_time);
+      if (data.can_idle) {
+        const int32_t distance = gf::manhattan_distance(feature.location.position, model.state.hero().location().position);
+
+        if (distance > IdleDistance) {
+          const uint16_t idle_time = (distance / 2 + random->compute_uniform_integer(distance / 10)) * StraightWalkTime;
+          return make_action<IdleAction>(idle_time);
+        }
       }
     }
 

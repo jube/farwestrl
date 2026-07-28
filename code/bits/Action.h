@@ -10,7 +10,7 @@ namespace fw {
   struct WorldModel;
   struct ActorState;
 
-  enum class ActionType {
+  enum class ActionType : uint16_t {
     None,
     Idle,
     Move,
@@ -19,6 +19,7 @@ namespace fw {
     Reload,
     Graze,
     Wander,
+    Cruise,
   };
 
   struct IdleAction {
@@ -46,6 +47,8 @@ namespace fw {
     gf::Vec2I displacement = { 0, 0 };
   };
 
+  struct CruiseAction {
+  };
 
   template<typename T, typename ... Args>
   T make_action(Args&& ... args)
@@ -54,7 +57,7 @@ namespace fw {
   }
 
 
-  using Action = gf::TaggedVariant<ActionType, IdleAction, MoveAction, MountAction, DismountAction, ReloadAction, GrazeAction, WanderAction>;
+  using Action = gf::TaggedVariant<ActionType, IdleAction, MoveAction, MountAction, DismountAction, ReloadAction, GrazeAction, WanderAction, CruiseAction>;
 
   enum class ActionResult : uint8_t {
     Failure,

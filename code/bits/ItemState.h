@@ -5,18 +5,19 @@
 
 #include "DataReference.h"
 #include "ItemData.h"
+#include "Location.h"
 
 namespace fw {
 
   struct ItemState {
     DataReference<ItemData> data;
-    gf::Vec2I position;
+    Location location;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<ItemState, Archive>& state)
   {
-    return ar | state.data | state.position;
+    return ar | state.data | state.location;
   }
 
   struct InventoryItemState {

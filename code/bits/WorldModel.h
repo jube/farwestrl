@@ -51,6 +51,8 @@ namespace fw {
     bool update_hero();
     bool update_train(TrainState& train, uint32_t train_index);
 
+    bool check_human(std::size_t index, const HumanFeature& feature) const;
+    bool check_animal(std::size_t index, const AnimalFeature& feature) const;
   };
 
 }

@@ -13,23 +13,13 @@
 #include "Date.h"
 #include "Index.h"
 #include "InventoryState.h"
-#include "MapFloor.h"
+#include "Location.h"
 
 namespace fw {
 
-  enum class Gender : uint8_t {
-    Girl,
-    Boy,
-    NonBinary,
-  };
-
   using Stat = gf::Fixed<int32_t, 16>;
 
-  struct HumanFeature {
-    std::string name;
-    Gender gender;
-    MonthDay birthday;
-    int8_t age;
+  struct Body {
     int8_t health;
     // attributes
     int8_t force;
@@ -40,25 +30,51 @@ namespace fw {
     Stat intensity;
     Stat precision;
     Stat endurance;
+  };
+
+  template<typename Archive>
+  Archive& operator|(Archive& ar, gf::MaybeConst<Body, Archive>& body)
+  {
+    return ar | body.health | body.force | body.dexterity | body.constitution | body.luck | body.intensity | body.precision | body.endurance;
+  }
+
+  enum class Gender : uint8_t {
+    Girl,
+    Boy,
+    NonBinary,
+  };
+
+  struct HumanFeature {
+    std::string name;
+    Location location;
+    Gender gender;
+    MonthDay birthday;
+    int8_t age;
+    Body body;
     uint32_t mounting = NoIndex;
+    InventoryState inventory;
+
+    WeaponItemState weapon;
+    InventoryItemState ammunition;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<HumanFeature, Archive>& feature)
   {
-    return ar | feature.name | feature.gender | feature.birthday | feature.age | feature.health | feature.force | feature.dexterity | feature.constitution | feature.luck | feature.intensity | feature.precision | feature.endurance | feature.mounting;
+    return ar | feature.name | feature.location | feature.gender | feature.birthday | feature.age | feature.body | feature.mounting | feature.inventory | feature.weapon | feature.ammunition;
   }
 
   struct AnimalFeature {
+    Location location;
+    Body body;
     uint32_t mounted_by = NoIndex;
-
-
+    InventoryState inventory;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<AnimalFeature, Archive>& feature)
   {
-    return ar | feature.mounted_by;
+    return ar | feature.location | feature.body | feature.mounted_by | feature.inventory;
   }
 
   enum class GroupType : uint8_t {
@@ -77,23 +93,29 @@ namespace fw {
     return ar | feature.type | feature.members;
   }
 
-  using ActorFeature = gf::TaggedVariant<ActorType, HumanFeature, AnimalFeature>;
+  struct TrainFeature {
+    uint32_t railway_index;
+  };
+
+  template<typename Archive>
+  Archive& operator|(Archive& ar, gf::MaybeConst<TrainFeature, Archive>& feature)
+  {
+    return ar | feature.railway_index;
+  }
+
+  using ActorFeature = gf::TaggedVariant<ActorType, HumanFeature, AnimalFeature, GroupFeature, TrainFeature>;
 
   struct ActorState {
     DataReference<ActorData> data;
-    gf::Vec2I position;
-    Floor floor = Floor::Ground;
     ActorFeature feature;
-    InventoryState inventory;
 
-    WeaponItemState weapon;
-    InventoryItemState ammunition;
+    Location location() const;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<ActorState, Archive>& state)
   {
-    return ar | state.data | state.position | state.floor | state.feature | state.inventory | state.weapon | state.ammunition;
+    return ar | state.data | state.feature;
   }
 
 }

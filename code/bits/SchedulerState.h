@@ -11,21 +11,15 @@
 
 namespace fw {
 
-  enum class TaskType : uint8_t {
-    Actor,
-    Train,
-  };
-
   struct Task {
     Date date;
-    TaskType type;
     uint32_t index;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<Task, Archive>& task)
   {
-    return ar | task.date | task.type | task.index;
+    return ar | task.date | task.index;
   }
 
   bool operator<(const Task& lhs, const Task& rhs);
@@ -36,7 +30,7 @@ namespace fw {
     bool is_hero_turn() const
     {
       const Task& top = queue.top();
-      return top.type == TaskType::Actor && top.index == HeroIndex;
+      return top.index == HeroIndex;
     }
 
   };

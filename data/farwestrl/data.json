@@ -1,14 +1,71 @@
 {
   "actors": [
-    { "label": "Hero",      "picture": "@", "color": "#000000", "can_idle": false,  "type": "human" },
+    {
+      "label": "Hero",
+      "type": "human",
+      "display": { "picture": "@", "color": "#000000" }
+    },
 
-    { "label": "Bison",     "picture": "b", "color": "#AA5500", "can_idle": false,  "type": "animal", "can_be_mounted": true,  "biome": "prairie" },
-    { "label": "Coyote",    "picture": "c", "color": "#818181", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "prairie" },
-    { "label": "Cow",       "picture": "c", "color": "#783F21", "can_idle": false,  "type": "animal", "can_be_mounted": true,  "biome": "prairie" },
-    { "label": "Grizzli",   "picture": "g", "color": "#714520", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "forest" },
-    { "label": "Horse",     "picture": "h", "color": "#AB6A0F", "can_idle": true,   "type": "animal", "can_be_mounted": true,  "biome": "prairie" },
-    { "label": "Scorpion",  "picture": "s", "color": "#303030", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "moutain" },
-    { "label": "Snake",     "picture": "s", "color": "#8DE874", "can_idle": true,   "type": "animal", "can_be_mounted": false, "biome": "desert" }
+    {
+      "label": "Bison",
+      "type": "animal",
+      "display": { "picture": "b", "color": "#AA5500" },
+      "can_be_mounted": true,
+      "can_idle": false,
+      "biome": "prairie"
+    },
+    {
+      "label": "Coyote",
+      "type": "animal",
+      "display": { "picture": "c", "color": "#818181" },
+      "can_be_mounted": false,
+      "can_idle": true,
+      "biome": "prairie"
+    },
+    {
+      "label": "Cow",
+      "type": "animal",
+      "display": { "picture": "c", "color": "#783F21" },
+      "can_be_mounted": true,
+      "can_idle": false,
+      "biome": "prairie"
+    },
+    {
+      "label": "Grizzli",
+      "type": "animal",
+      "display": { "picture": "g", "color": "#714520" },
+      "can_be_mounted": false,
+      "can_idle": true,
+      "biome": "forest"
+    },
+    {
+      "label": "Horse",
+      "type": "animal",
+      "display": { "picture": "h", "color": "#AB6A0F" },
+      "can_be_mounted": true,
+      "can_idle": true,
+      "biome": "prairie"
+    },
+    {
+      "label": "Scorpion",
+      "type": "animal",
+      "display": { "picture": "s", "color": "#303030" },
+      "can_be_mounted": false,
+      "can_idle": true,
+      "biome": "moutain"
+    },
+    {
+      "label": "Snake",
+      "type": "animal",
+      "display": { "picture": "s", "color": "#8DE874" },
+      "can_be_mounted": false,
+      "can_idle": true,
+      "biome": "desert"
+    },
+    {
+      "label": "Train",
+      "type": "train"
+    }
   ],
   "items": [
     { "label": "Adams Revolver", "picture": "§", "color": "#222222", "type": "firearm", "caliber": 44, "capacity": 5, "reload_time": 15, "url": "https://en.wikipedia.org/wiki/Adams_(revolver)" },

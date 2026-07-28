@@ -3,7 +3,6 @@
 
 #include <cstdint>
 
-#include <atomic>
 #include <array>
 
 #include <gf2/core/Array2D.h>
@@ -12,8 +11,8 @@
 #include <gf2/core/Random.h>
 
 #include "Index.h"
+#include "Location.h"
 #include "MapFloor.h"
-#include "Settings.h"
 #include "WorldGenerationStep.h"
 
 namespace fw {
@@ -40,11 +39,11 @@ namespace fw {
 
   struct ReverseMapCell {
     uint32_t actor_index = NoIndex;
-    uint32_t train_index = NoIndex;
+    uint32_t item_index = NoIndex;
 
     bool empty() const
     {
-      return actor_index == NoIndex && train_index == NoIndex;
+      return actor_index == NoIndex && item_index == NoIndex;
     }
   };
 
@@ -91,7 +90,6 @@ namespace fw {
     void blur(const WorldState& state);
 
     void bind_buildings(const WorldState& state);
-    void bind_reverse(const WorldState& state);
 
     void bind_minimaps(const WorldState& state);
   };
