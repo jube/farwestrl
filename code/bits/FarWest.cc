@@ -117,7 +117,7 @@ namespace fw {
           std::filesystem::remove(m_savefile);
         }
 
-        m_model.state = generate_world(m_random, m_analysis);
+        m_model.state = generate_world(m_random, m_model.data, m_analysis);
       } else {
         assert(has_save());
         gf::Clock clock;

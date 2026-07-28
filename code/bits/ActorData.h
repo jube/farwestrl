@@ -6,6 +6,7 @@
 #include <gf2/core/Color.h>
 #include <gf2/core/TaggedVariant.h>
 
+#include "BodyData.h"
 #include "DataLabel.h"
 #include "DisplayData.h"
 #include "MapCellBiome.h"
@@ -22,10 +23,12 @@ namespace fw {
 
   struct HumanDataFeature {
     DisplayData display;
+    BodyData body;
   };
 
   struct AnimalDataFeature {
     DisplayData display;
+    BodyData body;
     MapCellBiome biome;
     bool can_be_mounted;
     bool can_idle;

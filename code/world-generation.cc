@@ -19,11 +19,11 @@ int main() {
 
   analysis.set_step(fw::WorldGenerationStep::File);
   model.data.load_from_file(data_directory / "data.json");
-  model.state = fw::generate_world(&random, analysis);
+  model.state = fw::generate_world(&random, model.data, analysis);
   model.bind(analysis);
   analysis.print_analysis();
 
-  // return 0;
+  return 0;
 
   gf::Clock clock;
 

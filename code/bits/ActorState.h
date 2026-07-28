@@ -9,6 +9,7 @@
 #include <gf2/core/Vec2.h>
 
 #include "ActorData.h"
+#include "BodyState.h"
 #include "DataReference.h"
 #include "Date.h"
 #include "Index.h"
@@ -16,27 +17,6 @@
 #include "Location.h"
 
 namespace fw {
-
-  using Stat = gf::Fixed<int32_t, 16>;
-
-  struct Body {
-    int8_t health;
-    // attributes
-    int8_t force;
-    int8_t dexterity;
-    int8_t constitution;
-    int8_t luck; // hidden
-    // stats
-    Stat intensity;
-    Stat precision;
-    Stat endurance;
-  };
-
-  template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<Body, Archive>& body)
-  {
-    return ar | body.health | body.force | body.dexterity | body.constitution | body.luck | body.intensity | body.precision | body.endurance;
-  }
 
   enum class Gender : uint8_t {
     Girl,
@@ -50,7 +30,7 @@ namespace fw {
     Gender gender;
     MonthDay birthday;
     int8_t age;
-    Body body;
+    BodyState body;
     uint32_t mounting = NoIndex;
     InventoryState inventory;
 
@@ -66,7 +46,7 @@ namespace fw {
 
   struct AnimalFeature {
     Location location;
-    Body body;
+    BodyState body;
     uint32_t mounted_by = NoIndex;
     InventoryState inventory;
   };

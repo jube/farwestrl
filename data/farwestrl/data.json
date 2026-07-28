@@ -3,13 +3,15 @@
     {
       "label": "Hero",
       "type": "human",
-      "display": { "picture": "@", "color": "#000000" }
+      "display": { "picture": "@", "color": "#000000" },
+      "body": { "max_health": 20, "force": "3d6+2", "dexterity": "3d6+2", "constitution": "3d6+2", "luck": "1d10" }
     },
 
     {
       "label": "Bison",
       "type": "animal",
       "display": { "picture": "b", "color": "#AA5500" },
+      "body": { "max_health": 40, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4" },
       "can_be_mounted": true,
       "can_idle": false,
       "biome": "prairie"
@@ -18,6 +20,7 @@
       "label": "Coyote",
       "type": "animal",
       "display": { "picture": "c", "color": "#818181" },
+      "body": { "max_health": 20, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4" },
       "can_be_mounted": false,
       "can_idle": true,
       "biome": "prairie"
@@ -26,6 +29,7 @@
       "label": "Cow",
       "type": "animal",
       "display": { "picture": "c", "color": "#783F21" },
+      "body": { "max_health": 20, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4" },
       "can_be_mounted": true,
       "can_idle": false,
       "biome": "prairie"
@@ -34,6 +38,7 @@
       "label": "Grizzli",
       "type": "animal",
       "display": { "picture": "g", "color": "#714520" },
+      "body": { "max_health": 40, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4" },
       "can_be_mounted": false,
       "can_idle": true,
       "biome": "forest"
@@ -42,6 +47,7 @@
       "label": "Horse",
       "type": "animal",
       "display": { "picture": "h", "color": "#AB6A0F" },
+      "body": { "max_health": 30, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4" },
       "can_be_mounted": true,
       "can_idle": true,
       "biome": "prairie"
@@ -50,6 +56,7 @@
       "label": "Scorpion",
       "type": "animal",
       "display": { "picture": "s", "color": "#303030" },
+      "body": { "max_health": 10, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4" },
       "can_be_mounted": false,
       "can_idle": true,
       "biome": "moutain"
@@ -58,6 +65,7 @@
       "label": "Snake",
       "type": "animal",
       "display": { "picture": "s", "color": "#8DE874" },
+      "body": { "max_health": 10, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4" },
       "can_be_mounted": false,
       "can_idle": true,
       "biome": "desert"

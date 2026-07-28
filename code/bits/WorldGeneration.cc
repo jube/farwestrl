@@ -9,6 +9,7 @@
 #include <gf2/core/Array2D.h>
 #include <gf2/core/Clock.h>
 #include <gf2/core/Direction.h>
+#include <gf2/core/Dice.h>
 #include <gf2/core/Easing.h>
 #include <gf2/core/FieldOfVision.h>
 #include <gf2/core/Geometry.h>
@@ -19,6 +20,7 @@
 #include <gf2/core/ProcGen.h>
 #include <gf2/core/Vec2.h>
 
+#include "ActorData.h"
 #include "ActorState.h"
 #include "Colors.h"
 #include "Date.h"
@@ -28,7 +30,7 @@
 #include "MapState.h"
 #include "Names.h"
 #include "Settings.h"
-#include "gf2/core/Range.h"
+#include "WorldData.h"
 
 namespace fw {
 
@@ -1851,8 +1853,31 @@ namespace fw {
     }
 
     /*
-     * Animals
+     * Actors
      */
+
+    int generate_attribute(std::string_view spec, gf::Random* random)
+    {
+      gf::Dice dice(spec);
+      return dice.roll(random);
+    }
+
+    BodyState generate_body(const BodyData& data, gf::Random* random)
+    {
+      BodyState state = {};
+      state.health = data.max_health;
+
+      state.force = generate_attribute(data.force, random);
+      state.dexterity = generate_attribute(data.dexterity, random);
+      state.constitution = generate_attribute(data.constitution, random);
+      state.luck = generate_attribute(data.luck, random);
+
+      state.intensity = random->compute_uniform_integer(50, 90);
+      state.precision = random->compute_uniform_integer(50, 90);
+      state.endurance = random->compute_uniform_integer(50, 90);
+
+      return state;
+    }
 
     enum class Seat {
       Free,
@@ -1888,11 +1913,8 @@ namespace fw {
       return seat_map;
     }
 
-
-
     /*
-     * TODO:
-     * - use for generating initial positions of actors
+     * Animals
      */
 
     gf::Vec2I compute_animal_valid_position(const WorldState& state, const WorldRegion& region, const SeatMap& seat_map, gf::Random* random)
@@ -1919,7 +1941,7 @@ namespace fw {
       return {};
     }
 
-    void compute_animals_in_regions(WorldState& state, const std::vector<WorldRegion>& regions, SeatMap& seat_map, gf::Random* random, std::string_view name, std::size_t density)
+    void compute_animals_in_regions(WorldState& state, const WorldData& data, const std::vector<WorldRegion>& regions, SeatMap& seat_map, gf::Random* random, std::string_view name, std::size_t density)
     {
       std::size_t overall_count = 0;
 
@@ -1934,10 +1956,15 @@ namespace fw {
 
           ActorState animal = {};
           animal.data = name;
+          animal.data.bind_from(data.actors);
+
+          assert(animal.data->feature.type() == ActorType::Animal);
+          const AnimalDataFeature& data = animal.data->feature.from<ActorType::Animal>();
 
           AnimalFeature feature;
           feature.location.position = position;
           feature.location.floor = Floor::Ground; // TODO: parameter?
+          feature.body = generate_body(data.body, random);
           feature.mounted_by = NoIndex;
           animal.feature = feature;
 
@@ -1951,12 +1978,12 @@ namespace fw {
       gf::Log::info("\t{}: {}", name, overall_count);
     }
 
-    void compute_animals(WorldState& state, const WorldRegions& regions, SeatMap& seat_map, gf::Random* random)
+    void compute_animals(WorldState& state, const WorldData& data, const WorldRegions& regions, SeatMap& seat_map, gf::Random* random)
     {
-      compute_animals_in_regions(state, regions.desert_regions, seat_map, random, "Snake", 1000);
-      compute_animals_in_regions(state, regions.mountain_regions, seat_map, random, "Scorpion", 1000);
-      compute_animals_in_regions(state, regions.prairie_regions, seat_map, random, "Coyote", 1500);
-      compute_animals_in_regions(state, regions.forest_regions, seat_map, random, "Grizzli", 1500);
+      compute_animals_in_regions(state, data, regions.desert_regions, seat_map, random, "Snake", 1000);
+      compute_animals_in_regions(state, data, regions.mountain_regions, seat_map, random, "Scorpion", 1000);
+      compute_animals_in_regions(state, data, regions.prairie_regions, seat_map, random, "Coyote", 1500);
+      compute_animals_in_regions(state, data, regions.forest_regions, seat_map, random, "Grizzli", 1500);
     }
 
 
@@ -1987,20 +2014,9 @@ namespace fw {
       return static_cast<Gender>(index);
     }
 
-    int8_t generate_attribute(gf::Random* random)
-    {
-      // 3d6 + 1
 
-      int8_t attribute = 2;
 
-      for (int i = 0; i < 3; ++i) {
-        attribute += static_cast<int8_t>(1 + random->compute_uniform_integer(6));
-      }
-
-      return attribute;
-    }
-
-    HumanFeature generate_human(gf::Random* random, gf::Vec2I position, int8_t age_min, int8_t age_max) {
+    HumanFeature generate_human(gf::Random* random, const HumanDataFeature& feature, gf::Vec2I position, int8_t age_min, int8_t age_max) {
       HumanFeature human;
       human.location.position = position;
       human.location.floor = Floor::Ground;
@@ -2022,27 +2038,19 @@ namespace fw {
       human.age = random->compute_uniform_integer<int8_t>(age_min, age_max);
       human.birthday = generate_random_birthday(random);
 
-      human.body.health = MaxHealth - 1;
-
-      human.body.force = generate_attribute(random);
-      human.body.dexterity = generate_attribute(random);
-      human.body.constitution = generate_attribute(random);
-      human.body.luck = generate_attribute(random);
-
-      human.body.intensity = random->compute_uniform_integer(50, 90);
-      human.body.precision = random->compute_uniform_integer(50, 90);
-      human.body.endurance = random->compute_uniform_integer(50, 90);
+      human.body = generate_body(feature.body, random);
 
       gf::Log::info("Name: {} (Luck: {})", human.name, human.body.luck);
 
       return human;
     }
 
-    ActorState generate_hero(const WorldState& state, gf::Random* random)
+    ActorState generate_hero(const WorldState& state, const WorldData& data, gf::Random* random)
     {
       ActorState hero = {};
       hero.data = "Hero";
-      hero.feature = generate_human(random, compute_starting_position(state.network), 20, 40);
+      hero.data.bind_from(data.actors);
+      hero.feature = generate_human(random, hero.data->feature.from<ActorType::Human>(), compute_starting_position(state.network), 20, 40);
 
       // hero.weapon.data = "Colt Dragoon Revolver";
       // hero.weapon.cartridges = 0;
@@ -2055,7 +2063,7 @@ namespace fw {
 
   }
 
-  WorldState generate_world(gf::Random* random, WorldGenerationAnalysis& analysis)
+  WorldState generate_world(gf::Random* random, const WorldData& data, WorldGenerationAnalysis& analysis)
   {
     gf::Clock clock;
 
@@ -2109,7 +2117,7 @@ namespace fw {
     analysis.set_step(WorldGenerationStep::Hero);
 
     {
-      ActorState hero = generate_hero(state, random);
+      ActorState hero = generate_hero(state, data, random);
       compute_hero_fov(hero.location().position, state.map.ground);
 
       assert(state.actors.empty());
@@ -2160,7 +2168,7 @@ namespace fw {
     }
 
     SeatMap seat_map = compute_initial_seat_map(state);
-    compute_animals(state, regions, seat_map, random);
+    compute_animals(state, data, regions, seat_map, random);
 
     gf::Log::info("actors: {}", state.actors.size());
 

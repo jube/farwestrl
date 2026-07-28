@@ -8,7 +8,7 @@
 
 namespace fw {
 
-  WorldState generate_world(gf::Random* random, WorldGenerationAnalysis& analysis);
+  WorldState generate_world(gf::Random* random, const WorldData& data, WorldGenerationAnalysis& analysis);
 
 }
 
