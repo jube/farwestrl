@@ -7,6 +7,7 @@
 #include <gf2/core/TaggedVariant.h>
 
 #include "BodyData.h"
+#include "Combat.h"
 #include "DataLabel.h"
 #include "DisplayData.h"
 #include "MapCellBiome.h"
@@ -29,6 +30,8 @@ namespace fw {
   struct AnimalDataFeature {
     DisplayData display;
     BodyData body;
+    Attack attack;
+    Defense defense;
     MapCellBiome biome;
     bool can_be_mounted;
     bool can_idle;
