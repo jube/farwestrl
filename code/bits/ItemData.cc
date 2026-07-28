@@ -1,11 +1,5 @@
 #include "ItemData.h"
 
-#include <cassert>
-
-#include <gf2/core/StringUtils.h>
-
-#include "ColorUtils.h"
-
 namespace fw {
 
   NLOHMANN_JSON_SERIALIZE_ENUM( ItemType, {
@@ -18,18 +12,7 @@ namespace fw {
   void from_json(const nlohmann::json& json, ItemData& data)
   {
     json.at("label").get_to(data.label);
-
-    std::string raw_color;
-    json.at("color").get_to(raw_color);
-    data.color = to_rbga(raw_color);
-
-    std::string raw_picture;
-    json.at("picture").get_to(raw_picture);
-    const std::u32string utf32 = gf::to_utf32(raw_picture);
-    assert(utf32.size() == 1);
-    const char32_t picture = utf32.front();
-    assert(picture < 0x10000);
-    data.picture = static_cast<char16_t>(picture);
+    json.at("display").get_to(data.display);
 
     ItemType raw_type = ItemType::None;
     json.at("type").get_to(raw_type);
@@ -42,8 +25,10 @@ namespace fw {
         {
           FirearmDataFeature feature;
           json.at("caliber").get_to(feature.caliber);
+          json.at("modifier").get_to(feature.modifier);
           json.at("capacity").get_to(feature.capacity);
           json.at("reload_time").get_to(feature.reload_time);
+          json.at("shoot_time").get_to(feature.shoot_time);
           data.feature = feature;
         }
         break;
@@ -51,12 +36,16 @@ namespace fw {
         {
           AmmunitionDataFeature feature;
           json.at("caliber").get_to(feature.caliber);
+          json.at("attack").get_to(feature.attack);
           data.feature = feature;
         }
         break;
       case ItemType::MeleeWeapon:
         {
           MeleeWeaponDataFeature feature;
+          json.at("modifier").get_to(feature.modifier);
+          json.at("attack").get_to(feature.attack);
+          json.at("use_time").get_to(feature.use_time);
           data.feature = feature;
         }
         break;

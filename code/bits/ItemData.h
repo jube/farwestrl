@@ -8,6 +8,8 @@
 #include <gf2/core/Color.h>
 #include <gf2/core/TaggedVariant.h>
 
+#include "Combat.h"
+#include "DisplayData.h"
 #include "DataLabel.h"
 
 namespace fw {
@@ -21,24 +23,28 @@ namespace fw {
 
   struct FirearmDataFeature {
     int8_t caliber;
+    int8_t modifier;
     int16_t capacity;
+    uint16_t shoot_time;
     uint16_t reload_time;
   };
 
   struct AmmunitionDataFeature {
     int8_t caliber;
+    Attack attack;
   };
 
   struct MeleeWeaponDataFeature {
-
+    int8_t modifier;
+    Attack attack;
+    uint16_t use_time;
   };
 
   using ItemDataFeature = gf::TaggedVariant<ItemType, FirearmDataFeature, AmmunitionDataFeature, MeleeWeaponDataFeature>;
 
   struct ItemData {
     DataLabel label;
-    gf::Color color;
-    char16_t picture;
+    DisplayData display;
     ItemDataFeature feature;
   };
 

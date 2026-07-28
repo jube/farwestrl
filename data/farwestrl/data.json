@@ -76,13 +76,63 @@
     }
   ],
   "items": [
-    { "label": "Adams Revolver", "picture": "§", "color": "#222222", "type": "firearm", "caliber": 44, "capacity": 5, "reload_time": 15, "url": "https://en.wikipedia.org/wiki/Adams_(revolver)" },
-    { "label": "Beaumont-Adams Revolver", "picture": "§", "color": "#222222", "type": "firearm", "caliber": 36, "capacity": 5, "reload_time": 15, "url": "https://en.wikipedia.org/wiki/Beaumont%E2%80%93Adams_revolver" },
-    { "label": "Colt Dragoon Revolver", "picture": "§", "color": "#222222", "type": "firearm", "caliber": 44, "capacity": 6, "reload_time": 15 },
+    {
+      "label": "Adams Revolver",
+      "display": { "picture": "§", "color": "#222222" },
+      "type": "firearm",
+      "caliber": 44,
+      "modifier": 0,
+      "capacity": 5,
+      "reload_time": 15,
+      "shoot_time": 3,
+      "url": "https://en.wikipedia.org/wiki/Adams_(revolver)"
+    },
+    {
+      "label": "Beaumont-Adams Revolver",
+      "display": { "picture": "§", "color": "#222222" },
+      "type": "firearm",
+      "caliber": 36,
+      "modifier": 0,
+      "capacity": 5,
+      "reload_time": 15,
+      "shoot_time": 3,
+      "url": "https://en.wikipedia.org/wiki/Beaumont%E2%80%93Adams_revolver"
+    },
+    {
+      "label": "Colt Dragoon Revolver",
+      "display": { "picture": "§", "color": "#222222" },
+      "type": "firearm",
+      "caliber": 44,
+      "modifier": 0,
+      "capacity": 6,
+      "reload_time": 15,
+      "shoot_time": 3,
+      "url": ""
+    },
 
-    { "label": ".44 Ammunitions", "picture": "•", "color": "#808080", "type": "ammunition", "caliber": 44 },
+    {
+      "label": ".44 Ammunitions",
+      "display": { "picture": "•", "color": "#808080" },
+      "type": "ammunition",
+      "caliber": 44,
+      "attack": 50
+    },
 
-    { "label": "Knife", "picture": "-", "color": "#C0C0C0", "type": "melee_weapon" },
-    { "label": "Machete", "picture": "/", "color": "#C0C0C0", "type": "melee_weapon" }
+    {
+      "label": "Knife",
+      "display": { "picture": "-", "color": "#C0C0C0" },
+      "type": "melee_weapon",
+      "modifier": 0,
+      "attack": 20,
+      "use_time": 10
+    },
+    {
+      "label": "Machete",
+      "display": { "picture": "/", "color": "#DDDDDD" },
+      "type": "melee_weapon",
+      "modifier": 0,
+      "attack": 20,
+      "use_time": 10
+    }
   ]
 }
