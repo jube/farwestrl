@@ -21,6 +21,7 @@
 #include <gf2/core/Vec2.h>
 
 #include "ActorData.h"
+#include "ActorGeneration.h"
 #include "ActorState.h"
 #include "Colors.h"
 #include "Date.h"
@@ -1856,29 +1857,6 @@ namespace fw {
      * Actors
      */
 
-    int generate_attribute(std::string_view spec, gf::Random* random)
-    {
-      gf::Dice dice(spec);
-      return dice.roll(random);
-    }
-
-    BodyState generate_body(const BodyData& data, gf::Random* random)
-    {
-      BodyState state = {};
-      state.health = data.max_health;
-
-      state.force = generate_attribute(data.force, random);
-      state.dexterity = generate_attribute(data.dexterity, random);
-      state.constitution = generate_attribute(data.constitution, random);
-      state.luck = generate_attribute(data.luck, random);
-
-      state.intensity = random->compute_uniform_integer(50, 90);
-      state.precision = random->compute_uniform_integer(50, 90);
-      state.endurance = random->compute_uniform_integer(50, 90);
-
-      return state;
-    }
-
     enum class Seat {
       Free,
       Occupied
@@ -1950,23 +1928,10 @@ namespace fw {
         overall_count += count;
 
         for (std::size_t i = 0; i < count; ++i) {
-
           const gf::Vec2I position = compute_animal_valid_position(state, region, seat_map, random);
           seat_map(position) = Seat::Occupied;
 
-          ActorState animal = {};
-          animal.data = name;
-          animal.data.bind_from(data.actors);
-
-          assert(animal.data->feature.type() == ActorType::Animal);
-          const AnimalDataFeature& data = animal.data->feature.from<ActorType::Animal>();
-
-          AnimalFeature feature;
-          feature.location.position = position;
-          feature.location.floor = Floor::Ground; // TODO: parameter?
-          feature.body = generate_body(data.body, random);
-          feature.mounted_by = NoIndex;
-          animal.feature = feature;
+          ActorState animal = generate_animal(name, { position, Floor::Ground }, data, random);
 
           const uint32_t id = static_cast<uint32_t>(state.actors.size());
           state.actors.push_back(animal);
@@ -2007,58 +1972,10 @@ namespace fw {
       return position + 2 * gf::sign(position - center);
     }
 
-    Gender generate_gender(gf::Random* random)
-    {
-      std::discrete_distribution distribution({ 50.0, 48.0, 2.0 });
-      const uint8_t index = static_cast<uint8_t>(distribution(random->engine()));
-      return static_cast<Gender>(index);
-    }
-
-
-
-    HumanFeature generate_human(gf::Random* random, const HumanDataFeature& feature, gf::Vec2I position, int8_t age_min, int8_t age_max) {
-      HumanFeature human;
-      human.location.position = position;
-      human.location.floor = Floor::Ground;
-
-      human.gender = generate_gender(random);
-
-      switch (human.gender) {
-        case Gender::Girl:
-          human.name = generate_random_white_female_name(random);
-          break;
-        case Gender::Boy:
-          human.name = generate_random_white_male_name(random);
-          break;
-        case Gender::NonBinary:
-          human.name = generate_random_white_non_binary_name(random);
-          break;
-      }
-
-      human.age = random->compute_uniform_integer<int8_t>(age_min, age_max);
-      human.birthday = generate_random_birthday(random);
-
-      human.body = generate_body(feature.body, random);
-
-      gf::Log::info("Name: {} (Luck: {})", human.name, human.body.luck);
-
-      return human;
-    }
-
     ActorState generate_hero(const WorldState& state, const WorldData& data, gf::Random* random)
     {
-      ActorState hero = {};
-      hero.data = "Hero";
-      hero.data.bind_from(data.actors);
-      hero.feature = generate_human(random, hero.data->feature.from<ActorType::Human>(), compute_starting_position(state.network), 20, 40);
-
-      // hero.weapon.data = "Colt Dragoon Revolver";
-      // hero.weapon.cartridges = 0;
-      //
-      // hero.ammunition.data = ".44 Ammunitions";
-      // hero.ammunition.count = 32;
-
-      return hero;
+      const gf::Vec2I position = compute_starting_position(state.network);
+      return generate_human("Hero", { position, Floor::Ground }, data, random);
     }
 
   }
