@@ -16,31 +16,33 @@ namespace fw {
 
   enum class ItemType {
     None,
-    Firearm,
-    Ammunition,
     MeleeWeapon,
+    DistanceWeapon,
+    Ammunition,
   };
 
-  struct FirearmDataFeature {
-    int8_t caliber;
-    int8_t modifier;
-    int16_t capacity;
+  struct DistanceWeaponDataFeature {
+    int32_t range;
     uint16_t shoot_time;
     uint16_t reload_time;
+    int16_t capacity;
+    int8_t caliber;
+    int8_t modifier;
   };
 
   struct AmmunitionDataFeature {
-    int8_t caliber;
     Attack attack;
+    int8_t caliber;
+    int8_t modifier;
   };
 
   struct MeleeWeaponDataFeature {
-    int8_t modifier;
     Attack attack;
     uint16_t use_time;
+    int8_t modifier;
   };
 
-  using ItemDataFeature = gf::TaggedVariant<ItemType, FirearmDataFeature, AmmunitionDataFeature, MeleeWeaponDataFeature>;
+  using ItemDataFeature = gf::TaggedVariant<ItemType, MeleeWeaponDataFeature, DistanceWeaponDataFeature, AmmunitionDataFeature>;
 
   struct ItemData {
     DataLabel label;

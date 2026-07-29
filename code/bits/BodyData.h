@@ -15,6 +15,8 @@ namespace fw {
     std::string dexterity;
     std::string constitution;
     std::string luck;
+    std::string attack;
+    std::string defense;
   };
 
   void from_json(const nlohmann::json& json, BodyData& data);

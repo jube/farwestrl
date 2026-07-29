@@ -9,6 +9,8 @@ namespace fw {
     json.at("dexterity").get_to(data.dexterity);
     json.at("constitution").get_to(data.constitution);
     json.at("luck").get_to(data.luck);
+    json.at("attack").get_to(data.attack);
+    json.at("defense").get_to(data.defense);
   }
 
 }

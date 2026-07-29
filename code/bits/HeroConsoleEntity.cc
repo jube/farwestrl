@@ -146,19 +146,19 @@ namespace fw {
     if (feature.ammunition.data) {
       assert(feature.ammunition.data->feature.type() == ItemType::Ammunition);
       const AmmunitionDataFeature& ammunition = feature.ammunition.data->feature.from<ItemType::Ammunition>();
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: .{} × {}", ammunition.caliber, feature.ammunition.count); // only for firearms
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: .{} × {}", ammunition.caliber, feature.ammunition.count); // only for distance weapons
 
-      assert(feature.weapon.data->feature.type() == ItemType::Firearm);
-      const FirearmDataFeature& firearm = feature.weapon.data->feature.from<ItemType::Firearm>();
+      assert(feature.weapon.data->feature.type() == ItemType::DistanceWeapon);
+      const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
 
       std::string cartridges;
 
       for (int8_t i = 0; i < feature.weapon.cartridges; ++i) {
-        cartridges += "•";
+        cartridges += "•"; // TODO: feature.weapon.data->display.picture
       }
 
-      for (int8_t i = feature.weapon.cartridges; i < firearm.capacity; ++i) {
-        cartridges += "○";
+      for (int8_t i = feature.weapon.cartridges; i < weapon.capacity; ++i) {
+        cartridges += "○"; // TODO
       }
 
       gf::console_print_picture(console, position + gf::dirx(CharacterBoxSize.x - 3), gf::ConsoleAlignment::Right, m_game->style(), "{}", cartridges);

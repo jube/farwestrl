@@ -14,6 +14,7 @@ int main()
     .luck = 10,
     .modifier = 0,
     .attack = 20,
+    .range = 0,
   };
 
   const fw::DefenseDigest defender = {

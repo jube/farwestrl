@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include <cstdint>
 #include <gf2/core/Dice.h>
 
 #include "Date.h"
@@ -11,6 +12,9 @@
 namespace fw {
 
   namespace {
+
+    constexpr int32_t StatMin = 50;
+    constexpr int32_t StatMax = 90;
 
     int8_t generate_attribute(std::string_view spec, gf::Random* random)
     {
@@ -28,9 +32,12 @@ namespace fw {
       state.constitution = generate_attribute(data.constitution, random);
       state.luck = generate_attribute(data.luck, random);
 
-      state.intensity = random->compute_uniform_integer(50, 90);
-      state.precision = random->compute_uniform_integer(50, 90);
-      state.endurance = random->compute_uniform_integer(50, 90);
+      state.intensity = random->compute_uniform_integer(StatMin, StatMax);
+      state.precision = random->compute_uniform_integer(StatMin, StatMax);
+      state.endurance = random->compute_uniform_integer(StatMin, StatMax);
+
+      state.attack = generate_attribute(data.attack, random);
+      state.defense = generate_attribute(data.defense, random);
 
       return state;
     }

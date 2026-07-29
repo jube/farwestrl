@@ -4,9 +4,9 @@ namespace fw {
 
   NLOHMANN_JSON_SERIALIZE_ENUM( ItemType, {
     { ItemType::None, nullptr },
-    { ItemType::Firearm, "firearm" },
-    { ItemType::Ammunition, "ammunition" },
     { ItemType::MeleeWeapon, "melee_weapon" },
+    { ItemType::DistanceWeapon, "distance_weapon" },
+    { ItemType::Ammunition, "ammunition" },
   })
 
   void from_json(const nlohmann::json& json, ItemData& data)
@@ -21,31 +21,33 @@ namespace fw {
       case ItemType::None:
         // nothing
         break;
-      case ItemType::Firearm:
+      case ItemType::MeleeWeapon:
         {
-          FirearmDataFeature feature;
-          json.at("caliber").get_to(feature.caliber);
+          MeleeWeaponDataFeature feature;
+          json.at("attack").get_to(feature.attack);
+          json.at("use_time").get_to(feature.use_time);
           json.at("modifier").get_to(feature.modifier);
-          json.at("capacity").get_to(feature.capacity);
+          data.feature = feature;
+        }
+        break;
+      case ItemType::DistanceWeapon:
+        {
+          DistanceWeaponDataFeature feature;
+          json.at("range").get_to(feature.range);
           json.at("reload_time").get_to(feature.reload_time);
           json.at("shoot_time").get_to(feature.shoot_time);
+          json.at("capacity").get_to(feature.capacity);
+          json.at("caliber").get_to(feature.caliber);
+          json.at("modifier").get_to(feature.modifier);
           data.feature = feature;
         }
         break;
       case ItemType::Ammunition:
         {
           AmmunitionDataFeature feature;
+          json.at("attack").get_to(feature.attack);
           json.at("caliber").get_to(feature.caliber);
-          json.at("attack").get_to(feature.attack);
-          data.feature = feature;
-        }
-        break;
-      case ItemType::MeleeWeapon:
-        {
-          MeleeWeaponDataFeature feature;
           json.at("modifier").get_to(feature.modifier);
-          json.at("attack").get_to(feature.attack);
-          json.at("use_time").get_to(feature.use_time);
           data.feature = feature;
         }
         break;

@@ -335,8 +335,8 @@ namespace fw {
         return ActionResult::Failure;
       }
 
-      if (feature.weapon.data->feature.type() != ItemType::Firearm) {
-        // the weapon is not a firearm
+      if (feature.weapon.data->feature.type() != ItemType::DistanceWeapon) {
+        // the weapon is not a distance weapon
         return ActionResult::Failure;
       }
 
@@ -345,15 +345,15 @@ namespace fw {
         return ActionResult::Failure;
       }
 
-      const FirearmDataFeature& firearm = feature.weapon.data->feature.from<ItemType::Firearm>();
+      const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
       const AmmunitionDataFeature& ammunition = feature.ammunition.data->feature.from<ItemType::Ammunition>();
 
-      if (firearm.caliber != ammunition.caliber) {
+      if (weapon.caliber != ammunition.caliber) {
         // the caliber differs
         return ActionResult::Failure;
       }
 
-      const int16_t needed_cartridges = firearm.capacity - feature.weapon.cartridges;
+      const int16_t needed_cartridges = weapon.capacity - feature.weapon.cartridges;
       const int16_t loaded_cartriges = std::min(needed_cartridges, feature.ammunition.count);
 
       if (loaded_cartriges > 0) {
@@ -363,7 +363,7 @@ namespace fw {
 
         model.state.add_message(fmt::format("<style=character>{}</> reloads its weapon with {} cartridges.", actor.feature.from<ActorType::Human>().name, loaded_cartriges));
 
-        model.update_current_task_in_queue(firearm.reload_time);
+        model.update_current_task_in_queue(weapon.reload_time);
         return ActionResult::Success;
       }
 

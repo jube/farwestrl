@@ -10,6 +10,7 @@
 
 #include "ActorData.h"
 #include "BodyState.h"
+#include "Combat.h"
 #include "DataReference.h"
 #include "Date.h"
 #include "Index.h"
@@ -89,6 +90,7 @@ namespace fw {
     DataReference<ActorData> data;
     ActorFeature feature;
 
+    ActorType type() const { return feature.type(); }
     Location location() const;
   };
 
@@ -97,6 +99,9 @@ namespace fw {
   {
     return ar | state.data | state.feature;
   }
+
+  AttackDigest compute_attack_digest(const ActorState& actor);
+  DefenseDigest compute_defense_digest(const ActorState& actor);
 
 }
 

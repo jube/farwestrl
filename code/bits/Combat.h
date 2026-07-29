@@ -23,6 +23,7 @@ namespace fw {
     int8_t luck = 0;
     int8_t modifier = 0;
     Attack attack = 0;
+    int32_t range = 0;
   };
 
   struct DefenseDigest {
