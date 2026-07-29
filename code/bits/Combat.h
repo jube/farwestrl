@@ -8,13 +8,28 @@
 #include <nlohmann/json.hpp>
 
 #include <gf2/core/Fixed.h>
+#include <gf2/core/Random.h>
 
 namespace fw {
 
-  using Attack = gf::Fixed<int32_t, 16>;
-  using Defense = gf::Fixed<int32_t, 16>;
+  using CombatPoint = gf::Fixed<int32_t, 16>;
+  using Attack = CombatPoint;
+  using Defense = CombatPoint;
 
   static_assert(std::is_same_v<Attack, Defense>);
+
+  struct AttackDigest {
+    int8_t attribute = 0;
+    int8_t luck = 0;
+    int8_t modifier = 0;
+    Attack attack = 0;
+  };
+
+  struct DefenseDigest {
+    Defense defense = 0;
+  };
+
+  std::optional<int8_t> compute_combat(const AttackDigest& attacker, const DefenseDigest& defender, gf::Random* random);
 
 }
 

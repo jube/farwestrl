@@ -60,6 +60,11 @@ target("date-generation")
     add_files("code/date-generation.cc")
     add_deps("farwestrl0")
 
+target("combat-analyzer")
+    set_kind("binary")
+    add_files("code/combat-analyzer.cc")
+    add_deps("farwestrl0")
+
 target("farwestrl-debug")
     set_kind("binary")
     add_files("code/farwestrl-debug.cc")
