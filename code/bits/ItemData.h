@@ -22,17 +22,24 @@ namespace fw {
     Projectile,
   };
 
+  enum class ProjectileKind : uint8_t {
+    None,
+    Dot36Ammunition,
+    Dot44Ammunition,
+  };
+
   struct DistanceWeaponDataFeature {
     int32_t range;
     uint16_t shoot_time;
     uint16_t reload_time;
     int16_t capacity;
     int8_t modifier;
-    std::string projectile;
+    ProjectileKind projectile;
   };
 
   struct ProjectileDataFeature {
     Attack attack;
+    ProjectileKind kind;
     int8_t modifier;
   };
 

@@ -92,7 +92,7 @@
       "reload_time": 30,
       "capacity": 5,
       "modifier": 0,
-      "projectile": ".44 Ammunition",
+      "projectile": ".44",
       "url": "https://en.wikipedia.org/wiki/Adams_(revolver)"
     },
     {
@@ -104,7 +104,7 @@
       "reload_time": 30,
       "capacity": 5,
       "modifier": 0,
-      "projectile": ".36 Ammunition",
+      "projectile": ".36",
       "url": "https://en.wikipedia.org/wiki/Beaumont%E2%80%93Adams_revolver"
     },
     {
@@ -116,7 +116,7 @@
       "reload_time": 30,
       "capacity": 6,
       "modifier": 2,
-      "projectile": ".44 Ammunition",
+      "projectile": ".44",
       "url": "https://en.wikipedia.org/wiki/Colt_Dragoon_Revolver"
     },
 
@@ -124,6 +124,7 @@
       "label": ".44 Ammunition",
       "display": { "picture": "•", "color": "#808080" },
       "type": "projectile",
+      "kind": ".44",
       "attack": 50,
       "modifier": 0
     },
@@ -131,6 +132,7 @@
       "label": ".36 Ammunition",
       "display": { "picture": "•", "color": "#808080" },
       "type": "projectile",
+      "kind": ".36",
       "attack": 50,
       "modifier": 0
     },

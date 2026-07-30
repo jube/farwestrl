@@ -1,6 +1,7 @@
 #include "Action.h"
 
 #include "ActorState.h"
+#include "ItemData.h"
 #include "MapCell.h"
 #include "NetworkState.h"
 #include "Times.h"
@@ -331,7 +332,7 @@ namespace fw {
       HumanFeature& feature = actor.feature.from<ActorType::Human>();
 
       if (!feature.weapon.data || !feature.projectile.data) {
-        // the actor has no weapon or no ammunition
+        // the actor has no weapon or no projectile
         return ActionResult::Failure;
       }
 
@@ -341,14 +342,15 @@ namespace fw {
       }
 
       if (feature.projectile.data->feature.type() != ItemType::Projectile) {
-        // the ammunition is not really ammunition
+        // the projectile is not really projectile
         return ActionResult::Failure;
       }
 
       const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
+      const ProjectileDataFeature& projectile = feature.projectile.data->feature.from<ItemType::Projectile>();
 
-      if (weapon.projectile != feature.projectile.data.tag) {
-        // the caliber differs
+      if (weapon.projectile != projectile.kind) {
+        // the projectile kind differs
         return ActionResult::Failure;
       }
 
@@ -356,7 +358,7 @@ namespace fw {
       const int16_t loaded_projectiles = std::min(needed_projectiles, feature.projectile.count);
 
       if (loaded_projectiles > 0) {
-        // there are enough cartridges
+        // there are enough projectiles
         feature.weapon.projectiles += loaded_projectiles;
         feature.projectile.count -= loaded_projectiles;
 

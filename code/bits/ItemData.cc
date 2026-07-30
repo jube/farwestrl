@@ -9,6 +9,13 @@ namespace fw {
     { ItemType::Projectile, "projectile" },
   })
 
+  NLOHMANN_JSON_SERIALIZE_ENUM( ProjectileKind, {
+    { ProjectileKind::None, nullptr },
+    { ProjectileKind::Dot36Ammunition, ".36" },
+    { ProjectileKind::Dot44Ammunition, ".44" },
+  })
+
+
   void from_json(const nlohmann::json& json, ItemData& data)
   {
     json.at("label").get_to(data.label);
@@ -46,6 +53,7 @@ namespace fw {
         {
           ProjectileDataFeature feature;
           json.at("attack").get_to(feature.attack);
+          json.at("kind").get_to(feature.kind);
           json.at("modifier").get_to(feature.modifier);
           data.feature = feature;
         }
