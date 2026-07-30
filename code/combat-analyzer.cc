@@ -1,13 +1,17 @@
 #include <print>
 
+#include "bits/ActorState.h"
 #include "bits/Combat.h"
+#include "bits/WorldModel.h"
 
 #include <gf2/core/Random.h>
+
+#include "config.h"
 
 constexpr int LoCount = 20;
 constexpr int HiCount = 100000;
 
-int main()
+int dummy()
 {
   const fw::AttackDigest attacker = {
     .attribute = 13,
@@ -52,6 +56,43 @@ int main()
     std::println("100%% failures.");
   } else {
     std::println("{:g}% failures ({:g}%). {:g} average damage. {:g} global average damage.", static_cast<double>(failures) / static_cast<double>(HiCount) * 100.0, theoretical_failure, static_cast<double>(avg_damage) / static_cast<double>(HiCount - failures), static_cast<double>(avg_damage) / static_cast<double>(HiCount));
+  }
+
+  return 0;
+}
+
+namespace {
+
+  struct DataAttackDigest {
+    double health;
+    double attribute;
+    double luck;
+    double range;
+  };
+
+
+  fw::AttackDigest compute_average_attack_digest(const fw::ActorData& data)
+  {
+    fw::AttackDigest digest;
+
+
+
+    return digest;
+  }
+
+}
+
+int main()
+{
+  const std::filesystem::path data_directory = fw::FarWestDataDirectory;
+
+  gf::Random random;
+
+  fw::WorldData data;
+  data.load_from_file(data_directory / "data.json");
+
+  for (const fw::ActorData& data : data.actors) {
+
   }
 
 

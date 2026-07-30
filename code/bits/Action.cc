@@ -330,7 +330,7 @@ namespace fw {
       assert(actor.feature.type() == ActorType::Human);
       HumanFeature& feature = actor.feature.from<ActorType::Human>();
 
-      if (!feature.weapon.data || !feature.ammunition.data) {
+      if (!feature.weapon.data || !feature.projectile.data) {
         // the actor has no weapon or no ammunition
         return ActionResult::Failure;
       }
@@ -340,28 +340,27 @@ namespace fw {
         return ActionResult::Failure;
       }
 
-      if (feature.ammunition.data->feature.type() != ItemType::Ammunition) {
+      if (feature.projectile.data->feature.type() != ItemType::Projectile) {
         // the ammunition is not really ammunition
         return ActionResult::Failure;
       }
 
       const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
-      const AmmunitionDataFeature& ammunition = feature.ammunition.data->feature.from<ItemType::Ammunition>();
 
-      if (weapon.caliber != ammunition.caliber) {
+      if (weapon.projectile != feature.projectile.data.tag) {
         // the caliber differs
         return ActionResult::Failure;
       }
 
-      const int16_t needed_cartridges = weapon.capacity - feature.weapon.cartridges;
-      const int16_t loaded_cartriges = std::min(needed_cartridges, feature.ammunition.count);
+      const int16_t needed_projectiles = weapon.capacity - feature.weapon.projectiles;
+      const int16_t loaded_projectiles = std::min(needed_projectiles, feature.projectile.count);
 
-      if (loaded_cartriges > 0) {
+      if (loaded_projectiles > 0) {
         // there are enough cartridges
-        feature.weapon.cartridges += loaded_cartriges;
-        feature.ammunition.count -= loaded_cartriges;
+        feature.weapon.projectiles += loaded_projectiles;
+        feature.projectile.count -= loaded_projectiles;
 
-        model.state.add_message(fmt::format("<style=character>{}</> reloads its weapon with {} cartridges.", actor.feature.from<ActorType::Human>().name, loaded_cartriges));
+        model.state.add_message(fmt::format("<style=character>{}</> reloads its weapon with {} projectiles.", actor.feature.from<ActorType::Human>().name, loaded_projectiles));
 
         model.update_current_task_in_queue(weapon.reload_time);
         return ActionResult::Success;

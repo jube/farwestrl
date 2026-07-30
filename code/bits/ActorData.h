@@ -30,8 +30,6 @@ namespace fw {
   struct AnimalDataFeature {
     DisplayData display;
     BodyData body;
-    Attack attack;
-    Defense defense;
     MapCellBiome biome;
     bool can_be_mounted;
     bool can_idle;

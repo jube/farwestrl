@@ -45,7 +45,7 @@ namespace fw {
         } else {
           switch (feature.weapon.data->feature.type()) {
             case ItemType::None:
-            case ItemType::Ammunition:
+            case ItemType::Projectile:
               assert(false);
               break;
             case ItemType::MeleeWeapon:
@@ -66,9 +66,9 @@ namespace fw {
               digest.range = weapon.range;
               digest.modifier += weapon.modifier;
 
-              if (feature.ammunition.data && feature.weapon.cartridges > 0) {
-                assert(feature.ammunition.data->feature.type() == ItemType::Ammunition);
-                const AmmunitionDataFeature& ammunition = feature.ammunition.data->feature.from<ItemType::Ammunition>();
+              if (feature.projectile.data && feature.weapon.projectiles > 0) {
+                assert(feature.projectile.data->feature.type() == ItemType::Projectile);
+                const ProjectileDataFeature& ammunition = feature.projectile.data->feature.from<ItemType::Projectile>();
                 digest.attack = ammunition.attack;
                 digest.modifier += ammunition.modifier;
               } else {

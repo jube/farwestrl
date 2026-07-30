@@ -36,13 +36,13 @@ namespace fw {
     InventoryState inventory;
 
     WeaponItemState weapon;
-    InventoryItemState ammunition;
+    InventoryItemState projectile;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<HumanFeature, Archive>& feature)
   {
-    return ar | feature.name | feature.location | feature.gender | feature.birthday | feature.age | feature.body | feature.mounting | feature.inventory | feature.weapon | feature.ammunition;
+    return ar | feature.name | feature.location | feature.gender | feature.birthday | feature.age | feature.body | feature.mounting | feature.inventory | feature.weapon | feature.projectile;
   }
 
   struct AnimalFeature {

@@ -50,8 +50,8 @@ namespace fw {
           feature.weapon.data.bind_from(data.items);
         }
 
-        if (feature.ammunition.data) {
-          feature.ammunition.data.bind_from(data.items);
+        if (feature.projectile.data) {
+          feature.projectile.data.bind_from(data.items);
         }
       }
 

@@ -63,6 +63,7 @@ target("date-generation")
 target("combat-analyzer")
     set_kind("binary")
     add_files("code/combat-analyzer.cc")
+    add_includedirs("$(builddir)/config")
     add_deps("farwestrl0")
 
 target("farwestrl-debug")

@@ -6,7 +6,7 @@ namespace fw {
     { ItemType::None, nullptr },
     { ItemType::MeleeWeapon, "melee_weapon" },
     { ItemType::DistanceWeapon, "distance_weapon" },
-    { ItemType::Ammunition, "ammunition" },
+    { ItemType::Projectile, "projectile" },
   })
 
   void from_json(const nlohmann::json& json, ItemData& data)
@@ -37,16 +37,15 @@ namespace fw {
           json.at("reload_time").get_to(feature.reload_time);
           json.at("shoot_time").get_to(feature.shoot_time);
           json.at("capacity").get_to(feature.capacity);
-          json.at("caliber").get_to(feature.caliber);
           json.at("modifier").get_to(feature.modifier);
+          json.at("projectile").get_to(feature.projectile);
           data.feature = feature;
         }
         break;
-      case ItemType::Ammunition:
+      case ItemType::Projectile:
         {
-          AmmunitionDataFeature feature;
+          ProjectileDataFeature feature;
           json.at("attack").get_to(feature.attack);
-          json.at("caliber").get_to(feature.caliber);
           json.at("modifier").get_to(feature.modifier);
           data.feature = feature;
         }

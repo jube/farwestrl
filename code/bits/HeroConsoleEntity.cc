@@ -143,27 +143,26 @@ namespace fw {
     gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Weapon</>: {}", feature.weapon.data ? feature.weapon.data->label.tag : "-");
     ++position.y;
 
-    if (feature.ammunition.data) {
-      assert(feature.ammunition.data->feature.type() == ItemType::Ammunition);
-      const AmmunitionDataFeature& ammunition = feature.ammunition.data->feature.from<ItemType::Ammunition>();
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: .{} × {}", ammunition.caliber, feature.ammunition.count); // only for distance weapons
+    if (feature.projectile.data) {
+      assert(feature.projectile.data->feature.type() == ItemType::Projectile);
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Projectiles</>: {} × {}", feature.projectile.data.tag, feature.projectile.count); // only for distance weapons
 
       assert(feature.weapon.data->feature.type() == ItemType::DistanceWeapon);
       const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
 
       std::string cartridges;
 
-      for (int8_t i = 0; i < feature.weapon.cartridges; ++i) {
+      for (int8_t i = 0; i < feature.weapon.projectiles; ++i) {
         cartridges += "•"; // TODO: feature.weapon.data->display.picture
       }
 
-      for (int8_t i = feature.weapon.cartridges; i < weapon.capacity; ++i) {
+      for (int8_t i = feature.weapon.projectiles; i < weapon.capacity; ++i) {
         cartridges += "○"; // TODO
       }
 
       gf::console_print_picture(console, position + gf::dirx(CharacterBoxSize.x - 3), gf::ConsoleAlignment::Right, m_game->style(), "{}", cartridges);
     } else {
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Ammunitions</>: -");
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Projectiles</>: -");
       gf::console_print_picture(console, position + gf::dirx(CharacterBoxSize.x - 3), gf::ConsoleAlignment::Right, m_game->style(), "∅");
     }
 

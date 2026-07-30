@@ -33,13 +33,13 @@ namespace fw {
 
   struct WeaponItemState {
     DataReference<ItemData> data;
-    int16_t cartridges = 0;
+    int16_t projectiles = 0;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<WeaponItemState, Archive>& state)
   {
-    return ar | state.data | state.cartridges;
+    return ar | state.data | state.projectiles;
   }
 
 }

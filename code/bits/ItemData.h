@@ -13,12 +13,13 @@
 #include "DataLabel.h"
 
 namespace fw {
+  struct ItemData;
 
   enum class ItemType {
     None,
     MeleeWeapon,
     DistanceWeapon,
-    Ammunition,
+    Projectile,
   };
 
   struct DistanceWeaponDataFeature {
@@ -26,13 +27,12 @@ namespace fw {
     uint16_t shoot_time;
     uint16_t reload_time;
     int16_t capacity;
-    int8_t caliber;
     int8_t modifier;
+    std::string projectile;
   };
 
-  struct AmmunitionDataFeature {
+  struct ProjectileDataFeature {
     Attack attack;
-    int8_t caliber;
     int8_t modifier;
   };
 
@@ -42,7 +42,7 @@ namespace fw {
     int8_t modifier;
   };
 
-  using ItemDataFeature = gf::TaggedVariant<ItemType, MeleeWeaponDataFeature, DistanceWeaponDataFeature, AmmunitionDataFeature>;
+  using ItemDataFeature = gf::TaggedVariant<ItemType, MeleeWeaponDataFeature, DistanceWeaponDataFeature, ProjectileDataFeature>;
 
   struct ItemData {
     DataLabel label;

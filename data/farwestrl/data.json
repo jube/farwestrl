@@ -11,68 +11,71 @@
       "label": "Bison",
       "type": "animal",
       "display": { "picture": "b", "color": "#AA5500" },
-      "body": { "max_health": 40, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+40", "defense": "1d10+40" },
+      "body": { "max_health": 43, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+40", "defense": "1d10+40" },
       "can_be_mounted": true,
       "can_idle": false,
-      "biome": "prairie"
+      "biome": "prairie",
+      "url": "https://en.wikipedia.org/wiki/American_bison"
     },
     {
       "label": "Coyote",
       "type": "animal",
       "display": { "picture": "c", "color": "#818181" },
-      "body": { "max_health": 20, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+20", "defense": "1d10+20" },
+      "body": { "max_health": 13, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+20", "defense": "1d10+20" },
       "can_be_mounted": false,
       "can_idle": true,
-      "biome": "prairie"
+      "biome": "prairie",
+      "url": "https://en.wikipedia.org/wiki/Coyote"
     },
     {
       "label": "Cow",
       "type": "animal",
       "display": { "picture": "c", "color": "#783F21" },
-      "body": { "max_health": 20, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+30", "defense": "1d10+30" },
+      "body": { "max_health": 42, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+30", "defense": "1d10+30" },
       "can_be_mounted": true,
       "can_idle": false,
-      "biome": "prairie"
+      "biome": "prairie",
+      "url": "https://en.wikipedia.org/wiki/Cattle"
     },
     {
       "label": "Grizzli",
       "type": "animal",
       "display": { "picture": "g", "color": "#714520" },
-      "body": { "max_health": 40, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+40", "defense": "1d10+40" },
+      "body": { "max_health": 35, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+40", "defense": "1d10+40" },
       "can_be_mounted": false,
       "can_idle": true,
-      "biome": "forest"
+      "biome": "forest",
+      "url": "https://en.wikipedia.org/wiki/Grizzly_bear"
     },
     {
       "label": "Horse",
       "type": "animal",
       "display": { "picture": "h", "color": "#AB6A0F" },
-      "body": { "max_health": 30, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+30", "defense": "1d10+30" },
+      "body": { "max_health": 37, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d10+30", "defense": "1d10+30" },
       "can_be_mounted": true,
       "can_idle": true,
-      "biome": "prairie"
+      "biome": "prairie",
+      "url": "https://en.wikipedia.org/wiki/Horse"
     },
     {
       "label": "Scorpion",
       "type": "animal",
       "display": { "picture": "s", "color": "#303030" },
-      "body": { "max_health": 10, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d4+20", "defense": "1d4+10" },
-      "attack": 50,
-      "defense": 50,
+      "body": { "max_health": 2, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d4+20", "defense": "1d4+10" },
       "can_be_mounted": false,
       "can_idle": true,
-      "biome": "moutain"
+      "biome": "moutain",
+      "url": "https://en.wikipedia.org/wiki/Scorpion"
     },
     {
       "label": "Snake",
       "type": "animal",
       "display": { "picture": "s", "color": "#8DE874" },
-      "body": { "max_health": 10, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d4+20", "defense": "1d4+10" },
-      "attack": 10,
-      "defense": 5,
+      "body": { "max_health": 3, "force": "3d6+1", "dexterity": "1d4+1", "constitution": "3d6+1", "luck": "1d4", "attack": "1d4+20", "defense": "1d4+10" },
       "can_be_mounted": false,
       "can_idle": true,
-      "biome": "desert"
+      "biome": "desert",
+      "url": "https://en.wikipedia.org/wiki/Viper"
     },
     {
       "label": "Train",
@@ -84,45 +87,51 @@
       "label": "Adams Revolver",
       "display": { "picture": "§", "color": "#222222" },
       "type": "distance_weapon",
-      "range": 10,
-      "shoot_time": 3,
-      "reload_time": 15,
+      "range": 7,
+      "shoot_time": 5,
+      "reload_time": 30,
       "capacity": 5,
-      "caliber": 44,
       "modifier": 0,
+      "projectile": ".44 Ammunition",
       "url": "https://en.wikipedia.org/wiki/Adams_(revolver)"
     },
     {
       "label": "Beaumont-Adams Revolver",
       "display": { "picture": "§", "color": "#222222" },
       "type": "distance_weapon",
-      "range": 10,
-      "shoot_time": 3,
-      "reload_time": 15,
+      "range": 7,
+      "shoot_time": 5,
+      "reload_time": 30,
       "capacity": 5,
-      "caliber": 36,
       "modifier": 0,
+      "projectile": ".36 Ammunition",
       "url": "https://en.wikipedia.org/wiki/Beaumont%E2%80%93Adams_revolver"
     },
     {
       "label": "Colt Dragoon Revolver",
       "display": { "picture": "§", "color": "#222222" },
       "type": "distance_weapon",
-      "range": 10,
-      "shoot_time": 3,
-      "reload_time": 15,
+      "range": 17,
+      "shoot_time": 5,
+      "reload_time": 30,
       "capacity": 6,
-      "caliber": 44,
-      "modifier": 0,
-      "url": ""
+      "modifier": 2,
+      "projectile": ".44 Ammunition",
+      "url": "https://en.wikipedia.org/wiki/Colt_Dragoon_Revolver"
     },
 
     {
-      "label": ".44 Ammunitions",
+      "label": ".44 Ammunition",
       "display": { "picture": "•", "color": "#808080" },
-      "type": "ammunition",
+      "type": "projectile",
       "attack": 50,
-      "caliber": 44,
+      "modifier": 0
+    },
+    {
+      "label": ".36 Ammunition",
+      "display": { "picture": "•", "color": "#808080" },
+      "type": "projectile",
+      "attack": 50,
       "modifier": 0
     },
 
