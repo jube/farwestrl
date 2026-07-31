@@ -46,6 +46,8 @@ namespace fw {
   struct ActorData {
     DataLabel label;
     ActorDataFeature feature;
+
+    ActorType type() const { return feature.type(); }
   };
 
   void from_json(const nlohmann::json& json, ActorData& data);

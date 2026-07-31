@@ -15,6 +15,7 @@ namespace fw {
     std::string dexterity;
     std::string constitution;
     std::string luck;
+    int16_t attack_time;
     std::string attack;
     std::string defense;
   };

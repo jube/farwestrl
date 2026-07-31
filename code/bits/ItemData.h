@@ -55,6 +55,8 @@ namespace fw {
     DataLabel label;
     DisplayData display;
     ItemDataFeature feature;
+
+    ItemType type() const { return feature.type(); }
   };
 
   void from_json(const nlohmann::json& j, ItemData& data);
