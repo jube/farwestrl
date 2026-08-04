@@ -20,8 +20,9 @@ namespace fw {
 
   struct AttackDigest {
     int8_t attribute = 0;
-    int8_t luck = 0;
     int8_t modifier = 0;
+    int8_t luck = 0;
+    uint16_t time = 0;
     Attack attack = 0;
     int32_t range = 0;
   };

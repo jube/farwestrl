@@ -41,6 +41,7 @@ namespace fw {
           // use your fist
           digest.attribute = feature.body.force;
           digest.attack = feature.body.attack;
+          digest.time = feature.body.attack_time;
           digest.range = 0;
         } else {
           switch (feature.weapon.data->feature.type()) {
@@ -54,6 +55,7 @@ namespace fw {
 
               const MeleeWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::MeleeWeapon>();
               digest.attack = weapon.attack;
+              digest.time = weapon.use_time;
               digest.modifier += weapon.modifier;
               digest.range = 0;
               break;
@@ -65,6 +67,7 @@ namespace fw {
               const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
               digest.range = weapon.range;
               digest.modifier += weapon.modifier;
+              digest.time = weapon.shoot_time;
 
               if (feature.projectile.data && feature.weapon.projectiles > 0) {
                 assert(feature.projectile.data->feature.type() == ItemType::Projectile);
@@ -73,6 +76,7 @@ namespace fw {
                 digest.modifier += ammunition.modifier;
               } else {
                 digest.attack = 0;
+                digest.time = 1; // TODO: maybe define a constant in this case or use shoot_time
               }
               break;
             }
@@ -87,6 +91,7 @@ namespace fw {
         digest.attribute = feature.body.force;
         digest.luck = feature.body.luck;
         digest.attack = feature.body.attack;
+        digest.time = feature.body.attack_time;
         digest.range = 0;
         break;
       }

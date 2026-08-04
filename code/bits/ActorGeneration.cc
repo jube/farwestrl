@@ -25,7 +25,7 @@ namespace fw {
     BodyState generate_body(const BodyData& data, gf::Random* random)
     {
       BodyState state = {};
-      state.health = data.max_health;
+      state.max_health = state.health = data.max_health;
 
       state.force = generate_attribute(data.force, random);
       state.dexterity = generate_attribute(data.dexterity, random);
@@ -36,6 +36,7 @@ namespace fw {
       state.precision = random->compute_uniform_integer(StatMin, StatMax);
       state.endurance = random->compute_uniform_integer(StatMin, StatMax);
 
+      state.attack_time = data.attack_time;
       state.attack = generate_attribute(data.attack, random);
       state.defense = generate_attribute(data.defense, random);
 

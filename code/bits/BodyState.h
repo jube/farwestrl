@@ -13,6 +13,7 @@ namespace fw {
   using Stat = gf::Fixed<int32_t, 16>;
 
   struct BodyState {
+    int8_t max_health;
     int8_t health;
     // attributes
     int8_t force;
@@ -24,6 +25,7 @@ namespace fw {
     Stat precision;
     Stat endurance;
     // combat
+    uint16_t attack_time;
     Attack attack;
     Defense defense;
   };
@@ -31,7 +33,7 @@ namespace fw {
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<BodyState, Archive>& state)
   {
-    return ar | state.health | state.force | state.dexterity | state.constitution | state.luck | state.intensity | state.precision | state.endurance | state.attack | state.defense;
+    return ar | state.max_health | state.health | state.force | state.dexterity | state.constitution | state.luck | state.intensity | state.precision | state.endurance | state.attack_time | state.attack | state.defense;
   }
 
 }
