@@ -38,6 +38,7 @@ namespace fw {
   };
 
   struct ProjectileDataFeature {
+    DisplayData empty;
     Attack attack;
     ProjectileKind kind;
     int8_t modifier;

@@ -145,25 +145,32 @@ namespace fw {
 
     if (feature.projectile.data) {
       assert(feature.projectile.data->feature.type() == ItemType::Projectile);
+      const ProjectileDataFeature& projectile = feature.projectile.data->feature.from<ItemType::Projectile>();
+
       gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Projectiles</>: {} × {}", feature.projectile.data.tag, feature.projectile.count); // only for distance weapons
+
+      ++position.y;
 
       assert(feature.weapon.data->feature.type() == ItemType::DistanceWeapon);
       const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
 
-      std::string cartridges;
+      gf::console_write_picture(console, position, u'║' /* u'[' */, gf::White);
 
       for (int8_t i = 0; i < feature.weapon.projectiles; ++i) {
-        cartridges += "•"; // TODO: feature.weapon.data->display.picture
+        gf::console_write_picture(console, position + gf::dirx(1 + i), feature.projectile.data->display.picture, feature.projectile.data->display.color);
       }
 
       for (int8_t i = feature.weapon.projectiles; i < weapon.capacity; ++i) {
-        cartridges += "○"; // TODO
+        gf::console_write_picture(console, position + gf::dirx(1 + i), projectile.empty.picture, projectile.empty.color);
       }
 
-      gf::console_print_picture(console, position + gf::dirx(CharacterBoxSize.x - 3), gf::ConsoleAlignment::Right, m_game->style(), "{}", cartridges);
+      gf::console_write_picture(console, position + gf::dirx(1 + weapon.capacity), u'║' /* u']' */, gf::White);
+
+
     } else {
       gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Projectiles</>: -");
-      gf::console_print_picture(console, position + gf::dirx(CharacterBoxSize.x - 3), gf::ConsoleAlignment::Right, m_game->style(), "∅");
+      ++position.y;
+      gf::console_write_picture(console, position, "║║", m_game->style().default_style());
     }
 
     position.y += 2;

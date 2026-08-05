@@ -7,7 +7,6 @@
 #include <gf2/core/TaggedVariant.h>
 
 #include "BodyData.h"
-#include "Combat.h"
 #include "DataLabel.h"
 #include "DisplayData.h"
 #include "MapCellBiome.h"

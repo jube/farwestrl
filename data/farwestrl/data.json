@@ -122,16 +122,18 @@
 
     {
       "label": ".44 Ammunition",
-      "display": { "picture": "•", "color": "#808080" },
+      "display": { "picture": "•", "color": "#CBB151" },
       "type": "projectile",
+      "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".44",
       "attack": 50,
       "modifier": 0
     },
     {
       "label": ".36 Ammunition",
-      "display": { "picture": "•", "color": "#808080" },
+      "display": { "picture": "•", "color": "#CBB151" },
       "type": "projectile",
+      "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".36",
       "attack": 40,
       "modifier": 0

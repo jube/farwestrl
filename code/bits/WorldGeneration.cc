@@ -1975,7 +1975,16 @@ namespace fw {
     ActorState generate_hero(const WorldState& state, const WorldData& data, gf::Random* random)
     {
       const gf::Vec2I position = compute_starting_position(state.network);
-      return generate_human("Hero", { position, Floor::Ground }, data, random);
+      ActorState hero = generate_human("Hero", { position, Floor::Ground }, data, random);
+
+      HumanFeature& feature = hero.feature.from<ActorType::Human>();
+      feature.weapon.data = "Colt Dragoon Revolver";
+      feature.weapon.projectiles = 3;
+
+      feature.projectile.data = ".44 Ammunition";
+      feature.projectile.count = 10;
+
+      return hero;
     }
 
   }

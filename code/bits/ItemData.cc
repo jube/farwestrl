@@ -52,6 +52,7 @@ namespace fw {
       case ItemType::Projectile:
         {
           ProjectileDataFeature feature;
+          json.at("empty").get_to(feature.empty);
           json.at("attack").get_to(feature.attack);
           json.at("kind").get_to(feature.kind);
           json.at("modifier").get_to(feature.modifier);
