@@ -14,11 +14,9 @@
 #include "MapCell.h"
 #include "MapRuntime.h"
 #include "MapState.h"
-#include "NetworkState.h"
 #include "Pictures.h"
 #include "Settings.h"
 #include "Utils.h"
-#include "gf2/core/Vec2.h"
 
 namespace fw {
 
@@ -66,6 +64,18 @@ namespace fw {
       u"   "sv
     };
 
+    float compute_fade_ratio(gf::Vec2I position, gf::Vec2I hero_position, int32_t min_distance, int32_t max_distance)
+    {
+      const int32_t square_distance = gf::square_distance(position, hero_position);
+
+      if (square_distance <= gf::square(min_distance)) {
+        return 0.0f;
+      }
+
+      const int32_t distance = gf::isqrt(square_distance);
+      return gf::clamp(static_cast<float>(distance - min_distance) / static_cast<float>(max_distance - min_distance), 0.0f, 1.0f);
+    }
+
   }
 
   MapConsoleEntity::MapConsoleEntity(FarWest* game)
@@ -103,20 +113,22 @@ namespace fw {
       // TODO: verify the position is in the map or clamp the view
 
       const MapCell& cell = map(position);
-
-      if (cell.visible()) {
-        continue;
-      }
-
       const gf::Vec2I console_position = position - view.position() + GameBoxPosition;
 
-      if (cell.explored()) {
-        constexpr gf::Color LightFadeColor = gf::gray(0.75f);
+      constexpr gf::Color LightFadeColor = gf::gray(0.75f);
+      constexpr gf::Color DarkFadeColor = gf::gray(0.05f);
+
+      if (cell.visible()) {
+        const float fade_ratio = compute_fade_ratio(position, hero_location.position, HeroVisionRange - HeroVisionFadeDistance, HeroVisionRange);
+        const gf::Color color = gf::lerp(gf::White, LightFadeColor, fade_ratio);
+
+        gf::console_write_background(console, console_position, color, gf::ConsoleEffect::multiply());
+        console(console_position).parts[0].foreground *= color;
+      } else if (cell.explored()) {
         gf::console_write_background(console, console_position, LightFadeColor, gf::ConsoleEffect::multiply());
         console(console_position).parts[0].foreground *= LightFadeColor;
       } else {
         assert(!cell.visible());
-        constexpr gf::Color DarkFadeColor = gf::gray(0.05f);
         gf::console_write_background(console, console_position, DarkFadeColor, gf::ConsoleEffect::multiply());
         console(console_position).parts[0].foreground *= DarkFadeColor;
       }

@@ -167,8 +167,6 @@ namespace fw {
       return;
     }
 
-    update_reduced_background();
-
     const WorldState* state = m_game->state();
 
     const gf::Vec2I target = runtime->mouse.value() + runtime->compute_view().position();
@@ -186,6 +184,8 @@ namespace fw {
       return;
     }
 
+    update_reduced_background();
+
     const FloorMap& runtime_map = runtime->map.from_floor(location.floor);
 
     if (!runtime_map.reverse(target).empty() || !m_reduced_background(target).walkable()) {
@@ -196,6 +196,7 @@ namespace fw {
     using gf::operators::operator|;
 
     if (runtime->hero.moves.empty()) {
+
       gf::Log::debug("computing path to {},{}", target.x, target.y);
       gf::OrthogonalGrid grid(WorldSize, { 1, 1 });
 
