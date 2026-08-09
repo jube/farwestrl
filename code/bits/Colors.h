@@ -6,7 +6,7 @@
 namespace fw {
 
   inline constexpr gf::Color RpgBlue = { 0.015625f, 0.03125f, 0.515625f };
-  inline constexpr float RpgBlueAlpha = 0.85f;
+  inline constexpr float RpgBlueAlpha = 0.95f;
 
   inline constexpr gf::Color PrairieColor = 0xC4D6B0;
   inline constexpr gf::Color DesertColor = 0xC2B280;

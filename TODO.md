@@ -16,9 +16,11 @@
     - coins
     - chests (and other containers)
   - add characters
+  - make all the images for the items
 - UI:
   - add a menu for Inventory, Minimap, Help, Quit (and maybe others)
   - rework key bindings:
     - maybe different layout: traditional (arrows + keys); arrows (arrows + 4-key actions); vi (vi keys + 4-key actions); gamepad
   - `AdventureControlScene`: add the possibility of cancelling automatic move
   - add a key for walking continuously (like Alt), accessible with other key moves
+  - put styles in their own file (out of `FarWest`) and make different styles for different context

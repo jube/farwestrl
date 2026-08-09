@@ -23,11 +23,15 @@ namespace fw {
     Projectile,
   };
 
+  std::string_view to_string(ItemType type);
+
   enum class ProjectileKind : uint8_t {
     None,
     Dot36Ammunition,
     Dot44Ammunition,
   };
+
+  std::string_view to_string(ProjectileKind kind);
 
   struct DistanceWeaponDataFeature {
     int32_t range;

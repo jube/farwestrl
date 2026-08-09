@@ -36,6 +36,7 @@ namespace fw {
 
   constexpr int8_t MaxHealth = 20;
 
+  constexpr int32_t ItemImageSize = 20;
 
   /*
    * Map
