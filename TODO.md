@@ -1,0 +1,24 @@
+# TODO
+
+- Procedural Generation
+  - add horizontal lodes in mines
+  - add huts and rocks in forest
+  - add small lakes, huts and rocks in prairie
+  - add mining camps in mines and/or moutains
+- Data
+  - firearms: maybe modify the shoot time if the firearm is a single action or a double action (single: 5, double: 6)
+  - ammunitions: add ammunition variants (with modifiers)
+  - native weaponry:
+    - https://en.wikipedia.org/wiki/Native_American_weaponry
+    - https://www.native-languages.org/weapons.htm
+  - add items
+    - food items
+    - coins
+    - chests (and other containers)
+  - add characters
+- UI:
+  - add a menu for Inventory, Minimap, Help, Quit (and maybe others)
+  - rework key bindings:
+    - maybe different layout: traditional (arrows + keys); arrows (arrows + 4-key actions); vi (vi keys + 4-key actions); gamepad
+  - `AdventureControlScene`: add the possibility of cancelling automatic move
+  - add a key for walking continuously (like Alt), accessible with other key moves

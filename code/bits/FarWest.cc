@@ -87,6 +87,7 @@ namespace fw {
   , kickoff_creation(this)
   , adventure_primary(this)
   , adventure_control(this)
+  , adventure_inventory(this)
   , adventure_minimap(this)
   , adventure_help(this)
   , adventure_quit(this)

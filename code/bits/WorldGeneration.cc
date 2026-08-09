@@ -25,6 +25,7 @@
 #include "ActorState.h"
 #include "Colors.h"
 #include "Date.h"
+#include "ItemState.h"
 #include "MapBuilding.h"
 #include "MapCell.h"
 #include "MapCellBiome.h"
@@ -1978,11 +1979,16 @@ namespace fw {
       ActorState hero = generate_human("Hero", { position, Floor::Ground }, data, random);
 
       HumanFeature& feature = hero.feature.from<ActorType::Human>();
-      feature.weapon.data = "Colt Dragoon Revolver";
+      feature.weapon.data = "Smith & Wesson Model 3 Revolver";
       feature.weapon.projectiles = 3;
 
       feature.projectile.data = ".44 Ammunition";
       feature.projectile.count = 10;
+
+      InventoryItemState item;
+      item.count = 1;
+      item.data = "Colt Walker Revolver";
+      feature.inventory.items.push_back(item);
 
       return hero;
     }

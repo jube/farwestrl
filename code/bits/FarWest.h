@@ -12,6 +12,7 @@
 
 #include "AdventureControlScene.h"
 #include "AdventureHelpScene.h"
+#include "AdventureInventoryScene.h"
 #include "AdventureMinimapScene.h"
 #include "AdventurePrimaryScene.h"
 #include "AdventureQuitScene.h"
@@ -77,6 +78,7 @@ namespace fw {
 
     AdventurePrimaryScene adventure_primary;
     AdventureControlScene adventure_control;
+    AdventureInventoryScene adventure_inventory;
     AdventureMinimapScene adventure_minimap;
     AdventureHelpScene adventure_help;
     AdventureQuitScene adventure_quit;

@@ -81,6 +81,7 @@ namespace fw {
       settings.actions.emplace(move_action.id, std::move(action));
     }
 
+    settings.actions.emplace("inventory"_id, gf::instantaneous_action().add_keycode_control(gf::Keycode::I));
     settings.actions.emplace("minimap"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Tab));
     settings.actions.emplace("help"_id, gf::instantaneous_action().add_keycode_control(gf::Keycode::H).add_scancode_control(gf::Scancode::F1));
 
@@ -140,6 +141,10 @@ namespace fw {
 
     if (m_action_group.active("reload"_id)) {
       runtime->hero.action = make_action<ReloadAction>();
+    }
+
+    if (m_action_group.active("inventory"_id)) {
+      m_game->replace_scene(&m_game->adventure_inventory);
     }
 
     if (m_action_group.active("minimap"_id)) {

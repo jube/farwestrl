@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 
 #include <gf2/core/Color.h>
+#include <gf2/core/Console.h>
 #include <gf2/core/TaggedVariant.h>
 
 #include "Combat.h"
@@ -55,6 +56,7 @@ namespace fw {
   struct ItemData {
     DataLabel label;
     DisplayData display;
+    gf::Console image;
     ItemDataFeature feature;
 
     ItemType type() const { return feature.type(); }
