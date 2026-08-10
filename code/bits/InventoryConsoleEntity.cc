@@ -20,6 +20,8 @@ namespace fw {
     static_assert(InventoryListBox.offset.x + InventoryListBox.extent.x == InventoryPreviewBox.offset.x);
     static_assert(InventoryPreviewBox.offset.x + InventoryPreviewBox.extent.x + 1 == InventoryConsoleSize.x);
 
+    constexpr int32_t InventoryListLength = 22;
+
     constexpr gf::Vec2I InventoryImagePosition = { InventoryPreviewBox.offset.x + (InventoryPreviewBox.extent.x - 20) / 2, 0 + 5 };
     constexpr gf::Vec2I InventoryNamePosition = { 44, 27 };
     constexpr gf::Vec2I InventoryBasicDescriptionPosition = { 34, 30 };
@@ -63,8 +65,19 @@ namespace fw {
     gf::console_draw_frame(m_console, gf::RectI::from_size(InventoryConsoleSize), style);
 
     gf::console_draw_frame(m_console, InventoryListBox, style);
-    gf::console_draw_frame(m_console, InventoryPreviewBox, style);
 
+    if (!m_state->items.empty()) {
+      gf::Vec2I position = InventoryListBox.position() + 2;
+
+      for (const InventoryItemState& item : m_state->items) {
+        gf::console_print_text(m_console, position, gf::ConsoleAlignment::Left, rich_style, "{}", item.data->label.tag);
+        gf::console_print_text(m_console, position + gf::dirx(InventoryListLength), gf::ConsoleAlignment::Right, rich_style, "{}", item.count);
+        ++position.y;
+      }
+
+    }
+
+    gf::console_draw_frame(m_console, InventoryPreviewBox, style);
 
     if (!m_state->items.empty()) {
       const InventoryItemState& item = m_state->items.front();
