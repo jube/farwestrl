@@ -108,7 +108,7 @@ namespace fw {
           gf::console_print_text(m_console, position + gf::dirx(InventoryBasicDescriptionLength), gf::ConsoleAlignment::Right, rich_style, "{}s", feature.shoot_time);
           ++position.y;
           gf::console_print_text(m_console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Reload Time</>:");
-          gf::console_print_text(m_console, position + gf::dirx(InventoryBasicDescriptionLength), gf::ConsoleAlignment::Left, rich_style, "{}s", feature.reload_time);
+          gf::console_print_text(m_console, position + gf::dirx(InventoryBasicDescriptionLength), gf::ConsoleAlignment::Right, rich_style, "{}s", feature.reload_time);
           ++position.y;
           break;
         }
