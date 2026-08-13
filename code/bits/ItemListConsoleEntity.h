@@ -18,12 +18,23 @@ namespace fw {
     void set_inventory(const InventoryState* state);
     const ItemData* current_item() const;
 
+    void next_page();
+    void prev_page();
+    void next_item();
+    void prev_item();
+
     void update(gf::Time time) override;
     void render(gf::Console& console) override;
 
   private:
+    void normalize_page();
+    void normalize_index();
+
     FarWest* m_game = nullptr;
     const InventoryState* m_state = nullptr;
+
+    int32_t m_current_page = 0;
+    int32_t m_current_index = 0;
   };
 
 }

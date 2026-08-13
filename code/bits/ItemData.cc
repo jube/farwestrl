@@ -50,14 +50,6 @@ namespace fw {
         part.character = static_cast<char16_t>(character);
         part.foreground = gf::Black;
         part.background = gf::darker(PaperColor, random.compute_uniform_float(0.04f));
-
-        // put a hole in the paper sometimes
-
-        if (character == U' ' && random.compute_bernoulli(0.01)) {
-          part.character = u'\u25D8'; /* '◘' */
-          part.foreground = part.background;
-          part.background = RpgBlue;
-        }
       }
 
       // modify the outline of the paper

@@ -17,6 +17,11 @@ namespace fw {
 
     void set_inventory(const InventoryState* state);
 
+    void next_page() { m_list_entity.next_page(); }
+    void prev_page() { m_list_entity.prev_page(); }
+    void next_item() { m_list_entity.next_item(); }
+    void prev_item() { m_list_entity.prev_item(); }
+
     void update(gf::Time time) override;
     void render(gf::Console& console) override;
 

@@ -76,6 +76,7 @@ target("image-converter")
     set_kind("binary")
     add_files("code/image-converter.cc")
     add_packages("gamedevframework2", "nlohmann_json")
+    set_rundir("$(projectdir)")
 
 target("farwestrl-debug")
     set_kind("binary")

@@ -1990,6 +1990,13 @@ namespace fw {
       item.data = "Colt Walker Revolver";
       feature.inventory.items.push_back(item);
 
+      item.data = "Knife";
+      feature.inventory.items.push_back(item);
+
+      item.data = ".44 Ammunition";
+      item.count = 40;
+      feature.inventory.items.push_back(item);
+
       return hero;
     }
 

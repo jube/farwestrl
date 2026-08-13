@@ -59,9 +59,13 @@ namespace fw {
 
     gf::Vec2I position = ItemPreviewDescriptionPosition;
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Type</>:", to_string(m_data->type()));
-    gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, "{}", to_string(m_data->type()));
-    ++position.y;
+    auto print_key_value = [&]<typename... T>(std::string_view key, fmt::format_string<T...> fmt, T&&... value) {
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>{}</>:", key);
+      gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, fmt, std::forward<T>(value)...);
+      ++position.y;
+    };
+
+    print_key_value("Type", "{}", to_string(m_data->type()));
 
     gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Display</>:");
     gf::console_write_picture(console, position + gf::dirx(ItemPreviewDescriptionWidth), m_data->display.picture, { m_data->display.color, gf::White });
@@ -73,32 +77,32 @@ namespace fw {
       case ItemType::None:
         break;
       case ItemType::MeleeWeapon:
+      {
+        const MeleeWeaponDataFeature& feature = m_data->feature.from<ItemType::MeleeWeapon>();
+        print_key_value("Attack", "{}", feature.attack.as_int());
+        print_key_value("Modifier", "{:+d}", feature.modifier);
+        print_key_value("Use Time", "{}s", feature.use_time);
         break;
+      }
       case ItemType::DistanceWeapon:
       {
         const DistanceWeaponDataFeature& feature = m_data->feature.from<ItemType::DistanceWeapon>();
-        gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Projectile</>:");
-        gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, "{}", to_string(feature.projectile));
-        ++position.y;
-        gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Capacity</>:");
-        gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, "{}", feature.capacity);
-        ++position.y;
-        gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Range</>:");
-        gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, "{}m", feature.range);
-        ++position.y;
-        gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Modifier</>:");
-        gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, "{:+d}", feature.modifier);
-        ++position.y;
-        gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Shoot Time</>:");
-        gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, "{}s", feature.shoot_time);
-        ++position.y;
-        gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Reload Time</>:");
-        gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, "{}s", feature.reload_time);
-        ++position.y;
+        print_key_value("Projectile", "{}", to_string(feature.projectile));
+        print_key_value("Capacity", "{}", feature.capacity);
+        print_key_value("Range", "{}m", feature.range);
+        print_key_value("Modifier", "{:+d}", feature.modifier);
+        print_key_value("Shoot Time", "{}s", feature.shoot_time);
+        print_key_value("Reload Time", "{}s", feature.reload_time);
         break;
       }
       case ItemType::Projectile:
+      {
+        const ProjectileDataFeature& feature = m_data->feature.from<ItemType::Projectile>();
+        print_key_value("Kind", "{}", to_string(feature.kind));
+        print_key_value("Attack", "{}", feature.attack.as_int());
+        print_key_value("Modifier", "{:+d}", feature.modifier);
         break;
+      }
     }
   }
 

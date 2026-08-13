@@ -31,6 +31,22 @@ namespace fw {
       m_game->replace_scene(&m_game->adventure_control);
     }
 
+    if (m_action_group.active("prev_item"_id)) {
+      m_inventory.prev_item();
+    }
+
+    if (m_action_group.active("next_item"_id)) {
+      m_inventory.next_item();
+    }
+
+    if (m_action_group.active("prev_page"_id)) {
+      m_inventory.prev_page();
+    }
+
+    if (m_action_group.active("next_page"_id)) {
+      m_inventory.next_page();
+    }
+
     m_action_group.reset();
   }
 
@@ -52,6 +68,10 @@ namespace fw {
     gf::ActionGroupSettings settings;
 
     settings.actions.emplace("back"_id, gf::instantaneous_action().add_keycode_control(gf::Keycode::I));
+    settings.actions.emplace("prev_item"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Up));
+    settings.actions.emplace("next_item"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Down));
+    settings.actions.emplace("prev_page"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::PageUp));
+    settings.actions.emplace("next_page"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::PageDown));
 
     return settings;
   }
