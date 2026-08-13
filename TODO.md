@@ -18,7 +18,6 @@
   - add characters
   - make all the images for the items
 - UI:
-  - split `InventoryConsoleEntity` in two entities: `ItemListConsoleEntity` and `ItemPreviewConsoleEntity`
   - add a menu for Inventory, Minimap, Help, Quit (and maybe others)
   - rework key bindings:
     - maybe different layout: traditional (arrows + keys); arrows (arrows + 4-key actions); vi (vi keys + 4-key actions); gamepad

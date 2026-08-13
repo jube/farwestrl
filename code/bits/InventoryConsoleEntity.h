@@ -4,6 +4,8 @@
 #include <gf2/core/Time.h>
 #include <gf2/core/ConsoleEntity.h>
 
+#include "ItemListConsoleEntity.h"
+#include "ItemPreviewConsoleEntity.h"
 #include "InventoryState.h"
 
 namespace fw {
@@ -20,8 +22,11 @@ namespace fw {
 
   private:
     FarWest* m_game = nullptr;
-    const InventoryState* m_state = nullptr;
     gf::Console m_console;
+    ItemListConsoleEntity m_list_entity;
+    gf::Console m_list_console;
+    ItemPreviewConsoleEntity m_preview_entity;
+    gf::Console m_preview_console;
   };
 
 }
