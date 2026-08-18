@@ -1,11 +1,12 @@
 #include "ItemListConsoleEntity.h"
 
 #include <cstdint>
+
 #include <gf2/core/ConsoleOperations.h>
 
-#include "Colors.h"
-#include "ItemState.h"
 #include "FarWest.h"
+#include "ItemState.h"
+#include "Styles.h"
 
 namespace fw {
 
@@ -79,15 +80,8 @@ namespace fw {
       return;
     }
 
-    gf::ConsoleStyle style;
-    style.color.foreground = gf::White;
-    style.color.background = RpgBlue;
-    style.effect = gf::ConsoleEffect::set();
-
-    gf::ConsoleRichStyle rich_style;
-    rich_style.set_default_style(style);
-    rich_style.set_style("item", { gf::Capri, RpgBlue });
-    rich_style.set_style("key", { gf::gray(0.7f), RpgBlue });
+    const gf::ConsoleStyle& style = ui_default_style();
+    const gf::ConsoleRichStyle& rich_style = ui_rich_style();
 
     gf::console_clear(console, style);
     gf::console_draw_frame(console, gf::RectI::from_size(ItemListConsoleSize), style);

@@ -6,6 +6,7 @@
 #include "FarWest.h"
 #include "Index.h"
 #include "Settings.h"
+#include "Styles.h"
 #include "WorldRuntime.h"
 
 namespace fw {
@@ -44,9 +45,7 @@ namespace fw {
 
   void ContextualConsoleEntity::render(gf::Console& console)
   {
-    gf::ConsoleStyle contextual_box_style;
-    contextual_box_style.color.foreground = gf::Gray;
-    gf::console_draw_frame(console, ContextualBox, contextual_box_style);
+    gf::console_draw_frame(console, ContextualBox, gf::Gray);
 
     gf::Console contextual_console(ContextualContentSize);
 
@@ -140,7 +139,7 @@ namespace fw {
       }
 
       gf::console_write_picture(console, position + gf::dirx(1), element.picture, { element.foreground, element.background });
-      gf::console_print_text(console, position + gf::dirx(3), gf::ConsoleAlignment::Left, m_game->style(), "{} ({}m)", element.name, element.distance);
+      gf::console_print_text(console, position + gf::dirx(3), gf::ConsoleAlignment::Left, message_rich_style(), "{} ({}m)", element.name, element.distance);
 
       ++count;
 

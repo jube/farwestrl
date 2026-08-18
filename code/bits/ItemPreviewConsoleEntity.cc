@@ -2,9 +2,9 @@
 
 #include <gf2/core/ConsoleOperations.h>
 
-#include "Colors.h"
-#include "Settings.h"
 #include "FarWest.h"
+#include "Settings.h"
+#include "Styles.h"
 
 namespace fw {
 
@@ -40,15 +40,8 @@ namespace fw {
       return;
     }
 
-    gf::ConsoleStyle style;
-    style.color.foreground = gf::White;
-    style.color.background = RpgBlue;
-    style.effect = gf::ConsoleEffect::set();
-
-    gf::ConsoleRichStyle rich_style;
-    rich_style.set_default_style(style);
-    rich_style.set_style("item", { gf::Capri, RpgBlue });
-    rich_style.set_style("key", { gf::gray(0.7f), RpgBlue });
+    const gf::ConsoleStyle& style = ui_default_style();
+    const gf::ConsoleRichStyle& rich_style = ui_rich_style();
 
     gf::console_clear(console, style);
     gf::console_draw_frame(console, gf::RectI::from_size(ItemPreviewConsoleSize), style);
@@ -59,15 +52,15 @@ namespace fw {
 
     gf::Vec2I position = ItemPreviewDescriptionPosition;
 
-    auto print_key_value = [&]<typename... T>(std::string_view key, fmt::format_string<T...> fmt, T&&... value) {
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>{}</>:", key);
+    auto print_key_value = [&]<typename... T>(std::string_view property, fmt::format_string<T...> fmt, T&&... value) {
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=property>{}</>:", property);
       gf::console_print_text(console, position + gf::dirx(ItemPreviewDescriptionWidth), gf::ConsoleAlignment::Right, rich_style, fmt, std::forward<T>(value)...);
       ++position.y;
     };
 
     print_key_value("Type", "{}", to_string(m_data->type()));
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=key>Display</>:");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=property>Display</>:");
     gf::console_write_picture(console, position + gf::dirx(ItemPreviewDescriptionWidth), m_data->display.picture, { m_data->display.color, gf::White });
     ++position.y;
 

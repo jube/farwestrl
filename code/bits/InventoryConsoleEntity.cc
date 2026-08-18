@@ -5,6 +5,7 @@
 #include "Colors.h"
 #include "Settings.h"
 #include "FarWest.h"
+#include "Styles.h"
 
 namespace fw {
 
@@ -47,10 +48,7 @@ namespace fw {
   {
     m_preview_entity.set_item(m_list_entity.current_item());
 
-    gf::ConsoleStyle style;
-    style.color.foreground = gf::White;
-    style.color.background = RpgBlue;
-    style.effect = gf::ConsoleEffect::set();
+    const gf::ConsoleStyle& style = ui_default_style();
 
     gf::console_clear(m_console, style);
     gf::console_draw_frame(m_console, gf::RectI::from_size(InventoryConsoleSize), style);

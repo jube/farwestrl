@@ -8,6 +8,7 @@
 #include "FarWest.h"
 #include "ItemData.h"
 #include "Settings.h"
+#include "Styles.h"
 
 namespace fw {
 
@@ -89,39 +90,34 @@ namespace fw {
     const WorldState* state = m_game->state();
     const WorldRuntime* runtime = m_game->runtime();
 
-    gf::ConsoleStyle character_box_style;
-    character_box_style.color.foreground = gf::Gray;
-    gf::console_draw_frame(console, CharacterBox, character_box_style);
+    gf::console_draw_frame(console, CharacterBox, gf::Gray);
+
+    const gf::ConsoleRichStyle& rich_style = message_rich_style();
 
     gf::Vec2I position = CharacterBoxPosition + 1;
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=date>{}</>", state->current_date.to_string());
-    gf::console_print_picture(console, position + gf::dirx(12), gf::ConsoleAlignment::Left, m_game->style(), "<style={}>{}</>", phase_style(runtime->phase), phase_symbol(runtime->phase));
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=date>{}</>", state->current_date.to_string());
+    gf::console_print_picture(console, position + gf::dirx(12), gf::ConsoleAlignment::Left, rich_style, "<style={}>{}</>", phase_style(runtime->phase), phase_symbol(runtime->phase));
 
     position.y += 2;
 
     const ActorState& hero = state->hero();
     const HumanFeature& feature = hero.feature.from<ActorType::Human>();
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=hero>{}</>", feature.name);
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=hero>{}</>", feature.name);
     ++position.y;
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style={}>{}</>", gender_style(feature.gender), gender_symbol(feature.gender));
-    gf::console_print_text(console, position + gf::dirx(1), gf::ConsoleAlignment::Left, m_game->style(), "{} year old", feature.age);
+    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, rich_style, "<style={}>{}</>", gender_style(feature.gender), gender_symbol(feature.gender));
+    gf::console_print_text(console, position + gf::dirx(1), gf::ConsoleAlignment::Left, rich_style, "{} year old", feature.age);
 
     position.y += 2;
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=health>HP</>:");
-    gf::console_print_picture(console, position + gf::dirx(2), gf::ConsoleAlignment::Left, m_game->style(), "<style=health>{}</><style=non_health>{}</>", health_bar(feature.body.health), health_bar(MaxHealth - feature.body.health));
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=health>HP</>:");
+    gf::console_print_picture(console, position + gf::dirx(2), gf::ConsoleAlignment::Left, rich_style, "<style=health>{}</><style=non_health>{}</>", health_bar(feature.body.health), health_bar(MaxHealth - feature.body.health));
 
     position.y += 2;
-
-    gf::ConsoleStyle stat_style;
-    stat_style.effect = gf::ConsoleEffect::none();
-    stat_style.color.foreground = gf::Black;
-    stat_style.color.background = gf::Transparent;
 
     auto print_attribute_stat = [&](std::string_view attribute_name, std::string_view attribute_style, int8_t attribute, std::string_view stat_name, gf::Color stat_color, const Stat& stat) {
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style={}>{}</>: {}", attribute_style, attribute_name, attribute);
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style={}>{}</>: {}", attribute_style, attribute_name, attribute);
       ++position.y;
 
       const int stat_bar = (stat * (CharacterBoxSize.w - 2) / 100).as_int();
@@ -130,7 +126,7 @@ namespace fw {
         gf::console_write_background(console, position + gf::dirx(x), x <= stat_bar ? stat_color : gf::Gray);
       }
 
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, stat_style, "{}: {}", stat_name, stat.as_int());
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, gf::Black, "{}: {}", stat_name, stat.as_int());
       ++position.y;
     };
 
@@ -140,14 +136,14 @@ namespace fw {
 
     ++position.y;
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Weapon</>: {}", feature.weapon.data ? feature.weapon.data->label.tag : "-");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=weapon>Weapon</>: {}", feature.weapon.data ? feature.weapon.data->label.tag : "-");
     ++position.y;
 
     if (feature.projectile.data) {
       assert(feature.projectile.data->feature.type() == ItemType::Projectile);
       const ProjectileDataFeature& projectile = feature.projectile.data->feature.from<ItemType::Projectile>();
 
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Projectiles</>: {} × {}", feature.projectile.data.tag, feature.projectile.count); // only for distance weapons
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=weapon>Projectiles</>: {} × {}", feature.projectile.data.tag, feature.projectile.count); // only for distance weapons
 
       ++position.y;
 
@@ -168,16 +164,16 @@ namespace fw {
 
 
     } else {
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=weapon>Projectiles</>: -");
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=weapon>Projectiles</>: -");
       ++position.y;
-      gf::console_write_picture(console, position, "║║", m_game->style().default_style());
+      gf::console_write_picture(console, position, "║║", rich_style.default_style());
     }
 
     position.y += 2;
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=cash>Cash</>: 100$");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=cash>Cash</>: 100$");
     ++position.y;
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, m_game->style(), "<style=debt>Debt</>: 10034$");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=debt>Debt</>: 10034$");
     ++position.y;
 
 

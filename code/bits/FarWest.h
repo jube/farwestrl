@@ -55,11 +55,6 @@ namespace fw {
       return &m_model.runtime;
     }
 
-    const gf::ConsoleRichStyle& style() const
-    {
-      return m_rich_style;
-    }
-
     void create_world(AdventureChoice choice);
     bool world_creation_finished();
     WorldGenerationStep world_creation_step();
@@ -98,8 +93,6 @@ namespace fw {
     bool m_async_world_finished = false;
 
     WorldGenerationAnalysis m_analysis;
-
-    gf::ConsoleRichStyle m_rich_style;
   };
 
 }

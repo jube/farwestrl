@@ -5,6 +5,7 @@
 #include "Colors.h"
 #include "FarWest.h"
 #include "Settings.h"
+#include "Styles.h"
 
 namespace fw {
 
@@ -59,15 +60,8 @@ namespace fw {
 
     gf::Console compute_help_console()
     {
-      gf::ConsoleStyle style;
-      style.color.foreground = gf::White;
-      style.color.background = RpgBlue;
-      style.effect = gf::ConsoleEffect::set();
-
-      gf::ConsoleRichStyle rich_style;
-      rich_style.set_default_style(style);
-      rich_style.set_style("key", { gf::Cerise, RpgBlue });
-      rich_style.set_style("context", { gf::gray(0.7f), RpgBlue });
+      const gf::ConsoleStyle& style = ui_default_style();
+      const gf::ConsoleRichStyle& rich_style = ui_rich_style();
 
       gf::Console console(ConsoleSize);
       gf::console_clear(console, style);

@@ -9,6 +9,7 @@
 #include "FarWest.h"
 #include "JournalState.h"
 #include "Settings.h"
+#include "Styles.h"
 #include "WorldState.h"
 
 namespace fw {
@@ -38,7 +39,7 @@ namespace fw {
       }
     }
 
-    gf::console_print_text(console, MessageBox, gf::ConsoleAlignment::Left, m_game->style(), "{}", journal);
+    gf::console_print_text(console, MessageBox, gf::ConsoleAlignment::Left, message_rich_style(), "{}", journal);
   }
 
 }
