@@ -348,7 +348,7 @@
     {
       "label": ".44 Ammunition",
       "display": { "picture": "•", "color": "#CBB151" },
-      "image": "No_Image.txt",
+      "image": "Ammunition.txt",
       "type": "projectile",
       "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".44",
@@ -358,7 +358,7 @@
     {
       "label": ".36 Ammunition",
       "display": { "picture": "•", "color": "#CBB151" },
-      "image": "No_Image.txt",
+      "image": "Ammunition.txt",
       "type": "projectile",
       "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".36",

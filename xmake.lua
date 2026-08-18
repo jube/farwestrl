@@ -71,6 +71,7 @@ target("image-helper")
     set_kind("binary")
     add_files("code/image-helper.cc")
     add_packages("gamedevframework2")
+    set_rundir("$(projectdir)")
 
 target("image-converter")
     set_kind("binary")
