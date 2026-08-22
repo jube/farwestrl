@@ -97,6 +97,20 @@
       "type": "container",
       "capacity": 20
     },
+    {
+      "label": "Human Corpse",
+      "display": {"picture": "%", "color": "#f4191d" },
+      "image": "No_Image.txt",
+      "type": "container",
+      "capacity": 10
+    },
+    {
+      "label": "Animal Corpse",
+      "display": {"picture": "%", "color": "#f4191d" },
+      "image": "No_Image.txt",
+      "type": "container",
+      "capacity": 5
+    },
 
     {
       "label": "Adams Revolver",
