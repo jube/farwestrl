@@ -84,6 +84,21 @@
   ],
   "items": [
     {
+      "label": "Crate",
+      "display": {"picture": "Ξ", "color": "#b07f43" },
+      "image": "No_Image.txt",
+      "type": "container",
+      "capacity": 10
+    },
+    {
+      "label": "Chest",
+      "display": {"picture": "Ξ", "color": "#b0a84f" },
+      "image": "No_Image.txt",
+      "type": "container",
+      "capacity": 20
+    },
+
+    {
       "label": "Adams Revolver",
       "display": { "picture": "§", "color": "#222222" },
       "image": "No_Image.txt",
