@@ -148,15 +148,16 @@ namespace fw {
       }
     }
 
-    BehaviorBlackboard blackboard = {
-      .model = &model,
-      .actor = &actor,
-      .random = random,
-      .action = {},
-    };
-
     if (auto iterator = m_trees.find(actor.data->label.id); iterator != m_trees.end()) {
-      const auto& [ id, tree ] = *iterator;
+      BehaviorBlackboard blackboard = {
+        .model = &model,
+        .actor = &actor,
+        .random = random,
+        .action = {},
+      };
+
+      const gf::behavior::AnyBehavior<BehaviorBlackboard>& tree = iterator->second;
+
       [[maybe_unused]] gf::BehaviorStatus status = tree.process(blackboard);
       assert(status == gf::BehaviorStatus::Running);
       assert(blackboard.action);

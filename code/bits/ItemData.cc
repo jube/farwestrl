@@ -126,6 +126,7 @@ namespace fw {
 
   NLOHMANN_JSON_SERIALIZE_ENUM( ItemType, {
     { ItemType::None, nullptr },
+    { ItemType::Container, "container" },
     { ItemType::MeleeWeapon, "melee_weapon" },
     { ItemType::DistanceWeapon, "distance_weapon" },
     { ItemType::Projectile, "projectile" },
@@ -142,6 +143,8 @@ namespace fw {
     switch (type) {
       case ItemType::None:
         return "None";
+      case ItemType::Container:
+        return "Container";
       case ItemType::MeleeWeapon:
         return "Melee Weapon";
       case ItemType::DistanceWeapon:
@@ -182,6 +185,13 @@ namespace fw {
     switch (raw_type) {
       case ItemType::None:
         // nothing
+        break;
+      case ItemType::Container:
+        {
+          ContainerDataFeature feature;
+          json.at("capacity").get_to(feature.capacity);
+          data.feature = feature;
+        }
         break;
       case ItemType::MeleeWeapon:
         {

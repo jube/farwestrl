@@ -119,6 +119,7 @@ namespace {
     for (const fw::ItemData& item : data.items) {
       switch (item.type()) {
         case fw::ItemType::None:
+        case fw::ItemType::Container:
           break;
         case fw::ItemType::MeleeWeapon:
           weapons.melee_weapons.emplace(item.label.tag, item.feature.from<fw::ItemType::MeleeWeapon>());

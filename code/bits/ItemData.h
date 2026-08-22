@@ -18,6 +18,7 @@ namespace fw {
 
   enum class ItemType {
     None,
+    Container,
     MeleeWeapon,
     DistanceWeapon,
     Projectile,
@@ -32,6 +33,16 @@ namespace fw {
   };
 
   std::string_view to_string(ProjectileKind kind);
+
+  struct ContainerDataFeature {
+    int16_t capacity;
+  };
+
+  struct MeleeWeaponDataFeature {
+    Attack attack;
+    uint16_t use_time;
+    int8_t modifier;
+  };
 
   struct DistanceWeaponDataFeature {
     int32_t range;
@@ -49,13 +60,7 @@ namespace fw {
     int8_t modifier;
   };
 
-  struct MeleeWeaponDataFeature {
-    Attack attack;
-    uint16_t use_time;
-    int8_t modifier;
-  };
-
-  using ItemDataFeature = gf::TaggedVariant<ItemType, MeleeWeaponDataFeature, DistanceWeaponDataFeature, ProjectileDataFeature>;
+  using ItemDataFeature = gf::TaggedVariant<ItemType, ContainerDataFeature, MeleeWeaponDataFeature, DistanceWeaponDataFeature, ProjectileDataFeature>;
 
   struct ItemData {
     DataLabel label;

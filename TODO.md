@@ -5,6 +5,7 @@
   - add huts and rocks in forest
   - add small lakes, huts and rocks in prairie
   - add mining camps in mines and/or moutains
+  - add noise for building placement in towns
 - Data
   - firearms: maybe modify the shoot time if the firearm is a single action or a double action (single: 5, double: 6)
   - ammunitions: add ammunition variants (with modifiers)
@@ -13,7 +14,6 @@
     - https://www.native-languages.org/weapons.htm
   - add items
     - food items
-    - coins
     - chests (and other containers)
   - add characters
   - make all the images for the items
@@ -23,4 +23,3 @@
     - maybe different layout: traditional (arrows + keys); arrows (arrows + 4-key actions); vi (vi keys + 4-key actions); gamepad
   - `AdventureControlScene`: add the possibility of cancelling automatic move
   - add a key for walking continuously (like Alt), accessible with other key moves
-  - put styles in their own file (out of `FarWest`) and make different styles for different context

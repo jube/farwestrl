@@ -3,6 +3,7 @@
 #include <gf2/core/ConsoleOperations.h>
 
 #include "FarWest.h"
+#include "ItemData.h"
 #include "Settings.h"
 #include "Styles.h"
 
@@ -69,6 +70,12 @@ namespace fw {
     switch (m_data->type()) {
       case ItemType::None:
         break;
+      case ItemType::Container:
+      {
+        const ContainerDataFeature& feature = m_data->feature.from<ItemType::Container>();
+        print_key_value("Capacity", "{}", feature.capacity);
+        break;
+      }
       case ItemType::MeleeWeapon:
       {
         const MeleeWeaponDataFeature& feature = m_data->feature.from<ItemType::MeleeWeapon>();

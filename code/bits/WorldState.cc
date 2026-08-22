@@ -11,6 +11,16 @@
 
 namespace fw {
 
+  namespace {
+
+    template<typename T>
+    bool check_type(T& object)
+    {
+      return object.data->feature.type() == object.feature.type();
+    }
+
+  }
+
   void WorldState::load_from_file(const std::filesystem::path& filename)
   {
     gf::FileInputStream file(filename);
@@ -48,6 +58,7 @@ namespace fw {
 
         if (feature.weapon.data) {
           feature.weapon.data.bind_from(data.items);
+          assert(check_type(feature.weapon));
         }
 
         if (feature.projectile.data) {

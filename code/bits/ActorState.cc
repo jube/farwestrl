@@ -46,6 +46,7 @@ namespace fw {
         } else {
           switch (feature.weapon.data->feature.type()) {
             case ItemType::None:
+            case ItemType::Container:
             case ItemType::Projectile:
               assert(false);
               break;
@@ -69,11 +70,13 @@ namespace fw {
               digest.modifier += weapon.modifier;
               digest.time = weapon.shoot_time;
 
-              if (feature.projectile.data && feature.weapon.projectiles > 0) {
+              const DistanceWeaponFeature& weapon_feature = feature.weapon.feature.from<ItemType::DistanceWeapon>();
+
+              if (feature.projectile.data && weapon_feature.projectiles > 0) {
                 assert(feature.projectile.data->feature.type() == ItemType::Projectile);
-                const ProjectileDataFeature& ammunition = feature.projectile.data->feature.from<ItemType::Projectile>();
-                digest.attack = ammunition.attack;
-                digest.modifier += ammunition.modifier;
+                const ProjectileDataFeature& projectile = feature.projectile.data->feature.from<ItemType::Projectile>();
+                digest.attack = projectile.attack;
+                digest.modifier += projectile.modifier;
               } else {
                 digest.attack = 0;
                 digest.time = 1; // TODO: maybe define a constant in this case or use shoot_time

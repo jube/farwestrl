@@ -149,14 +149,15 @@ namespace fw {
 
       assert(feature.weapon.data->feature.type() == ItemType::DistanceWeapon);
       const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
+      const DistanceWeaponFeature& weapon_feature = feature.weapon.feature.from<ItemType::DistanceWeapon>();
 
       gf::console_write_picture(console, position, u'║' /* u'[' */, gf::White);
 
-      for (int8_t i = 0; i < feature.weapon.projectiles; ++i) {
+      for (int16_t i = 0; i < weapon_feature.projectiles; ++i) {
         gf::console_write_picture(console, position + gf::dirx(1 + i), feature.projectile.data->display.picture, feature.projectile.data->display.color);
       }
 
-      for (int8_t i = feature.weapon.projectiles; i < weapon.capacity; ++i) {
+      for (int16_t i = weapon_feature.projectiles; i < weapon.capacity; ++i) {
         gf::console_write_picture(console, position + gf::dirx(1 + i), projectile.empty.picture, projectile.empty.color);
       }
 

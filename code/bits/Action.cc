@@ -2,6 +2,7 @@
 
 #include "ActorState.h"
 #include "ItemData.h"
+#include "ItemState.h"
 #include "MapCell.h"
 #include "NetworkState.h"
 #include "Times.h"
@@ -347,6 +348,8 @@ namespace fw {
       }
 
       const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
+      DistanceWeaponFeature& weapon_feature = feature.weapon.feature.from<ItemType::DistanceWeapon>();
+
       const ProjectileDataFeature& projectile = feature.projectile.data->feature.from<ItemType::Projectile>();
 
       if (weapon.projectile != projectile.kind) {
@@ -354,12 +357,12 @@ namespace fw {
         return ActionResult::Failure;
       }
 
-      const int16_t needed_projectiles = weapon.capacity - feature.weapon.projectiles;
+      const int16_t needed_projectiles = weapon.capacity - weapon_feature.projectiles;
       const int16_t loaded_projectiles = std::min(needed_projectiles, feature.projectile.count);
 
       if (loaded_projectiles > 0) {
         // there are enough projectiles
-        feature.weapon.projectiles += loaded_projectiles;
+        weapon_feature.projectiles += loaded_projectiles;
         feature.projectile.count -= loaded_projectiles;
 
         model.state.add_message(fmt::format("<style=character>{}</> reloads its weapon with {} projectiles.", actor.feature.from<ActorType::Human>().name, loaded_projectiles));

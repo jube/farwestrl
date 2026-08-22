@@ -30,7 +30,6 @@
 #include "MapCell.h"
 #include "MapCellBiome.h"
 #include "MapState.h"
-#include "Names.h"
 #include "Settings.h"
 #include "WorldData.h"
 
@@ -1980,7 +1979,10 @@ namespace fw {
 
       HumanFeature& feature = hero.feature.from<ActorType::Human>();
       feature.weapon.data = "Smith & Wesson Model 3 Revolver";
-      feature.weapon.projectiles = 3;
+
+      DistanceWeaponFeature weapon_feature;
+      weapon_feature.projectiles = 3;
+      feature.weapon.feature = weapon_feature;
 
       feature.projectile.data = ".44 Ammunition";
       feature.projectile.count = 10;
