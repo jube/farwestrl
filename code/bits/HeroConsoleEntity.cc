@@ -102,17 +102,17 @@ namespace fw {
     position.y += 2;
 
     const ActorState& hero = state->hero();
-    const HumanFeature& feature = hero.feature.from<ActorType::Human>();
+    const HumanComponent& component = hero.component.from<ActorType::Human>();
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=hero>{}</>", feature.name);
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=hero>{}</>", component.name);
     ++position.y;
-    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, rich_style, "<style={}>{}</>", gender_style(feature.gender), gender_symbol(feature.gender));
-    gf::console_print_text(console, position + gf::dirx(1), gf::ConsoleAlignment::Left, rich_style, "{} year old", feature.age);
+    gf::console_print_picture(console, position, gf::ConsoleAlignment::Left, rich_style, "<style={}>{}</>", gender_style(component.gender), gender_symbol(component.gender));
+    gf::console_print_text(console, position + gf::dirx(1), gf::ConsoleAlignment::Left, rich_style, "{} year old", component.age);
 
     position.y += 2;
 
     gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=health>HP</>:");
-    gf::console_print_picture(console, position + gf::dirx(2), gf::ConsoleAlignment::Left, rich_style, "<style=health>{}</><style=non_health>{}</>", health_bar(feature.body.health), health_bar(MaxHealth - feature.body.health));
+    gf::console_print_picture(console, position + gf::dirx(2), gf::ConsoleAlignment::Left, rich_style, "<style=health>{}</><style=non_health>{}</>", health_bar(component.body.health), health_bar(MaxHealth - component.body.health));
 
     position.y += 2;
 
@@ -130,38 +130,38 @@ namespace fw {
       ++position.y;
     };
 
-    print_attribute_stat("FOR", "force", feature.body.force, "Intensity", ForceColor, feature.body.intensity);
-    print_attribute_stat("DEX", "dexterity", feature.body.dexterity, "Precision", DexterityColor, feature.body.precision);
-    print_attribute_stat("CON", "constitution", feature.body.constitution, "Endurance", ConstitutionColor, feature.body.endurance);
+    print_attribute_stat("FOR", "force", component.body.force, "Intensity", ForceColor, component.body.intensity);
+    print_attribute_stat("DEX", "dexterity", component.body.dexterity, "Precision", DexterityColor, component.body.precision);
+    print_attribute_stat("CON", "constitution", component.body.constitution, "Endurance", ConstitutionColor, component.body.endurance);
 
     ++position.y;
 
-    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=weapon>Weapon</>: {}", feature.weapon.data ? feature.weapon.data->label.tag : "-");
+    gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=weapon>Weapon</>: {}", component.weapon.data ? component.weapon.data->label.tag : "-");
     ++position.y;
 
-    if (feature.projectile.data) {
-      assert(feature.projectile.data->feature.type() == ItemType::Projectile);
-      const ProjectileDataFeature& projectile = feature.projectile.data->feature.from<ItemType::Projectile>();
+    if (component.projectile.data) {
+      assert(component.projectile.data->element.type() == ItemType::Projectile);
+      const ProjectileElement& projectile_element = component.projectile.data->element.from<ItemType::Projectile>();
 
-      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=weapon>Projectiles</>: {} × {}", feature.projectile.data.tag, feature.projectile.count); // only for distance weapons
+      gf::console_print_text(console, position, gf::ConsoleAlignment::Left, rich_style, "<style=weapon>Projectiles</>: {} × {}", component.projectile.data.tag, component.projectile.count); // only for distance weapons
 
       ++position.y;
 
-      assert(feature.weapon.data->feature.type() == ItemType::DistanceWeapon);
-      const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
-      const DistanceWeaponFeature& weapon_feature = feature.weapon.feature.from<ItemType::DistanceWeapon>();
+      assert(component.weapon.data->element.type() == ItemType::DistanceWeapon);
+      const DistanceWeaponElement& weapon_element = component.weapon.data->element.from<ItemType::DistanceWeapon>();
+      const DistanceWeaponComponent& weapon_component = component.weapon.component.from<ItemType::DistanceWeapon>();
 
       gf::console_write_picture(console, position, u'║' /* u'[' */, gf::White);
 
-      for (int16_t i = 0; i < weapon_feature.projectiles; ++i) {
-        gf::console_write_picture(console, position + gf::dirx(1 + i), feature.projectile.data->display.picture, feature.projectile.data->display.color);
+      for (int16_t i = 0; i < weapon_component.projectiles; ++i) {
+        gf::console_write_picture(console, position + gf::dirx(1 + i), component.projectile.data->display.picture, component.projectile.data->display.color);
       }
 
-      for (int16_t i = weapon_feature.projectiles; i < weapon.capacity; ++i) {
-        gf::console_write_picture(console, position + gf::dirx(1 + i), projectile.empty.picture, projectile.empty.color);
+      for (int16_t i = weapon_component.projectiles; i < weapon_element.capacity; ++i) {
+        gf::console_write_picture(console, position + gf::dirx(1 + i), projectile_element.empty.picture, projectile_element.empty.color);
       }
 
-      gf::console_write_picture(console, position + gf::dirx(1 + weapon.capacity), u'║' /* u']' */, gf::White);
+      gf::console_write_picture(console, position + gf::dirx(1 + weapon_element.capacity), u'║' /* u']' */, gf::White);
 
 
     } else {

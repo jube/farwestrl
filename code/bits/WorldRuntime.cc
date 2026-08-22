@@ -73,12 +73,12 @@ namespace fw {
   void WorldRuntime::bind_reverse(const WorldState& state)
   {
     for (const auto& [ index, actor ] : gf::enumerate(state.actors)) {
-      switch (actor.feature.type()) {
+      switch (actor.component.type()) {
         case ActorType::None:
         case ActorType::Group:
           break;
         case ActorType::Train:
-          set_reverse_train(actor.feature.from<ActorType::Train>().railway_index, static_cast<uint32_t>(index));
+          set_reverse_train(actor.component.from<ActorType::Train>().railway_index, static_cast<uint32_t>(index));
           break;
         case ActorType::Human:
         case ActorType::Animal:

@@ -72,35 +72,35 @@ namespace fw {
         break;
       case ItemType::Container:
       {
-        const ContainerDataFeature& feature = m_data->feature.from<ItemType::Container>();
-        print_key_value("Capacity", "{}", feature.capacity);
+        const ContainerElement& element = m_data->element.from<ItemType::Container>();
+        print_key_value("Capacity", "{}", element.capacity);
         break;
       }
       case ItemType::MeleeWeapon:
       {
-        const MeleeWeaponDataFeature& feature = m_data->feature.from<ItemType::MeleeWeapon>();
-        print_key_value("Attack", "{}", feature.attack.as_int());
-        print_key_value("Modifier", "{:+d}", feature.modifier);
-        print_key_value("Use Time", "{}s", feature.use_time);
+        const MeleeWeaponElement& element = m_data->element.from<ItemType::MeleeWeapon>();
+        print_key_value("Attack", "{}", element.attack.as_int());
+        print_key_value("Modifier", "{:+d}", element.modifier);
+        print_key_value("Use Time", "{}s", element.use_time);
         break;
       }
       case ItemType::DistanceWeapon:
       {
-        const DistanceWeaponDataFeature& feature = m_data->feature.from<ItemType::DistanceWeapon>();
-        print_key_value("Projectile", "{}", to_string(feature.projectile));
-        print_key_value("Capacity", "{}", feature.capacity);
-        print_key_value("Range", "{}m", feature.range);
-        print_key_value("Modifier", "{:+d}", feature.modifier);
-        print_key_value("Shoot Time", "{}s", feature.shoot_time);
-        print_key_value("Reload Time", "{}s", feature.reload_time);
+        const DistanceWeaponElement& element = m_data->element.from<ItemType::DistanceWeapon>();
+        print_key_value("Projectile", "{}", to_string(element.projectile));
+        print_key_value("Capacity", "{}", element.capacity);
+        print_key_value("Range", "{}m", element.range);
+        print_key_value("Modifier", "{:+d}", element.modifier);
+        print_key_value("Shoot Time", "{}s", element.shoot_time);
+        print_key_value("Reload Time", "{}s", element.reload_time);
         break;
       }
       case ItemType::Projectile:
       {
-        const ProjectileDataFeature& feature = m_data->feature.from<ItemType::Projectile>();
-        print_key_value("Kind", "{}", to_string(feature.kind));
-        print_key_value("Attack", "{}", feature.attack.as_int());
-        print_key_value("Modifier", "{:+d}", feature.modifier);
+        const ProjectileElement& element = m_data->element.from<ItemType::Projectile>();
+        print_key_value("Kind", "{}", to_string(element.kind));
+        print_key_value("Attack", "{}", element.attack.as_int());
+        print_key_value("Modifier", "{:+d}", element.modifier);
         break;
       }
     }

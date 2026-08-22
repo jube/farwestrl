@@ -16,7 +16,7 @@ namespace fw {
     template<typename T>
     bool check_type(T& object)
     {
-      return object.data->feature.type() == object.feature.type();
+      return object.data && object.data->element.type() == object.component.type();
     }
 
   }
@@ -49,20 +49,20 @@ namespace fw {
     for (ActorState& actor : actors) {
       actor.data.bind_from(data.actors);
 
-      if (actor.feature.type() == ActorType::Human) {
-        HumanFeature& feature = actor.feature.from<ActorType::Human>();
+      if (actor.component.type() == ActorType::Human) {
+        HumanComponent& human_component = actor.component.from<ActorType::Human>();
 
-        for (InventoryItemState& item : feature.inventory.items) {
+        for (InventoryItemState& item : human_component.inventory.items) {
           item.data.bind_from(data.items);
         }
 
-        if (feature.weapon.data) {
-          feature.weapon.data.bind_from(data.items);
-          assert(check_type(feature.weapon));
+        if (human_component.weapon.data) {
+          human_component.weapon.data.bind_from(data.items);
+          assert(check_type(human_component.weapon));
         }
 
-        if (feature.projectile.data) {
-          feature.projectile.data.bind_from(data.items);
+        if (human_component.projectile.data) {
+          human_component.projectile.data.bind_from(data.items);
         }
       }
 
@@ -70,6 +70,7 @@ namespace fw {
 
     for (ItemState& item : items) {
       item.data.bind_from(data.items);
+      assert(check_type(item));
     }
   }
 

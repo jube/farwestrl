@@ -11,11 +11,11 @@ namespace fw {
     const ActorType actor_type = type();
 
     if (actor_type == ActorType::Human) {
-      return feature.from<ActorType::Human>().location;
+      return component.from<ActorType::Human>().location;
     }
 
     if (actor_type == ActorType::Animal) {
-      return feature.from<ActorType::Animal>().location;
+      return component.from<ActorType::Animal>().location;
     }
 
     return {};
@@ -34,17 +34,17 @@ namespace fw {
         break;
       case ActorType::Human:
       {
-        const HumanFeature& feature = actor.feature.from<ActorType::Human>();
-        digest.luck = feature.body.luck;
+        const HumanComponent& human_component = actor.component.from<ActorType::Human>();
+        digest.luck = human_component.body.luck;
 
-        if (!feature.weapon.data) {
+        if (!human_component.weapon.data) {
           // use your fist
-          digest.attribute = feature.body.force;
-          digest.attack = feature.body.attack;
-          digest.time = feature.body.attack_time;
+          digest.attribute = human_component.body.force;
+          digest.attack = human_component.body.attack;
+          digest.time = human_component.body.attack_time;
           digest.range = 0;
         } else {
-          switch (feature.weapon.data->feature.type()) {
+          switch (human_component.weapon.data->element.type()) {
             case ItemType::None:
             case ItemType::Container:
             case ItemType::Projectile:
@@ -52,9 +52,9 @@ namespace fw {
               break;
             case ItemType::MeleeWeapon:
             {
-              digest.attribute = feature.body.force;
+              digest.attribute = human_component.body.force;
 
-              const MeleeWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::MeleeWeapon>();
+              const MeleeWeaponElement& weapon = human_component.weapon.data->element.from<ItemType::MeleeWeapon>();
               digest.attack = weapon.attack;
               digest.time = weapon.use_time;
               digest.modifier += weapon.modifier;
@@ -63,18 +63,18 @@ namespace fw {
             }
             case ItemType::DistanceWeapon:
             {
-              digest.attribute = feature.body.dexterity;
+              digest.attribute = human_component.body.dexterity;
 
-              const DistanceWeaponDataFeature& weapon = feature.weapon.data->feature.from<ItemType::DistanceWeapon>();
-              digest.range = weapon.range;
-              digest.modifier += weapon.modifier;
-              digest.time = weapon.shoot_time;
+              const DistanceWeaponElement& weapon_element = human_component.weapon.data->element.from<ItemType::DistanceWeapon>();
+              digest.range = weapon_element.range;
+              digest.modifier += weapon_element.modifier;
+              digest.time = weapon_element.shoot_time;
 
-              const DistanceWeaponFeature& weapon_feature = feature.weapon.feature.from<ItemType::DistanceWeapon>();
+              const DistanceWeaponComponent& weapon_component = human_component.weapon.component.from<ItemType::DistanceWeapon>();
 
-              if (feature.projectile.data && weapon_feature.projectiles > 0) {
-                assert(feature.projectile.data->feature.type() == ItemType::Projectile);
-                const ProjectileDataFeature& projectile = feature.projectile.data->feature.from<ItemType::Projectile>();
+              if (human_component.projectile.data && weapon_component.projectiles > 0) {
+                assert(human_component.projectile.data->element.type() == ItemType::Projectile);
+                const ProjectileElement& projectile = human_component.projectile.data->element.from<ItemType::Projectile>();
                 digest.attack = projectile.attack;
                 digest.modifier += projectile.modifier;
               } else {
@@ -90,11 +90,11 @@ namespace fw {
       }
       case ActorType::Animal:
       {
-        const AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
-        digest.attribute = feature.body.force;
-        digest.luck = feature.body.luck;
-        digest.attack = feature.body.attack;
-        digest.time = feature.body.attack_time;
+        const AnimalComponent& component = actor.component.from<ActorType::Animal>();
+        digest.attribute = component.body.force;
+        digest.luck = component.body.luck;
+        digest.attack = component.body.attack;
+        digest.time = component.body.attack_time;
         digest.range = 0;
         break;
       }
@@ -115,16 +115,16 @@ namespace fw {
         break;
       case ActorType::Human:
       {
-        const HumanFeature& feature = actor.feature.from<ActorType::Human>();
-        digest.defense = feature.body.defense;
+        const HumanComponent& component = actor.component.from<ActorType::Human>();
+        digest.defense = component.body.defense;
 
         // TODO: clothes
         break;
       }
       case ActorType::Animal:
       {
-        const AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
-        digest.defense = feature.body.defense;
+        const AnimalComponent& component = actor.component.from<ActorType::Animal>();
+        digest.defense = component.body.defense;
         break;
       }
     }

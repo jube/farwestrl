@@ -11,56 +11,56 @@
 
 namespace fw {
 
-  struct ContainerFeature {
+  struct ContainerComponent {
     std::vector<DataReference<ItemData>> content;
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<ContainerFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, gf::MaybeConst<ContainerComponent, Archive>& component)
   {
-    return ar | feature.content;
+    return ar | component.content;
   }
 
-  struct MeleeWeaponFeature {
+  struct MeleeWeaponComponent {
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, [[maybe_unused]] gf::MaybeConst<MeleeWeaponFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, [[maybe_unused]] gf::MaybeConst<MeleeWeaponComponent, Archive>& component)
   {
     return ar;
   }
 
-  struct DistanceWeaponFeature {
+  struct DistanceWeaponComponent {
     int16_t projectiles = 0;
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<DistanceWeaponFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, gf::MaybeConst<DistanceWeaponComponent, Archive>& component)
   {
-    return ar | feature.projectiles;
+    return ar | component.projectiles;
   }
 
-  struct ProjectileFeature {
+  struct ProjectileComponent {
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, [[maybe_unused]] gf::MaybeConst<ProjectileFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, [[maybe_unused]] gf::MaybeConst<ProjectileComponent, Archive>& component)
   {
     return ar;
   }
 
-  using ItemFeature = gf::TaggedVariant<ItemType, ContainerFeature, MeleeWeaponFeature, DistanceWeaponFeature, ProjectileFeature>;
+  using ItemComponent = gf::TaggedVariant<ItemType, ContainerComponent, MeleeWeaponComponent, DistanceWeaponComponent, ProjectileComponent>;
 
   struct ItemState {
     DataReference<ItemData> data;
-    ItemFeature feature;
+    ItemComponent component;
     Location location;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<ItemState, Archive>& state)
   {
-    return ar | state.data | state.feature | state.location;
+    return ar | state.data | state.component | state.location;
   }
 
   struct InventoryItemState {
@@ -76,13 +76,13 @@ namespace fw {
 
   struct WeaponItemState {
     DataReference<ItemData> data;
-    ItemFeature feature;
+    ItemComponent component;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<WeaponItemState, Archive>& state)
   {
-    return ar | state.data | state.feature;
+    return ar | state.data | state.component;
   }
 
 }

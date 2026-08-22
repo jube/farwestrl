@@ -78,7 +78,7 @@ namespace fw {
 
   void AdventureInventoryScene::update_inventory()
   {
-    m_inventory.set_inventory(&m_game->state()->hero().feature.from<ActorType::Human>().inventory);
+    m_inventory.set_inventory(&m_game->state()->hero().component.from<ActorType::Human>().inventory);
   }
 
 }

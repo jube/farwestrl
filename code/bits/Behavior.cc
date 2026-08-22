@@ -82,11 +82,11 @@ namespace fw {
     public:
       gf::BehaviorStatus process(BehaviorBlackboard& blackboard) const override
       {
-        if (blackboard.actor->feature.type() != ActorType::Animal) {
+        if (blackboard.actor->component.type() != ActorType::Animal) {
           return gf::BehaviorStatus::Failure;
         }
 
-        if (blackboard.actor->feature.from<ActorType::Animal>().mounted_by == NoIndex) {
+        if (blackboard.actor->component.from<ActorType::Animal>().mounted_by == NoIndex) {
           return gf::BehaviorStatus::Failure;
         }
 
@@ -134,12 +134,12 @@ namespace fw {
       return model.runtime.hero.action;
     }
 
-    if (actor.feature.type() == ActorType::Animal) {
-      const AnimalDataFeature& data = actor.data->feature.from<ActorType::Animal>();
-      const AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
+    if (actor.component.type() == ActorType::Animal) {
+      const AnimalElement& element = actor.data->element.from<ActorType::Animal>();
+      const AnimalComponent& component = actor.component.from<ActorType::Animal>();
 
-      if (data.can_idle) {
-        const int32_t distance = gf::manhattan_distance(feature.location.position, model.state.hero().location().position);
+      if (element.can_idle) {
+        const int32_t distance = gf::manhattan_distance(component.location.position, model.state.hero().location().position);
 
         if (distance > IdleDistance) {
           const uint16_t idle_time = (distance / 2 + random->compute_uniform_integer(distance / 10)) * StraightWalkTime;

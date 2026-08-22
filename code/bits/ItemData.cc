@@ -188,40 +188,40 @@ namespace fw {
         break;
       case ItemType::Container:
         {
-          ContainerDataFeature feature;
-          json.at("capacity").get_to(feature.capacity);
-          data.feature = feature;
+          ContainerElement element;
+          json.at("capacity").get_to(element.capacity);
+          data.element = element;
         }
         break;
       case ItemType::MeleeWeapon:
         {
-          MeleeWeaponDataFeature feature;
-          json.at("attack").get_to(feature.attack);
-          json.at("use_time").get_to(feature.use_time);
-          json.at("modifier").get_to(feature.modifier);
-          data.feature = feature;
+          MeleeWeaponElement element;
+          json.at("attack").get_to(element.attack);
+          json.at("use_time").get_to(element.use_time);
+          json.at("modifier").get_to(element.modifier);
+          data.element = element;
         }
         break;
       case ItemType::DistanceWeapon:
         {
-          DistanceWeaponDataFeature feature;
-          json.at("range").get_to(feature.range);
-          json.at("reload_time").get_to(feature.reload_time);
-          json.at("shoot_time").get_to(feature.shoot_time);
-          json.at("capacity").get_to(feature.capacity);
-          json.at("modifier").get_to(feature.modifier);
-          json.at("projectile").get_to(feature.projectile);
-          data.feature = feature;
+          DistanceWeaponElement element;
+          json.at("range").get_to(element.range);
+          json.at("reload_time").get_to(element.reload_time);
+          json.at("shoot_time").get_to(element.shoot_time);
+          json.at("capacity").get_to(element.capacity);
+          json.at("modifier").get_to(element.modifier);
+          json.at("projectile").get_to(element.projectile);
+          data.element = element;
         }
         break;
       case ItemType::Projectile:
         {
-          ProjectileDataFeature feature;
-          json.at("empty").get_to(feature.empty);
-          json.at("attack").get_to(feature.attack);
-          json.at("kind").get_to(feature.kind);
-          json.at("modifier").get_to(feature.modifier);
-          data.feature = feature;
+          ProjectileElement element;
+          json.at("empty").get_to(element.empty);
+          json.at("attack").get_to(element.attack);
+          json.at("kind").get_to(element.kind);
+          json.at("modifier").get_to(element.modifier);
+          data.element = element;
         }
         break;
     }

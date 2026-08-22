@@ -153,42 +153,42 @@ namespace fw {
     };
 
     for (const ActorState& actor : state->actors) {
-      switch (actor.feature.type()) {
+      switch (actor.component.type()) {
         case ActorType::None:
           break;
         case ActorType::Human:
         {
-          const HumanDataFeature& data = actor.data->feature.from<ActorType::Human>();
-          const HumanFeature& feature = actor.feature.from<ActorType::Human>();
+          const HumanElement& element = actor.data->element.from<ActorType::Human>();
+          const HumanComponent& component = actor.component.from<ActorType::Human>();
 
-          if (!is_visible(feature.location)) {
+          if (!is_visible(component.location)) {
             continue;
           }
 
-          gf::console_write_picture(console, feature.location.position - view.position(), data.display.picture, data.display.color);
+          gf::console_write_picture(console, component.location.position - view.position(), element.display.picture, element.display.color);
           break;
         }
         case ActorType::Animal:
         {
-          const AnimalDataFeature& data = actor.data->feature.from<ActorType::Animal>();
-          const AnimalFeature& feature = actor.feature.from<ActorType::Animal>();
+          const AnimalElement& element = actor.data->element.from<ActorType::Animal>();
+          const AnimalComponent& component = actor.component.from<ActorType::Animal>();
 
-          if (!is_visible(feature.location)) {
+          if (!is_visible(component.location)) {
             continue;
           }
 
-          if (feature.mounted_by != NoIndex) {
-            const ActorState& mounted_by = state->actors[feature.mounted_by];
-            assert(mounted_by.feature.type() == ActorType::Human);
-            const HumanDataFeature& human_data = mounted_by.data->feature.from<ActorType::Human>();
+          if (component.mounted_by != NoIndex) {
+            const ActorState& mounted_by = state->actors[component.mounted_by];
+            assert(mounted_by.component.type() == ActorType::Human);
+            const HumanElement& human_data = mounted_by.data->element.from<ActorType::Human>();
 
             gf::ConsoleStyle mounted_style;
-            mounted_style.color.foreground = data.display.color;
+            mounted_style.color.foreground = element.display.color;
             mounted_style.color.background = human_data.display.color * gf::opaque(0.2f);
             mounted_style.effect = gf::ConsoleEffect::alpha();
-            gf::console_write_picture(console, feature.location.position - view.position(), to_uppercase_ascii(data.display.picture), mounted_style);
+            gf::console_write_picture(console, component.location.position - view.position(), to_uppercase_ascii(element.display.picture), mounted_style);
           } else {
-            gf::console_write_picture(console, feature.location.position - view.position(), data.display.picture, data.display.color);
+            gf::console_write_picture(console, component.location.position - view.position(), element.display.picture, element.display.color);
           }
 
           break;
@@ -204,7 +204,7 @@ namespace fw {
             continue;
           }
 
-          const TrainFeature& feature = actor.feature.from<ActorType::Train>();
+          const TrainComponent& component = actor.component.from<ActorType::Train>();
 
           uint32_t offset = 0;
           gf::Vec2I position = { 0, 0 };
@@ -212,7 +212,7 @@ namespace fw {
           gf::Vec2I step = { 0, 0 };
 
           for (const std::u16string_view part : TrainPicture) {
-            const uint32_t index = runtime->network.next_position(feature.railway_index, offset);
+            const uint32_t index = runtime->network.next_position(component.railway_index, offset);
             assert(index < runtime->network.railway.size());
 
             if (direction == gf::Direction::Center || index % 3 == 2) {

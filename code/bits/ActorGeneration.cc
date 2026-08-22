@@ -58,15 +58,15 @@ namespace fw {
     actor.data = tag;
     actor.data.bind_from(world_data.actors);
 
-    assert(actor.data->feature.type() == ActorType::Animal);
-    const AnimalDataFeature& data = actor.data->feature.from<ActorType::Animal>();
+    assert(actor.data->element.type() == ActorType::Animal);
+    const AnimalElement& element = actor.data->element.from<ActorType::Animal>();
 
-    AnimalFeature feature;
-    feature.location = location;
-    feature.body = generate_body(data.body, random);
-    feature.mounted_by = NoIndex;
+    AnimalComponent component;
+    component.location = location;
+    component.body = generate_body(element.body, random);
+    component.mounted_by = NoIndex;
 
-    actor.feature = feature;
+    actor.component = component;
     return actor;
   }
 
@@ -76,32 +76,32 @@ namespace fw {
     actor.data = tag;
     actor.data.bind_from(world_data.actors);
 
-    assert(actor.data->feature.type() == ActorType::Human);
-    const HumanDataFeature& data = actor.data->feature.from<ActorType::Human>();
+    assert(actor.data->element.type() == ActorType::Human);
+    const HumanElement& data = actor.data->element.from<ActorType::Human>();
 
-    HumanFeature feature;
-    feature.location = location;
-    feature.gender = generate_gender(random);
-    feature.birthday = generate_random_birthday(random);
-    feature.age = random->compute_uniform_integer<int8_t>(20, 40);;
+    HumanComponent component;
+    component.location = location;
+    component.gender = generate_gender(random);
+    component.birthday = generate_random_birthday(random);
+    component.age = random->compute_uniform_integer<int8_t>(20, 40);;
 
-    switch (feature.gender) {
+    switch (component.gender) {
       case Gender::Girl:
-        feature.name = generate_random_white_female_name(random);
+        component.name = generate_random_white_female_name(random);
         break;
       case Gender::Boy:
-        feature.name = generate_random_white_male_name(random);
+        component.name = generate_random_white_male_name(random);
         break;
       case Gender::NonBinary:
-        feature.name = generate_random_white_non_binary_name(random);
+        component.name = generate_random_white_non_binary_name(random);
         break;
     }
 
-    feature.body = generate_body(data.body, random);
+    component.body = generate_body(data.body, random);
 
-    gf::Log::info("Name: {} (Luck: {})", feature.name, feature.body.luck);
+    gf::Log::info("Name: {} (Luck: {})", component.name, component.body.luck);
 
-    actor.feature = feature;
+    actor.component = component;
     return actor;
   }
 

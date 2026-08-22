@@ -34,17 +34,17 @@ namespace fw {
 
   std::string_view to_string(ProjectileKind kind);
 
-  struct ContainerDataFeature {
+  struct ContainerElement {
     int16_t capacity;
   };
 
-  struct MeleeWeaponDataFeature {
+  struct MeleeWeaponElement {
     Attack attack;
     uint16_t use_time;
     int8_t modifier;
   };
 
-  struct DistanceWeaponDataFeature {
+  struct DistanceWeaponElement {
     int32_t range;
     uint16_t shoot_time;
     uint16_t reload_time;
@@ -53,22 +53,22 @@ namespace fw {
     ProjectileKind projectile;
   };
 
-  struct ProjectileDataFeature {
+  struct ProjectileElement {
     DisplayData empty;
     Attack attack;
     ProjectileKind kind;
     int8_t modifier;
   };
 
-  using ItemDataFeature = gf::TaggedVariant<ItemType, ContainerDataFeature, MeleeWeaponDataFeature, DistanceWeaponDataFeature, ProjectileDataFeature>;
+  using ItemElement = gf::TaggedVariant<ItemType, ContainerElement, MeleeWeaponElement, DistanceWeaponElement, ProjectileElement>;
 
   struct ItemData {
     DataLabel label;
     DisplayData display;
     gf::Console image;
-    ItemDataFeature feature;
+    ItemElement element;
 
-    ItemType type() const { return feature.type(); }
+    ItemType type() const { return element.type(); }
   };
 
   void from_json(const nlohmann::json& j, ItemData& data);

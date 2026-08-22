@@ -25,7 +25,7 @@ namespace fw {
     NonBinary,
   };
 
-  struct HumanFeature {
+  struct HumanComponent {
     std::string name;
     Location location;
     Gender gender;
@@ -40,12 +40,12 @@ namespace fw {
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<HumanFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, gf::MaybeConst<HumanComponent, Archive>& component)
   {
-    return ar | feature.name | feature.location | feature.gender | feature.birthday | feature.age | feature.body | feature.mounting | feature.inventory | feature.weapon | feature.projectile;
+    return ar | component.name | component.location | component.gender | component.birthday | component.age | component.body | component.mounting | component.inventory | component.weapon | component.projectile;
   }
 
-  struct AnimalFeature {
+  struct AnimalComponent {
     Location location;
     BodyState body;
     uint32_t mounted_by = NoIndex;
@@ -53,9 +53,9 @@ namespace fw {
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<AnimalFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, gf::MaybeConst<AnimalComponent, Archive>& component)
   {
-    return ar | feature.location | feature.body | feature.mounted_by | feature.inventory;
+    return ar | component.location | component.body | component.mounted_by | component.inventory;
   }
 
   enum class GroupType : uint8_t {
@@ -63,41 +63,41 @@ namespace fw {
     Pack, // for carnivores
   };
 
-  struct GroupFeature {
+  struct GroupComponent {
     GroupType type;
     std::vector<uint32_t> members;
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<GroupFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, gf::MaybeConst<GroupComponent, Archive>& component)
   {
-    return ar | feature.type | feature.members;
+    return ar | component.type | component.members;
   }
 
-  struct TrainFeature {
+  struct TrainComponent {
     uint32_t railway_index;
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<TrainFeature, Archive>& feature)
+  Archive& operator|(Archive& ar, gf::MaybeConst<TrainComponent, Archive>& component)
   {
-    return ar | feature.railway_index;
+    return ar | component.railway_index;
   }
 
-  using ActorFeature = gf::TaggedVariant<ActorType, HumanFeature, AnimalFeature, GroupFeature, TrainFeature>;
+  using ActorComponent = gf::TaggedVariant<ActorType, HumanComponent, AnimalComponent, GroupComponent, TrainComponent>;
 
   struct ActorState {
     DataReference<ActorData> data;
-    ActorFeature feature;
+    ActorComponent component;
 
-    ActorType type() const { return feature.type(); }
+    ActorType type() const { return component.type(); }
     Location location() const;
   };
 
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<ActorState, Archive>& state)
   {
-    return ar | state.data | state.feature;
+    return ar | state.data | state.component;
   }
 
   AttackDigest compute_attack_digest(const ActorState& actor);

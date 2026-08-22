@@ -132,7 +132,7 @@ namespace fw {
     }
 
     if (m_action_group.active("mount"_id)) {
-      if (state->hero().feature.from<ActorType::Human>().mounting == NoIndex) {
+      if (state->hero().component.from<ActorType::Human>().mounting == NoIndex) {
         runtime->hero.action = make_action<MountAction>();
       } else {
         runtime->hero.action = make_action<DismountAction>();
@@ -262,7 +262,7 @@ namespace fw {
     m_reduced_background = floor_map.background;
 
     for (const ActorState& actor : state->actors) {
-      switch (actor.feature.type()) {
+      switch (actor.component.type()) {
         case ActorType::None:
           break;
         case ActorType::Human:
@@ -280,11 +280,11 @@ namespace fw {
           break;
         case ActorType::Train:
           if (location.floor == Floor::Ground) {
-            const TrainFeature& feature = actor.feature.from<ActorType::Train>();
+            const TrainComponent& component = actor.component.from<ActorType::Train>();
             uint32_t offset = 0;
 
             for (uint32_t k = 0; k < TrainLength; ++k) {
-              const uint32_t index = runtime->network.next_position(feature.railway_index, offset);
+              const uint32_t index = runtime->network.next_position(component.railway_index, offset);
               assert(index < runtime->network.railway.size());
               const gf::Vec2I position = runtime->network.railway[index];
 

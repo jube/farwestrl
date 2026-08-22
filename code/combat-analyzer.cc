@@ -92,21 +92,21 @@ namespace {
   }
 
   struct Weapons {
-    std::map<std::string, fw::MeleeWeaponDataFeature, std::less<>> melee_weapons;
-    std::map<std::string, fw::DistanceWeaponDataFeature, std::less<>> distance_weapons;
-    std::map<std::string, fw::ProjectileDataFeature, std::less<>> projectiles;
+    std::map<std::string, fw::MeleeWeaponElement, std::less<>> melee_weapons;
+    std::map<std::string, fw::DistanceWeaponElement, std::less<>> distance_weapons;
+    std::map<std::string, fw::ProjectileElement, std::less<>> projectiles;
 
-    Named<fw::MeleeWeaponDataFeature> melee_weapon(std::string_view name) const
+    Named<fw::MeleeWeaponElement> melee_weapon(std::string_view name) const
     {
       return find_or_throw(melee_weapons, name, "Unknown melee weapon");
     }
 
-    Named<fw::DistanceWeaponDataFeature> distance_weapon(std::string_view name) const
+    Named<fw::DistanceWeaponElement> distance_weapon(std::string_view name) const
     {
       return find_or_throw(distance_weapons, name, "Unknown distance weapon");
     }
 
-    Named<fw::ProjectileDataFeature> projectile(std::string_view name) const
+    Named<fw::ProjectileElement> projectile(std::string_view name) const
     {
       return find_or_throw(projectiles, name, "Unknown projectile");
     }
@@ -122,13 +122,13 @@ namespace {
         case fw::ItemType::Container:
           break;
         case fw::ItemType::MeleeWeapon:
-          weapons.melee_weapons.emplace(item.label.tag, item.feature.from<fw::ItemType::MeleeWeapon>());
+          weapons.melee_weapons.emplace(item.label.tag, item.element.from<fw::ItemType::MeleeWeapon>());
           break;
         case fw::ItemType::DistanceWeapon:
-          weapons.distance_weapons.emplace(item.label.tag, item.feature.from<fw::ItemType::DistanceWeapon>());
+          weapons.distance_weapons.emplace(item.label.tag, item.element.from<fw::ItemType::DistanceWeapon>());
           break;
         case fw::ItemType::Projectile:
-          weapons.projectiles.emplace(item.label.tag, item.feature.from<fw::ItemType::Projectile>());
+          weapons.projectiles.emplace(item.label.tag, item.element.from<fw::ItemType::Projectile>());
           break;
       }
     }
@@ -137,15 +137,15 @@ namespace {
   }
 
   struct Actors {
-    std::map<std::string, fw::HumanDataFeature, std::less<>> humans;
-    std::map<std::string, fw::AnimalDataFeature, std::less<>> animals;
+    std::map<std::string, fw::HumanElement, std::less<>> humans;
+    std::map<std::string, fw::AnimalElement, std::less<>> animals;
 
-    Named<fw::HumanDataFeature> human(std::string_view name) const
+    Named<fw::HumanElement> human(std::string_view name) const
     {
       return find_or_throw(humans, name, "Unknown human");
     }
 
-    Named<fw::AnimalDataFeature> animal(std::string_view name) const
+    Named<fw::AnimalElement> animal(std::string_view name) const
     {
       return find_or_throw(animals, name, "Unknown animal");
     }
@@ -162,10 +162,10 @@ namespace {
         case fw::ActorType::Train:
           break;
         case fw::ActorType::Human:
-          actors.humans.emplace(actor.label.tag, actor.feature.from<fw::ActorType::Human>());
+          actors.humans.emplace(actor.label.tag, actor.element.from<fw::ActorType::Human>());
           break;
         case fw::ActorType::Animal:
-          actors.animals.emplace(actor.label.tag, actor.feature.from<fw::ActorType::Animal>());
+          actors.animals.emplace(actor.label.tag, actor.element.from<fw::ActorType::Animal>());
           break;
       }
     }
@@ -191,7 +191,7 @@ namespace {
     return (static_cast<double>(dice.faces()) + 1) / 2.0 * dice.count() + dice.modifier();
   }
 
-  CombatDigest compute_combat_digest(const Named<fw::AnimalDataFeature>& animal)
+  CombatDigest compute_combat_digest(const Named<fw::AnimalElement>& animal)
   {
     return {
       .name = animal.name,
@@ -206,7 +206,7 @@ namespace {
     };
   }
 
-  CombatDigest compute_combat_digest(const Named<fw::HumanDataFeature>& human, const Named<fw::MeleeWeaponDataFeature>& weapon)
+  CombatDigest compute_combat_digest(const Named<fw::HumanElement>& human, const Named<fw::MeleeWeaponElement>& weapon)
   {
     return {
       .name = human.name + " with " + weapon.name,
@@ -221,7 +221,7 @@ namespace {
     };
   }
 
-  CombatDigest compute_combat_digest(const Named<fw::HumanDataFeature>& human, const Named<fw::DistanceWeaponDataFeature>& weapon, const Named<fw::ProjectileDataFeature>& projectile)
+  CombatDigest compute_combat_digest(const Named<fw::HumanElement>& human, const Named<fw::DistanceWeaponElement>& weapon, const Named<fw::ProjectileElement>& projectile)
   {
     return {
       .name = human.name + " with " + weapon.name,

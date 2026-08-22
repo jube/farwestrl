@@ -93,20 +93,20 @@ namespace fw {
         };
       };
 
-      switch (actor.feature.type()) {
+      switch (actor.component.type()) {
         case ActorType::None:
         case ActorType::Group:
         case ActorType::Train:
           break;
         case ActorType::Human:
         {
-          const HumanDataFeature& data = actor.data->feature.from<ActorType::Human>();
+          const HumanElement& data = actor.data->element.from<ActorType::Human>();
           m_actors.push_back(create_element(data.display));
           break;
         }
         case ActorType::Animal:
         {
-          const AnimalDataFeature& data = actor.data->feature.from<ActorType::Animal>();
+          const AnimalElement& data = actor.data->element.from<ActorType::Animal>();
           m_actors.push_back(create_element(data.display));
           break;
         }

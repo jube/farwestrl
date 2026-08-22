@@ -21,12 +21,12 @@ namespace fw {
     Train,
   };
 
-  struct HumanDataFeature {
+  struct HumanElement {
     DisplayData display;
     BodyData body;
   };
 
-  struct AnimalDataFeature {
+  struct AnimalElement {
     DisplayData display;
     BodyData body;
     MapCellBiome biome;
@@ -34,19 +34,19 @@ namespace fw {
     bool can_idle;
   };
 
-  struct GroupDataFeature {
+  struct GroupElement {
   };
 
-  struct TrainDataFeature {
+  struct TrainElement {
   };
 
-  using ActorDataFeature = gf::TaggedVariant<ActorType, HumanDataFeature, AnimalDataFeature, GroupDataFeature, TrainDataFeature>;
+  using ActorElement = gf::TaggedVariant<ActorType, HumanElement, AnimalElement, GroupElement, TrainElement>;
 
   struct ActorData {
     DataLabel label;
-    ActorDataFeature feature;
+    ActorElement element;
 
-    ActorType type() const { return feature.type(); }
+    ActorType type() const { return element.type(); }
   };
 
   void from_json(const nlohmann::json& json, ActorData& data);

@@ -1977,27 +1977,27 @@ namespace fw {
       const gf::Vec2I position = compute_starting_position(state.network);
       ActorState hero = generate_human("Hero", { position, Floor::Ground }, data, random);
 
-      HumanFeature& feature = hero.feature.from<ActorType::Human>();
-      feature.weapon.data = "Smith & Wesson Model 3 Revolver";
+      HumanComponent& component = hero.component.from<ActorType::Human>();
+      component.weapon.data = "Smith & Wesson Model 3 Revolver";
 
-      DistanceWeaponFeature weapon_feature;
-      weapon_feature.projectiles = 3;
-      feature.weapon.feature = weapon_feature;
+      DistanceWeaponComponent weapon_component;
+      weapon_component.projectiles = 3;
+      component.weapon.component = weapon_component;
 
-      feature.projectile.data = ".44 Ammunition";
-      feature.projectile.count = 10;
+      component.projectile.data = ".44 Ammunition";
+      component.projectile.count = 10;
 
       InventoryItemState item;
       item.count = 1;
       item.data = "Colt Walker Revolver";
-      feature.inventory.items.push_back(item);
+      component.inventory.items.push_back(item);
 
       item.data = "Knife";
-      feature.inventory.items.push_back(item);
+      component.inventory.items.push_back(item);
 
       item.data = ".44 Ammunition";
       item.count = 40;
-      feature.inventory.items.push_back(item);
+      component.inventory.items.push_back(item);
 
       return hero;
     }
@@ -2072,23 +2072,6 @@ namespace fw {
 
     analysis.set_step(WorldGenerationStep::Actors);
 
-    // {
-    //   ActorState cow = {};
-    //   cow.data = "Cow";
-    //   cow.position = hero.position + gf::dirx(10);
-    //
-    //   AnimalFeature feature;
-    //   feature.mounted_by = NoIndex;
-    //   cow.feature = feature;
-    //
-    //   state.actors.push_back(cow);
-    //
-    //   Date cow_next_turn = state.current_date;
-    //   cow_next_turn.add_seconds(1);
-    //   state.scheduler.queue.push({cow_next_turn, TaskType::Actor, 1});
-    // }
-
-
     // add the trains: at the beginning, one train arriving in each station
 
     for (const StationState& station : state.network.stations) {
@@ -2098,9 +2081,9 @@ namespace fw {
       ActorState train = {};
       train.data = "Train";
 
-      TrainFeature feature;
-      feature.railway_index = station.index;
-      train.feature = feature;
+      TrainComponent component;
+      component.railway_index = station.index;
+      train.component = component;
 
       const uint32_t index = static_cast<uint32_t>(state.actors.size());
       state.actors.push_back(train);

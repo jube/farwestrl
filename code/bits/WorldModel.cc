@@ -137,18 +137,18 @@ namespace fw {
   {
     // check actors
     for (auto [ index, actor ] : gf::enumerate(state.actors)) {
-      switch (actor.feature.type()) {
+      switch (actor.component.type()) {
         case ActorType::None:
         case ActorType::Group:
         case ActorType::Train:
           break;
         case ActorType::Human:
-          if (!check_human(index, actor.feature.from<ActorType::Human>())) {
+          if (!check_human(index, actor.component.from<ActorType::Human>())) {
             return false;
           }
           break;
         case ActorType::Animal:
-          if (!check_animal(index, actor.feature.from<ActorType::Animal>())) {
+          if (!check_animal(index, actor.component.from<ActorType::Animal>())) {
             return false;
           }
           break;
@@ -199,28 +199,28 @@ namespace fw {
     return result == ActionResult::Success;
   }
 
-  bool WorldModel::check_human(std::size_t index, const HumanFeature& feature) const
+  bool WorldModel::check_human(std::size_t index, const HumanComponent& component) const
   {
-    const FloorMap& floor_map = runtime.map.from_floor(feature.location.floor);
+    const FloorMap& floor_map = runtime.map.from_floor(component.location.floor);
 
-    if (feature.mounting != NoIndex) {
-      index = feature.mounting;
+    if (component.mounting != NoIndex) {
+      index = component.mounting;
     }
 
-    if (floor_map.reverse(feature.location.position).actor_index != index) {
-      gf::Log::debug("HUMAN CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", feature.location.position.x, feature.location.position.y, index, floor_map.reverse(feature.location.position).actor_index);
+    if (floor_map.reverse(component.location.position).actor_index != index) {
+      gf::Log::debug("HUMAN CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", component.location.position.x, component.location.position.y, index, floor_map.reverse(component.location.position).actor_index);
       return false;
     }
 
     return true;
   }
 
-  bool WorldModel::check_animal(std::size_t index, const AnimalFeature& feature) const
+  bool WorldModel::check_animal(std::size_t index, const AnimalComponent& component) const
   {
-    const FloorMap& floor_map = runtime.map.from_floor(feature.location.floor);
+    const FloorMap& floor_map = runtime.map.from_floor(component.location.floor);
 
-    if (floor_map.reverse(feature.location.position).actor_index != index) {
-      gf::Log::debug("ANIMAL CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", feature.location.position.x, feature.location.position.y, index, floor_map.reverse(feature.location.position).actor_index);
+    if (floor_map.reverse(component.location.position).actor_index != index) {
+      gf::Log::debug("ANIMAL CHECK FAILED: position = {}, {} ; index = {} ; actor_index = {}", component.location.position.x, component.location.position.y, index, floor_map.reverse(component.location.position).actor_index);
       return false;
     }
 
