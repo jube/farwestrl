@@ -12,14 +12,14 @@ namespace fw {
 
     gf::Dice dice(20, 1);
 
-    const int8_t modified_attribute = attacker.attribute + attacker.modifier;
-    const int8_t attribute_test = dice.roll(random);
+    const int modified_attribute = attacker.attribute + attacker.modifier;
+    const int attribute_test = dice.roll(random);
     Attack strength = 0;
 
     if (attribute_test > modified_attribute) {
       // failed the attribute test
 
-      const int8_t luck_test = dice.roll(random);
+      const int luck_test = dice.roll(random);
 
       if (luck_test > attacker.luck) {
         // failed the luck test

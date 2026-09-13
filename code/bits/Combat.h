@@ -4,11 +4,14 @@
 #include <cstdint>
 
 #include <type_traits>
+#include <optional>
 
 #include <nlohmann/json.hpp>
 
 #include <gf2/core/Fixed.h>
 #include <gf2/core/Random.h>
+
+#include "DateTypes.h"
 
 namespace fw {
 
@@ -22,7 +25,7 @@ namespace fw {
     int8_t attribute = 0;
     int8_t modifier = 0;
     int8_t luck = 0;
-    uint16_t time = 0;
+    Second time = 0;
     Attack attack = 0;
     int32_t range = 0;
   };
