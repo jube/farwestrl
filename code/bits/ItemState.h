@@ -11,8 +11,21 @@
 
 namespace fw {
 
+  struct InventoryItemState {
+    DataReference<ItemData> data;
+    int16_t count = 0;
+
+    ItemType type() const { return data->type(); }
+  };
+
+  template<typename Archive>
+  Archive& operator|(Archive& ar, gf::MaybeConst<InventoryItemState, Archive>& state)
+  {
+    return ar | state.data | state.count;
+  }
+
   struct ContainerComponent {
-    std::vector<DataReference<ItemData>> content;
+    std::vector<InventoryItemState> content;
   };
 
   template<typename Archive>
@@ -63,19 +76,6 @@ namespace fw {
   Archive& operator|(Archive& ar, gf::MaybeConst<ItemState, Archive>& state)
   {
     return ar | state.data | state.component | state.location;
-  }
-
-  struct InventoryItemState {
-    DataReference<ItemData> data;
-    int16_t count = 0;
-
-    ItemType type() const { return data->type(); }
-  };
-
-  template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<InventoryItemState, Archive>& state)
-  {
-    return ar | state.data | state.count;
   }
 
   struct EquippedItemState {
