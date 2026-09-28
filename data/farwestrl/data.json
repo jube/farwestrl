@@ -385,6 +385,16 @@
       "modifier": 0
     },
     {
+      "label": ".44 Ammunition +1",
+      "display": { "picture": "•", "color": "#CBB151" },
+      "image": "Ammunition.txt",
+      "type": "projectile",
+      "empty": { "picture": "○", "color": "#CBB151" },
+      "kind": ".44",
+      "attack": 52,
+      "modifier": 1
+    },
+    {
       "label": ".36 Ammunition",
       "display": { "picture": "•", "color": "#CBB151" },
       "image": "Ammunition.txt",
@@ -393,6 +403,16 @@
       "kind": ".36",
       "attack": 40,
       "modifier": 0
+    },
+    {
+      "label": ".36 Ammunition +1",
+      "display": { "picture": "•", "color": "#CBB151" },
+      "image": "Ammunition.txt",
+      "type": "projectile",
+      "empty": { "picture": "○", "color": "#CBB151" },
+      "kind": ".36",
+      "attack": 42,
+      "modifier": 1
     },
 
     {

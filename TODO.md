@@ -4,17 +4,15 @@
   - add horizontal lodes in mines
   - add huts and rocks in forest
   - add small lakes, huts and rocks in prairie
-  - add mining camps in mines and/or moutains
+  - add mining camps in mines and/or mountains
   - add noise for building placement in towns
 - Data
-  - firearms: maybe modify the shoot time if the firearm is a single action or a double action (single: 5, double: 6)
   - ammunitions: add ammunition variants (with modifiers)
   - native weaponry:
     - https://en.wikipedia.org/wiki/Native_American_weaponry
     - https://www.native-languages.org/weapons.htm
   - add items
     - food items
-    - chests (and other containers)
   - add characters
   - make all the images for the items
 - UI:
