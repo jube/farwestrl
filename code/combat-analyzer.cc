@@ -465,7 +465,7 @@ namespace {
 
 }
 
-int main()
+void dummy5()
 {
   const std::filesystem::path data_directory = fw::FarWestDataDirectory;
 
@@ -551,4 +551,8 @@ int main()
     }
   }
 
+}
+
+int main() {
+  dummy2();
 }
