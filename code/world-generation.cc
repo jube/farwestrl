@@ -2,9 +2,9 @@
 #include <gf2/core/Log.h>
 #include <gf2/core/Random.h>
 
+#include "bits/Analysis.h"
 #include "bits/Times.h"
 #include "bits/WorldGeneration.h"
-#include "bits/WorldGenerationStep.h"
 #include "bits/WorldModel.h"
 
 #include "config.h"
@@ -13,11 +13,11 @@ int main() {
   const std::filesystem::path data_directory = fw::FarWestDataDirectory;
 
   gf::Random random;
-  fw::WorldGenerationAnalysis analysis;
+  fw::Analysis analysis;
 
   fw::WorldModel model(&random);
 
-  analysis.set_step(fw::WorldGenerationStep::File);
+  analysis.set_step(fw::AnalysisStep::File);
   model.data.load_from_file(data_directory / "data.json");
   model.state = fw::generate_world(&random, model.data, analysis);
   model.bind(analysis);

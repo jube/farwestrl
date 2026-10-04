@@ -13,6 +13,8 @@
     - https://www.native-languages.org/weapons.htm
   - add items
     - food items
+    - clothes
+  - add equipment
   - add characters
   - make all the images for the items
 - UI:

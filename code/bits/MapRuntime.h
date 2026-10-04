@@ -10,10 +10,9 @@
 #include <gf2/core/Grids.h>
 #include <gf2/core/Random.h>
 
+#include "Analysis.h"
 #include "Index.h"
-#include "Location.h"
 #include "MapFloor.h"
-#include "WorldGenerationStep.h"
 
 namespace fw {
   struct WorldState;
@@ -79,7 +78,7 @@ namespace fw {
     const FloorMap& from_floor(Floor floor) const;
     FloorMap& from_floor(Floor floor);
 
-    void bind(const WorldState& state, gf::Random* random, WorldGenerationAnalysis& analysis);
+    void bind(const WorldState& state, gf::Random* random, Analysis& analysis);
 
     void bind_ground(const WorldState& state, gf::Random* random);
     void bind_underground(const WorldState& state, gf::Random* random);

@@ -40,12 +40,12 @@ namespace fw {
     }
   }
 
-  void WorldRuntime::bind([[maybe_unused]] const WorldData& data, const WorldState& state, gf::Random* random, WorldGenerationAnalysis& analysis)
+  void WorldRuntime::bind([[maybe_unused]] const WorldData& data, const WorldState& state, gf::Random* random, Analysis& analysis)
   {
     view_center = state.hero().location().position;
     map.bind(state, random, analysis);
 
-    analysis.set_step(WorldGenerationStep::Network);
+    analysis.set_step(AnalysisStep::Network);
     bind_network(state);
 
     bind_reverse(state);

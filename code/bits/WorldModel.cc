@@ -10,7 +10,6 @@
 #include "MapRuntime.h"
 #include "MapState.h"
 #include "SchedulerState.h"
-#include "WorldGenerationStep.h"
 
 namespace fw {
 
@@ -25,9 +24,9 @@ namespace fw {
   {
   }
 
-  void WorldModel::bind(WorldGenerationAnalysis& analysis)
+  void WorldModel::bind(Analysis& analysis)
   {
-    analysis.set_step(WorldGenerationStep::Data);
+    analysis.set_step(AnalysisStep::Data);
     state.bind(data);
     runtime.bind(data, state, m_random, analysis);
   }

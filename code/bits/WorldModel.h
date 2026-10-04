@@ -5,9 +5,9 @@
 #include <gf2/core/Random.h>
 
 #include "ActorState.h"
+#include "Analysis.h"
 #include "Behavior.h"
 #include "WorldData.h"
-#include "WorldGenerationStep.h"
 #include "WorldRuntime.h"
 #include "WorldState.h"
 
@@ -20,7 +20,7 @@ namespace fw {
     WorldState state;
     WorldRuntime runtime;
 
-    void bind(WorldGenerationAnalysis& analysis);
+    void bind(Analysis& analysis);
 
     void update(gf::Time time) override;
     bool is_running() const { return m_phase == ModelPhase::Running; }

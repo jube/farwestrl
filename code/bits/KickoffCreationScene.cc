@@ -1,7 +1,7 @@
 #include "KickoffCreationScene.h"
 
+#include "Analysis.h"
 #include "FarWest.h"
-#include "WorldGenerationStep.h"
 
 #include <gf2/core/Color.h>
 #include <gf2/core/ConsoleOperations.h>
@@ -13,62 +13,62 @@ namespace fw {
     constexpr gf::Vec2I CreationConsoleSize = { 17, 4 };
     constexpr float DotsPerSeconds = 1.5f;
 
-    std::string_view compute_step(WorldGenerationStep step)
+    std::string_view compute_step(AnalysisStep step)
     {
       switch (step) {
-        case WorldGenerationStep::Start:
+        case AnalysisStep::Start:
           return "Let's go!";
-        case WorldGenerationStep::File:
+        case AnalysisStep::File:
           return "Loading data file";
-        case WorldGenerationStep::Load:
+        case AnalysisStep::Load:
           return "Loading save file";
-        case WorldGenerationStep::Date:
+        case AnalysisStep::Date:
           return "Choosing a date";
-        case WorldGenerationStep::Terrain:
+        case AnalysisStep::Terrain:
           return "Generating the terrain";
-        case WorldGenerationStep::Rivers:
+        case AnalysisStep::Rivers:
           return "Digging the rivers";
-        case WorldGenerationStep::Biomes:
+        case AnalysisStep::Biomes:
           return "Determining the biomes";
-        case WorldGenerationStep::Moutains:
+        case AnalysisStep::Moutains:
           return "Creating some moutains";
-        case WorldGenerationStep::Towns:
+        case AnalysisStep::Towns:
           return "Determining town locations";
-        case WorldGenerationStep::Rails:
+        case AnalysisStep::Rails:
           return "Constructing railways";
-        case WorldGenerationStep::Roads:
+        case AnalysisStep::Roads:
           return "Making roads";
-        case WorldGenerationStep::Buildings:
+        case AnalysisStep::Buildings:
           return "Placing buildings in towns";
-        case WorldGenerationStep::Regions:
+        case AnalysisStep::Regions:
           return "Listing regions";
-        case WorldGenerationStep::Underground:
+        case AnalysisStep::Underground:
           return "Excavating underground";
-        case WorldGenerationStep::Hero:
+        case AnalysisStep::Hero:
           return "Raising the hero";
-        case WorldGenerationStep::Actors:
+        case AnalysisStep::Actors:
           return "Spawning the actors";
-        case WorldGenerationStep::Data:
+        case AnalysisStep::Data:
           return "Linking to data";
-        case WorldGenerationStep::MapGround:
+        case AnalysisStep::MapGround:
           return "Setting the map ground";
-        case WorldGenerationStep::MapUnderground:
+        case AnalysisStep::MapUnderground:
           return "Setting the map underground";
-        case WorldGenerationStep::MapRails:
+        case AnalysisStep::MapRails:
           return "Installing rails";
-        case WorldGenerationStep::MapRoads:
+        case AnalysisStep::MapRoads:
           return "Linking roads";
-        case WorldGenerationStep::MapTowns:
+        case AnalysisStep::MapTowns:
           return "Constructing the buildings";
-        case WorldGenerationStep::MapBuildings:
+        case AnalysisStep::MapBuildings:
           return "Elevating buildings";
-        case WorldGenerationStep::MapMinimap:
+        case AnalysisStep::MapMinimap:
           return "Generating the minimaps";
-        case WorldGenerationStep::Network:
+        case AnalysisStep::Network:
           return "Tracing the railway network";
-        case WorldGenerationStep::FirstTurn:
+        case AnalysisStep::FirstTurn:
           return "Starting the world";
-        case WorldGenerationStep::End:
+        case AnalysisStep::End:
           return "The end!";
       }
 
@@ -106,7 +106,7 @@ namespace fw {
     gf::console_print_text(m_console, { 3, 1 }, gf::ConsoleAlignment::Left, style, "{}", "Creation of the world" + std::string(dots, '.'));
 
     style.color.foreground = gf::Amber;
-    const WorldGenerationStep step = m_game->world_creation_step();
+    const AnalysisStep step = m_game->world_creation_step();
     const std::string_view step_name = compute_step(step);
     gf::console_print_text(m_console, { CreationConsoleSize.x / 2, 2 }, gf::ConsoleAlignment::Center, style, "{}", step_name);
 

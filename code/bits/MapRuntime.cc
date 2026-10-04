@@ -96,23 +96,23 @@ namespace fw {
     return ground;
   }
 
-  void MapRuntime::bind(const WorldState& state, gf::Random* random, WorldGenerationAnalysis& analysis)
+  void MapRuntime::bind(const WorldState& state, gf::Random* random, Analysis& analysis)
   {
-    analysis.set_step(WorldGenerationStep::MapGround);
+    analysis.set_step(AnalysisStep::MapGround);
     bind_ground(state, random);
-    analysis.set_step(WorldGenerationStep::MapUnderground);
+    analysis.set_step(AnalysisStep::MapUnderground);
     bind_underground(state, random);
-    analysis.set_step(WorldGenerationStep::MapRails);
+    analysis.set_step(AnalysisStep::MapRails);
     bind_railway(state);
-    analysis.set_step(WorldGenerationStep::MapRoads);
+    analysis.set_step(AnalysisStep::MapRoads);
     bind_roads(state, random);
-    analysis.set_step(WorldGenerationStep::MapTowns);
+    analysis.set_step(AnalysisStep::MapTowns);
     bind_towns(state, random);
 
-    analysis.set_step(WorldGenerationStep::MapBuildings);
+    analysis.set_step(AnalysisStep::MapBuildings);
     bind_buildings(state);
 
-    analysis.set_step(WorldGenerationStep::MapMinimap);
+    analysis.set_step(AnalysisStep::MapMinimap);
     bind_minimaps(state);
   }
 

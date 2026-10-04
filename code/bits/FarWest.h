@@ -17,11 +17,11 @@
 #include "AdventurePrimaryScene.h"
 #include "AdventureQuitScene.h"
 #include "AdventureSaveScene.h"
+#include "Analysis.h"
 #include "KickoffCreationScene.h"
 #include "KickoffMenuScene.h"
 #include "KickoffTitleScene.h"
 #include "WorldModel.h"
-#include "WorldGenerationStep.h"
 
 namespace fw {
   class FarWestScene;
@@ -57,7 +57,7 @@ namespace fw {
 
     void create_world(AdventureChoice choice);
     bool world_creation_finished();
-    WorldGenerationStep world_creation_step();
+    AnalysisStep world_creation_step();
 
     void start_adventure();
 
@@ -92,7 +92,7 @@ namespace fw {
     std::future<void> m_async_world;
     bool m_async_world_finished = false;
 
-    WorldGenerationAnalysis m_analysis;
+    Analysis m_analysis;
   };
 
 }

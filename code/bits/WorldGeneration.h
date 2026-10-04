@@ -3,12 +3,12 @@
 
 #include <gf2/core/Random.h>
 
+#include "Analysis.h"
 #include "WorldState.h"
-#include "WorldGenerationStep.h"
 
 namespace fw {
 
-  WorldState generate_world(gf::Random* random, const WorldData& data, WorldGenerationAnalysis& analysis);
+  WorldState generate_world(gf::Random* random, const WorldData& data, Analysis& analysis);
 
 }
 

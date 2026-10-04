@@ -1,5 +1,5 @@
-#ifndef FW_WORLD_GENERATION_STEP_H
-#define FW_WORLD_GENERATION_STEP_H
+#ifndef FW_ANALYSIS_H
+#define FW_ANALYSIS_H
 
 #include <cstdint>
 
@@ -11,7 +11,7 @@
 
 namespace fw {
 
-  enum class WorldGenerationStep : uint8_t {
+  enum class AnalysisStep : uint8_t {
     Start,
     File,
     // loading
@@ -45,22 +45,22 @@ namespace fw {
     End,
   };
 
-  class WorldGenerationAnalysis {
+  class Analysis {
   public:
 
-    void set_step(WorldGenerationStep step);
-    WorldGenerationStep step() const;
+    void set_step(AnalysisStep step);
+    AnalysisStep step() const;
 
     void print_analysis() const;
 
   private:
-    static constexpr std::size_t StepCount = static_cast<std::size_t>(WorldGenerationStep::End);
+    static constexpr std::size_t StepCount = static_cast<std::size_t>(AnalysisStep::End);
     gf::Clock m_current_clock;
-    std::atomic<WorldGenerationStep> m_current_step = WorldGenerationStep::Start;
+    std::atomic<AnalysisStep> m_current_step = AnalysisStep::Start;
     std::array<gf::Time, StepCount> m_step_times = {};
   };
 
 
 }
 
-#endif // FW_WORLD_GENERATION_STEP_H
+#endif // FW_ANALYSIS_H

@@ -5,11 +5,11 @@
 
 #include <gf2/core/Random.h>
 
+#include "Analysis.h"
 #include "Date.h"
 #include "HeroRuntime.h"
 #include "MapRuntime.h"
 #include "NetworkRuntime.h"
-#include "WorldGenerationStep.h"
 
 namespace fw {
   struct ActorState;
@@ -29,7 +29,7 @@ namespace fw {
 
     void set_reverse_train(uint32_t railway_index, uint32_t train_index);
 
-    void bind(const WorldData& data, const WorldState& state, gf::Random* random, WorldGenerationAnalysis& analysis);
+    void bind(const WorldData& data, const WorldState& state, gf::Random* random, Analysis& analysis);
 
     void bind_network(const WorldState& state);
     void bind_reverse(const WorldState& state);
