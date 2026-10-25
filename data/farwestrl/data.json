@@ -432,6 +432,13 @@
       "attack": 35,
       "use_time": 12,
       "modifier": 0
+    },
+
+    {
+      "label": "Key",
+      "display": { "picture": "F", "color": "#808080"},
+      "image": "No_Image.txt",
+      "type": "key"
     }
   ]
 }

@@ -15,7 +15,7 @@ namespace fw {
     DataReference<ItemData> data;
     int16_t count = 0;
 
-    ItemType type() const { return data->type(); }
+    ItemType type() const { return data ? data->type() : ItemType::None; }
   };
 
   template<typename Archive>
@@ -62,7 +62,17 @@ namespace fw {
     return ar;
   }
 
-  using ItemComponent = gf::TaggedVariant<ItemType, ContainerComponent, MeleeWeaponComponent, DistanceWeaponComponent, ProjectileComponent>;
+  struct KeyComponent {
+    std::vector<Location> doors;
+  };
+
+  using ItemComponent = gf::TaggedVariant<ItemType,
+    ContainerComponent,
+    MeleeWeaponComponent,
+    DistanceWeaponComponent,
+    ProjectileComponent,
+    KeyComponent
+  >;
 
   struct ItemState {
     DataReference<ItemData> data;

@@ -28,11 +28,18 @@ namespace fw {
     FloorUp,
     Herb,
 
+    Dollar,
+    SuitHeart,
+    SuitClub,
+    SuitDiamond,
+    SuitSpade,
+
     // not walkable and transparent
 
     Cactus = 0x4000,
     Tree,
     Water,
+    Window,
 
     // not walkable and not transparent
 

@@ -22,7 +22,7 @@ namespace fw {
   constexpr Second DayTime = HoursInDay * MinutesInHour * SecondsInMinute;
 
   constexpr DayType DaysInMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-  constexpr uint32_t DaysInYear = std::accumulate(std::begin(DaysInMonth), std::end(DaysInMonth), 0u);
+  constexpr uint32_t DaysInYear = std::accumulate(std::begin(DaysInMonth), std::end(DaysInMonth), UINT32_C(0));
 
   enum class WeekDay : DayType {
     Mon,

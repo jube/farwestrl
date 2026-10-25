@@ -6,6 +6,7 @@
   - add small lakes, huts and rocks in prairie
   - add mining camps in mines and/or mountains
   - add noise for building placement in towns
+  - fix FloorUp/FloorDown: put it on the same position
 - Data
   - ammunitions: add ammunition variants (with modifiers)
   - native weaponry:
@@ -16,6 +17,7 @@
     - clothes
   - add equipment
   - add characters
+  - add things
   - make all the images for the items
 - UI:
   - add a menu for Inventory, Minimap, Help, Quit (and maybe others)

@@ -130,6 +130,7 @@ namespace fw {
     { ItemType::MeleeWeapon, "melee_weapon" },
     { ItemType::DistanceWeapon, "distance_weapon" },
     { ItemType::Projectile, "projectile" },
+    { ItemType::Key, "key" },
   })
 
   NLOHMANN_JSON_SERIALIZE_ENUM( ProjectileKind, {
@@ -151,6 +152,8 @@ namespace fw {
         return "Distance Weapon";
       case ItemType::Projectile:
         return "Projectile";
+      case ItemType::Key:
+        return "Key";
     }
 
     return "<unknown>";
@@ -221,6 +224,12 @@ namespace fw {
           json.at("attack").get_to(element.attack);
           json.at("kind").get_to(element.kind);
           json.at("modifier").get_to(element.modifier);
+          data.element = element;
+        }
+        break;
+      case ItemType::Key:
+        {
+          KeyElement element;
           data.element = element;
         }
         break;

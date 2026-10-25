@@ -23,6 +23,7 @@ namespace fw {
     MeleeWeapon,
     DistanceWeapon,
     Projectile,
+    Key,
   };
 
   std::string_view to_string(ItemType type);
@@ -61,7 +62,16 @@ namespace fw {
     int8_t modifier;
   };
 
-  using ItemElement = gf::TaggedVariant<ItemType, ContainerElement, MeleeWeaponElement, DistanceWeaponElement, ProjectileElement>;
+  struct KeyElement {
+  };
+
+  using ItemElement = gf::TaggedVariant<ItemType,
+    ContainerElement,
+    MeleeWeaponElement,
+    DistanceWeaponElement,
+    ProjectileElement,
+    KeyElement
+  >;
 
   struct ItemData {
     DataLabel label;
