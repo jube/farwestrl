@@ -7,6 +7,7 @@
 #include <gf2/core/Vec2.h>
 
 #include "DateTypes.h"
+#include "Location.h"
 
 namespace fw {
   struct WorldModel;
@@ -22,6 +23,10 @@ namespace fw {
     Graze,
     Wander,
     Cruise,
+    LockDoor,
+    UnlockDoor,
+    OpenDoor,
+    CloseDoor,
   };
 
   struct IdleAction {
@@ -52,6 +57,22 @@ namespace fw {
   struct CruiseAction {
   };
 
+  struct LockDoorAction {
+    Location door;
+  };
+
+  struct UnlockDoorAction {
+    Location door;
+  };
+
+  struct OpenDoorAction {
+    Location door;
+  };
+
+  struct CloseDoorAction {
+    Location door;
+  };
+
   template<typename T, typename ... Args>
   T make_action(Args&& ... args)
   {
@@ -59,7 +80,20 @@ namespace fw {
   }
 
 
-  using Action = gf::TaggedVariant<ActionType, IdleAction, MoveAction, MountAction, DismountAction, ReloadAction, GrazeAction, WanderAction, CruiseAction>;
+  using Action = gf::TaggedVariant<ActionType,
+    IdleAction,
+    MoveAction,
+    MountAction,
+    DismountAction,
+    ReloadAction,
+    GrazeAction,
+    WanderAction,
+    CruiseAction,
+    LockDoorAction,
+    UnlockDoorAction,
+    OpenDoorAction,
+    CloseDoorAction
+  >;
 
   enum class ActionResult : uint8_t {
     Failure,

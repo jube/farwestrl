@@ -66,6 +66,12 @@ namespace fw {
     std::vector<Location> doors;
   };
 
+  template<typename Archive>
+  Archive& operator|(Archive& ar, [[maybe_unused]] gf::MaybeConst<KeyComponent, Archive>& component)
+  {
+    return ar | component.doors;
+  }
+
   using ItemComponent = gf::TaggedVariant<ItemType,
     ContainerComponent,
     MeleeWeaponComponent,
@@ -77,7 +83,6 @@ namespace fw {
   struct ItemState {
     DataReference<ItemData> data;
     ItemComponent component;
-    Location location;
 
     ItemType type() const { return component.type(); }
   };
@@ -85,21 +90,24 @@ namespace fw {
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<ItemState, Archive>& state)
   {
-    return ar | state.data | state.component | state.location;
+    return ar | state.data | state.component;
   }
 
-  struct EquippedItemState {
-    DataReference<ItemData> data;
-    ItemComponent component;
+  struct LocatedItemState {
+    ItemState item;
+    Location location;
 
-    ItemType type() const { return component.type(); }
+    ItemType type() const { return item.type(); }
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<EquippedItemState, Archive>& state)
+  Archive& operator|(Archive& ar, gf::MaybeConst<LocatedItemState, Archive>& state)
   {
-    return ar | state.data | state.component;
+    return ar | state.item | state.location;
   }
+
+  using EquippedItemState = ItemState;
+  using UniqueItemState = ItemState;
 
 }
 

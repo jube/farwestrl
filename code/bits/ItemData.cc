@@ -1,5 +1,6 @@
 #include "ItemData.h"
 
+#include <algorithm>
 #include <fstream>
 #include <ranges>
 #include <string>
@@ -157,6 +158,12 @@ namespace fw {
     }
 
     return "<unknown>";
+  }
+
+  bool is_item_type_unique(ItemType type)
+  {
+    static constexpr ItemType UniqueItemTypes[] = { ItemType::Key };
+    return std::ranges::contains(UniqueItemTypes, type);
   }
 
   std::string_view to_string(ProjectileKind kind)

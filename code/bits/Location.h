@@ -13,6 +13,11 @@ namespace fw {
     Floor floor = Floor::Ground;
   };
 
+  constexpr bool operator==(const Location& lhs, const Location& rhs)
+  {
+    return lhs.position == rhs.position && lhs.floor == rhs.floor;
+  }
+
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<Location, Archive>& location)
   {

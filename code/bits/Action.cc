@@ -1,13 +1,18 @@
 #include "Action.h"
 
+#include <cstdint>
+
+#include "ActorData.h"
 #include "ActorState.h"
+#include "DoorState.h"
 #include "ItemData.h"
 #include "ItemState.h"
 #include "MapCell.h"
 #include "NetworkState.h"
 #include "Times.h"
 #include "WorldModel.h"
-#include <cstdint>
+
+#include <gf2/core/ConsoleOperations.h>
 
 namespace fw {
 
@@ -468,6 +473,125 @@ namespace fw {
       return ActionResult::Success;
     }
 
+    // LockDoor and UnlockDoor
+
+    namespace {
+
+      bool actor_has_key_for_door(const ActorState& actor, const Location& door)
+      {
+        if (actor.type() != ActorType::Human) {
+          return false;
+        }
+
+        const HumanComponent& human_component = actor.component.from<ActorType::Human>();
+
+        auto key_iterator = std::ranges::find_if(human_component.inventory.unique_items, [&](const UniqueItemState& item) {
+          if (item.type() != ItemType::Key) {
+            return false;
+          }
+
+          const KeyComponent& key_component = item.component.from<ItemType::Key>();
+          return std::ranges::contains(key_component.doors, door);
+        });
+
+        return key_iterator != human_component.inventory.unique_items.end();
+      }
+
+    }
+
+    ActionResult compute_lock_door_action(WorldModel& model, ActorState& actor, const LockDoorAction& action)
+    {
+      auto door_iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
+
+      if (door_iterator == model.state.doors.end()) {
+        return ActionResult::Failure;
+      }
+
+      DoorState& door = *door_iterator;
+
+      if (door.status != DoorStatus::Open) {
+        return ActionResult::Failure;
+      }
+
+      if (!actor_has_key_for_door(actor, action.door)) {
+        return ActionResult::Failure;
+      }
+
+      door.status = DoorStatus::Locked;
+      return ActionResult::Success;
+    }
+
+    ActionResult compute_unlock_door_action(WorldModel& model, ActorState& actor, const UnlockDoorAction& action)
+    {
+      auto door_iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
+
+      if (door_iterator == model.state.doors.end()) {
+        return ActionResult::Failure;
+      }
+
+      DoorState& door = *door_iterator;
+
+      if (door.status != DoorStatus::Locked) {
+        return ActionResult::Failure;
+      }
+
+      if (!actor_has_key_for_door(actor, action.door)) {
+        return ActionResult::Failure;
+      }
+
+      door.status = DoorStatus::Closed;
+      return ActionResult::Success;
+    }
+
+    // OpenDoor and CloseDoor
+
+    namespace {
+
+      void change_door_picture(WorldModel& model, const Location& door, char16_t picture)
+      {
+        gf::console_write_picture(model.runtime.map.from_floor(door.floor).console, door.position, picture);
+      }
+
+    }
+
+    ActionResult compute_open_door_action(WorldModel& model, [[maybe_unused]] ActorState& actor, const OpenDoorAction& action)
+    {
+      auto iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
+
+      if (iterator == model.state.doors.end()) {
+        return ActionResult::Failure;
+      }
+
+      DoorState& door = *iterator;
+
+      if (door.status != DoorStatus::Closed) {
+        return ActionResult::Failure;
+      }
+
+      door.status = DoorStatus::Open;
+      change_door_picture(model, action.door, u' ');
+      return ActionResult::Success;
+    }
+
+    ActionResult compute_close_door_action(WorldModel& model, [[maybe_unused]] ActorState& actor, const CloseDoorAction& action)
+    {
+      auto iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
+
+      if (iterator == model.state.doors.end()) {
+        return ActionResult::Failure;
+      }
+
+      DoorState& door = *iterator;
+
+      if (door.status != DoorStatus::Open) {
+        return ActionResult::Failure;
+      }
+
+      door.status = DoorStatus::Closed;
+      change_door_picture(model, action.door, door.direction == DoorDirection::Horizontal ? u'\u2500' /* '─' */ : u'\u2502' /* '│' */);
+      return ActionResult::Success;
+    }
+
   }
 
   ActionResult compute_action(WorldModel& model, ActorState& actor, const Action& action)
@@ -492,7 +616,15 @@ namespace fw {
         return compute_wander_action(model, actor, action.from<ActionType::Wander>());
       case ActionType::Cruise:
         return compute_cruise_action(model, actor, action.from<ActionType::Cruise>());
-      }
+      case ActionType::LockDoor:
+        return compute_lock_door_action(model, actor, action.from<ActionType::LockDoor>());
+      case ActionType::UnlockDoor:
+        return compute_unlock_door_action(model, actor, action.from<ActionType::UnlockDoor>());
+      case ActionType::OpenDoor:
+        return compute_open_door_action(model, actor, action.from<ActionType::OpenDoor>());
+      case ActionType::CloseDoor:
+        return compute_close_door_action(model, actor, action.from<ActionType::CloseDoor>());
+    }
 
     return ActionResult::Failure;
   }

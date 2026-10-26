@@ -25,3 +25,6 @@
     - maybe different layout: traditional (arrows + keys); arrows (arrows + 4-key actions); vi (vi keys + 4-key actions); gamepad
   - `AdventureControlScene`: add the possibility of cancelling automatic move
   - add a key for walking continuously (like Alt), accessible with other key moves
+- Features
+  - treasure maps
+  

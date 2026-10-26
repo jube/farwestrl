@@ -7,6 +7,7 @@
 #include <gf2/core/SerializationUtilities.h>
 
 #include "ActorData.h"
+#include "ItemState.h"
 #include "WorldData.h"
 
 namespace fw {
@@ -55,6 +56,12 @@ namespace fw {
 
         for (InventoryItemState& item : human_component.inventory.items) {
           item.data.bind_from(data.items);
+          assert(item.data.check());
+        }
+
+        for (UniqueItemState& item : human_component.inventory.unique_items) {
+          item.data.bind_from(data.items);
+          assert(check_type(item));
         }
 
         if (human_component.weapon.data) {
@@ -64,15 +71,17 @@ namespace fw {
 
         if (human_component.projectile.data) {
           human_component.projectile.data.bind_from(data.items);
+          assert(human_component.projectile.data.check());
         }
       }
 
     }
 
-    for (ItemState& item : items) {
-      item.data.bind_from(data.items);
-      assert(check_type(item));
+    for (LocatedItemState& located_item : items) {
+      located_item.item.data.bind_from(data.items);
+      assert(check_type(located_item.item));
     }
+
   }
 
 

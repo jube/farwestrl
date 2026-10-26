@@ -11,6 +11,7 @@
 #include "ActorState.h"
 #include "Date.h"
 #include "DebtState.h"
+#include "DoorState.h"
 #include "ItemState.h"
 #include "JournalState.h"
 #include "MapState.h"
@@ -29,7 +30,9 @@ namespace fw {
     NetworkState network;
 
     std::vector<ActorState> actors;
-    std::vector<ItemState> items;
+    std::vector<LocatedItemState> items;
+
+    std::vector<DoorState> doors;
 
     DebtState debt;
 
@@ -57,7 +60,7 @@ namespace fw {
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<WorldState, Archive>& state)
   {
-    return ar | state.current_date | state.map | state.network | state.actors | state.debt | state.scheduler | state.journal;
+    return ar | state.current_date | state.map | state.network | state.actors | state.doors | state.debt | state.scheduler | state.journal;
   }
 
 }

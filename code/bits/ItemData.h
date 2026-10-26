@@ -27,6 +27,7 @@ namespace fw {
   };
 
   std::string_view to_string(ItemType type);
+  bool is_item_type_unique(ItemType type);
 
   enum class ProjectileKind : uint8_t {
     None,
