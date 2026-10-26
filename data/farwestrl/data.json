@@ -377,7 +377,7 @@
     {
       "label": ".44 Ammunition",
       "display": { "picture": "•", "color": "#CBB151" },
-      "image": "Ammunition.txt",
+      "image": "RevolverAmmunition.txt",
       "type": "projectile",
       "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".44",
@@ -387,7 +387,7 @@
     {
       "label": ".44 Ammunition +1",
       "display": { "picture": "•", "color": "#CBB151" },
-      "image": "Ammunition.txt",
+      "image": "RevolverAmmunition.txt",
       "type": "projectile",
       "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".44",
@@ -397,7 +397,7 @@
     {
       "label": ".36 Ammunition",
       "display": { "picture": "•", "color": "#CBB151" },
-      "image": "Ammunition.txt",
+      "image": "RevolverAmmunition.txt",
       "type": "projectile",
       "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".36",
@@ -407,7 +407,7 @@
     {
       "label": ".36 Ammunition +1",
       "display": { "picture": "•", "color": "#CBB151" },
-      "image": "Ammunition.txt",
+      "image": "RevolverAmmunition.txt",
       "type": "projectile",
       "empty": { "picture": "○", "color": "#CBB151" },
       "kind": ".36",
@@ -418,7 +418,7 @@
     {
       "label": "Knife",
       "display": { "picture": "/", "color": "#C0C0C0" },
-      "image": "No_Image.txt",
+      "image": "Knife.txt",
       "type": "melee_weapon",
       "attack": 30,
       "use_time": 10,
@@ -427,7 +427,7 @@
     {
       "label": "Machete",
       "display": { "picture": "]", "color": "#DDDDDD" },
-      "image": "No_Image.txt",
+      "image": "Machete.txt",
       "type": "melee_weapon",
       "attack": 35,
       "use_time": 12,
@@ -437,7 +437,7 @@
     {
       "label": "Key",
       "display": { "picture": "Γ", "color": "#808080"},
-      "image": "No_Image.txt",
+      "image": "Key.txt",
       "type": "key"
     }
   ]

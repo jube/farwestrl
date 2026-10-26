@@ -3,12 +3,14 @@
 - Procedural Generation
   - add horizontal lodes in mines
   - add huts and rocks in forest
-  - add small lakes, huts and rocks in prairie
+  - add small lakes, huts, abandonned carts and rocks in prairie
   - add mining camps in mines and/or mountains
   - add noise for building placement in towns
   - fix FloorUp/FloorDown: put it on the same position
 - Data
-  - ammunitions: add ammunition variants (with modifiers)
+  - firearms:
+    - dexterity can influence reload time and shoot time
+    - add condition (0%: unusable)
   - native weaponry:
     - https://en.wikipedia.org/wiki/Native_American_weaponry
     - https://www.native-languages.org/weapons.htm

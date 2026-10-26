@@ -1998,6 +1998,9 @@ namespace fw {
       item.data = "Knife";
       component.inventory.items.push_back(item);
 
+      item.data = "Machete";
+      component.inventory.items.push_back(item);
+
       item.data = ".44 Ammunition";
       item.count = 40;
       component.inventory.items.push_back(item);
