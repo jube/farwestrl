@@ -436,7 +436,7 @@
 
     {
       "label": "Key",
-      "display": { "picture": "Γ", "color": "#808080"},
+      "display": { "picture": "Γ", "color": "#808080"},
       "image": "No_Image.txt",
       "type": "key"
     }
