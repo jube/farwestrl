@@ -111,6 +111,7 @@ namespace fw {
 
     switch (m_data->type()) {
       case ItemType::None:
+      case ItemType::Key:
         break;
       case ItemType::Container:
       {

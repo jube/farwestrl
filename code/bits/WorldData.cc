@@ -22,6 +22,10 @@ namespace fw {
     json.at("items").get_to(items);
     data_lexicon_sort(items);
     gf::Log::info("- Items: {}", items.size());
+
+    json.at("things").get_to(things);
+    data_lexicon_sort(things);
+    gf::Log::info("- Things: {}", things.size());
   }
 
 }

@@ -120,6 +120,7 @@ namespace {
       switch (item.type()) {
         case fw::ItemType::None:
         case fw::ItemType::Container:
+        case fw::ItemType::Key:
           break;
         case fw::ItemType::MeleeWeapon:
           weapons.melee_weapons.emplace(item.label.tag, item.element.from<fw::ItemType::MeleeWeapon>());
@@ -130,7 +131,7 @@ namespace {
         case fw::ItemType::Projectile:
           weapons.projectiles.emplace(item.label.tag, item.element.from<fw::ItemType::Projectile>());
           break;
-      }
+        }
     }
 
     return weapons;

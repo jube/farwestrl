@@ -4,12 +4,14 @@
 #include "ActorData.h"
 #include "DataLexicon.h"
 #include "ItemData.h"
+#include "ThingData.h"
 
 namespace fw {
 
   struct WorldData {
     DataLexicon<ActorData> actors;
     DataLexicon<ItemData> items;
+    DataLexicon<ThingData> things;
 
     void load_from_file(const std::filesystem::path& filename);
 
