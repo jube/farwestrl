@@ -48,6 +48,7 @@ namespace fw {
             case ItemType::None:
             case ItemType::Container:
             case ItemType::Projectile:
+            case ItemType::Key:
               assert(false);
               break;
             case ItemType::MeleeWeapon:

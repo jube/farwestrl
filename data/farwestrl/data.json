@@ -436,11 +436,23 @@
 
     {
       "label": "Key",
-      "display": { "picture": "Γ", "color": "#808080"},
+      "display": { "picture": "⌈", "color": "#808080"},
       "image": "Key.txt",
       "type": "key"
     }
   ],
   "things": [
+    {
+      "label": "Bed",
+      "type": "bed",
+      "quality": "good",
+      "display": { "picture": "=", "color": "#f3f3f3"},
+    },
+    {
+      "label": "Straw Mattress",
+      "type": "bed",
+      "quality": "worse",
+      "display": { "picture": "≈", "color": "#d8da48"},
+    }
   ]
 }

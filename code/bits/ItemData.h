@@ -83,7 +83,7 @@ namespace fw {
     ItemType type() const { return element.type(); }
   };
 
-  void from_json(const nlohmann::json& j, ItemData& data);
+  void from_json(const nlohmann::json& json, ItemData& data);
 
 }
 

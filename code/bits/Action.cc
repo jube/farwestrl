@@ -6,6 +6,7 @@
 
 #include "ActorData.h"
 #include "ActorState.h"
+#include "DateTypes.h"
 #include "DoorState.h"
 #include "Index.h"
 #include "ItemData.h"

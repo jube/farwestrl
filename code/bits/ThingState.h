@@ -4,6 +4,7 @@
 #include <gf2/core/Orientation.h>
 #include <gf2/core/TypeTraits.h>
 
+#include "Action.h"
 #include "DataReference.h"
 #include "Location.h"
 #include "ThingData.h"
@@ -21,6 +22,8 @@ namespace fw {
   {
     return ar | state.data | state.location | state.orientation;
   }
+
+  std::array<Action, 2> actions_from_thing(const ThingState& thing);
 
 }
 

@@ -735,7 +735,8 @@ namespace fw {
      */
 
     for (const ThingState& thing : state.things) {
-
+      const gf::Vec2I position = thing.location.position + gf::displacement(thing.orientation);
+      from_floor(thing.location.floor).action(position).actions = actions_from_thing(thing);
     }
 
     /*
