@@ -9,16 +9,18 @@
 #include <gf2/core/Easing.h>
 #include <gf2/core/Math.h>
 
+#include "Action.h"
 #include "Colors.h"
+#include "DoorState.h"
 #include "MapCell.h"
 #include "MapCellBiome.h"
 #include "MapState.h"
 #include "MapBuilding.h"
 #include "NetworkState.h"
+#include "Pictures.h"
 #include "Settings.h"
 #include "Utils.h"
 #include "WorldState.h"
-#include "gf2/core/Color.h"
 
 namespace fw {
 
@@ -96,6 +98,50 @@ namespace fw {
     return ground;
   }
 
+  namespace {
+
+    std::tuple<gf::Vec2I, gf::Vec2I> action_positions_from_direction(gf::Vec2I position, DoorDirection direction)
+    {
+      switch (direction) {
+        case DoorDirection::Horizontal:
+          return { position + gf::diry(+1), position + gf::diry(-1) };
+        case DoorDirection::Vertical:
+          return { position + gf::dirx(+1), position + gf::dirx(-1) };
+      }
+
+      return { position, position };
+    }
+
+  }
+
+  void MapRuntime::set_door_actions(const DoorState& door)
+  {
+    gf::Array2D<ActionMapCell>& action = from_floor(door.location.floor).action;
+
+    auto bind_door_action = [&](gf::Vec2I position, Action action0, Action action1) {
+      ActionMapCell& cell = action(position);
+      cell.actions[0] = action0;
+      cell.actions[1] = action1;
+    };
+
+    auto [ position0, position1 ] = action_positions_from_direction(door.location.position, door.direction);
+
+    switch (door.status) {
+      case DoorStatus::Open:
+        bind_door_action(position0, make_action<CloseDoorAction>(door.location), {});
+        bind_door_action(position1, make_action<CloseDoorAction>(door.location), {});
+        break;
+      case DoorStatus::Closed:
+        bind_door_action(position0, make_action<OpenDoorAction>(door.location), make_action<LockDoorAction>(door.location));
+        bind_door_action(position1, make_action<OpenDoorAction>(door.location), make_action<LockDoorAction>(door.location));
+        break;
+      case DoorStatus::Locked:
+        bind_door_action(position0, make_action<UnlockDoorAction>(door.location), {});
+        bind_door_action(position1, make_action<UnlockDoorAction>(door.location), {});
+        break;
+    }
+  }
+
   void MapRuntime::bind(const WorldState& state, gf::Random* random, Analysis& analysis)
   {
     analysis.set_step(AnalysisStep::MapGround);
@@ -111,6 +157,8 @@ namespace fw {
 
     analysis.set_step(AnalysisStep::MapBuildings);
     bind_buildings(state);
+
+    bind_actions(state); // TODO: add to analysis
 
     analysis.set_step(AnalysisStep::MapMinimap);
     bind_minimaps(state);
@@ -137,6 +185,26 @@ namespace fw {
         case MapCellDecoration::Herb:
           character = generate_character({ u'.', u',', u'`', u'\'' /*, gf::ConsoleChar::SquareRoot */ }, random);
           foreground_color = gf::darker(background_color, 0.1f);
+          break;
+        case MapCellDecoration::Dollar:
+          character = u'$';
+          foreground_color = gf::darker(background_color, 0.25f);
+          break;
+        case MapCellDecoration::SuitHeart:
+          character = u'\u2665'; /* '♥' */
+          foreground_color = gf::darker(background_color, 0.25f);
+          break;
+        case MapCellDecoration::SuitClub:
+          character = u'\u2663'; /* '♣' */;
+          foreground_color = gf::darker(background_color, 0.25f);
+          break;
+        case MapCellDecoration::SuitDiamond:
+          character = u'\u2666'; /* '♦' */
+          foreground_color = gf::darker(background_color, 0.25f);
+          break;
+        case MapCellDecoration::SuitSpade:
+          character = u'\u2660'; /* '♠' */
+          foreground_color = gf::darker(background_color, 0.25f);
           break;
         case MapCellDecoration::Cactus:
           character = generate_character({ u'!', gf::ConsoleChar::InvertedExclamationMark }, random);
@@ -215,6 +283,31 @@ namespace fw {
         case MapCellDecoration::Rock:
           character = gf::ConsoleChar::FullBlock;
           foreground_color = RockColor;
+          break;
+
+        case MapCellDecoration::Window:
+          {
+            const uint8_t neighbor_bits = compute_neighbor_bits<MapCellDecoration, &MapCell::decoration>(state, position, MapCellDecoration::Wall);
+
+            if (neighbor_bits == 0b1010) { // W-E
+              character = u'\u2500'; /* '─' */
+            } else if (neighbor_bits == 0b0101) { // N-S
+              character = u'\u2502'; /* '│' */
+            } else {
+              assert(false);
+            }
+
+            foreground_color = 0xC0C0C0;
+          }
+          break;
+
+        case MapCellDecoration::HorizontalDoor:
+          character = HorizontalDoorPicture;
+          foreground_color = 0x808080;
+          break;
+        case MapCellDecoration::VerticalDoor:
+          character = VerticalDoorPicture;
+          foreground_color = 0x808080;
           break;
         }
 
@@ -492,38 +585,6 @@ namespace fw {
    }
   }
 
-  // void MapRuntime::blur(const WorldState& state)
-  // {
-  //   gf::Console new_ground = ground.console;
-  //
-  //   constexpr int KernelSize = 3;
-  //   constexpr int KernelCenter = (KernelSize - 1) / 2;
-  //   constexpr int Kernel[KernelSize][KernelSize] = {
-  //     {  1,  2,  1 },
-  //     {  2, 16,  2 },
-  //     {  1,  2,  1 }
-  //   };
-  //
-  //   for (gf::Vec2I position : state.map.cells.position_range()) {
-  //     gf::Color new_color = Kernel[KernelCenter][KernelCenter] * ground.console.background(position);
-  //     int total_weight = Kernel[KernelCenter][KernelCenter];
-  //
-  //     for (const gf::Vec2I neighbor : state.map.cells.compute_8_neighbors_range(position)) {
-  //       const gf::Vec2I offset = KernelCenter + (position - neighbor);
-  //       assert(0 <= offset.x && offset.x < KernelSize);
-  //       assert(0 <= offset.y && offset.y < KernelSize);
-  //       const int weight = Kernel[offset.x][offset.y];
-  //       new_color += weight * ground.console.background(neighbor);
-  //       total_weight += weight;
-  //     }
-  //
-  //     new_color /= total_weight;
-  //     new_ground.set_background(position, new_color);
-  //   }
-  //
-  //   ground.console = std::move(new_ground);
-  // }
-
   namespace {
 
     gf::ConsoleColorStyle building_style(BuildingPartType type)
@@ -664,6 +725,21 @@ namespace fw {
       return u'│';
     }
 
+  }
+
+  void MapRuntime::bind_actions(const WorldState& state)
+  {
+    /*
+     * Things: TODO
+     */
+
+    /*
+     * Doors
+     */
+
+    for (const DoorState& door : state.doors) {
+      set_door_actions(door);
+    }
   }
 
   namespace {

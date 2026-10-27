@@ -11,11 +11,13 @@
 #include <gf2/core/Random.h>
 
 #include "Analysis.h"
+#include "Action.h"
 #include "Index.h"
 #include "MapFloor.h"
 
 namespace fw {
   struct WorldState;
+  struct DoorState;
 
   constexpr std::size_t MinimapCount = 4;
 
@@ -46,6 +48,10 @@ namespace fw {
     }
   };
 
+  struct ActionMapCell {
+    std::array<Action, 2> actions;
+  };
+
   struct Minimap {
     gf::Console console;
     gf::Array2D<float> explored;
@@ -59,12 +65,14 @@ namespace fw {
     : console(size)
     , background(size, { gf::All })
     , reverse(size)
+    , action(size)
     {
     }
 
     gf::Console console;
     gf::Array2D<RuntimeMapCell> background;
     gf::Array2D<ReverseMapCell> reverse;
+    gf::Array2D<ActionMapCell> action;
 
     std::array<Minimap, MinimapCount> minimaps;
 
@@ -78,6 +86,8 @@ namespace fw {
     const FloorMap& from_floor(Floor floor) const;
     FloorMap& from_floor(Floor floor);
 
+    void set_door_actions(const DoorState& state);
+
     void bind(const WorldState& state, gf::Random* random, Analysis& analysis);
 
     void bind_ground(const WorldState& state, gf::Random* random);
@@ -86,10 +96,9 @@ namespace fw {
     void bind_roads(const WorldState& state, gf::Random* random);
     void bind_towns(const WorldState& state, gf::Random* random);
 
-    void blur(const WorldState& state);
-
     void bind_buildings(const WorldState& state);
 
+    void bind_actions(const WorldState& state);
     void bind_minimaps(const WorldState& state);
   };
 

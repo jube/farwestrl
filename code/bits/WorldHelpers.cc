@@ -21,7 +21,9 @@ namespace fw {
           return DistanceWeaponComponent{};
         case ItemType::Projectile:
           return ProjectileComponent{};
-      }
+        case ItemType::Key:
+          return KeyComponent{};
+        }
 
       return {};
     }
@@ -125,6 +127,7 @@ namespace fw {
     switch (component.inventory.items[index].type()) {
       case ItemType::None:
       case ItemType::Container:
+      case ItemType::Key:
         // these can't be equipped
         return;
       case ItemType::MeleeWeapon:

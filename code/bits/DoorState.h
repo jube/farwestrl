@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include <tuple>
+
 #include <gf2/core/Vec2.h>
 #include <gf2/core/TypeTraits.h>
 

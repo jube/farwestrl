@@ -5,6 +5,9 @@
 
 namespace fw {
 
+  constexpr char16_t HorizontalDoorPicture = u'\u2550'; /* '═' */
+  constexpr char16_t VerticalDoorPicture = u'\u2551'; /* '║' */
+
   char16_t rotate_picture(char16_t picture, gf::Direction direction);
 
 }

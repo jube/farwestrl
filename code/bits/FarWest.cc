@@ -68,6 +68,8 @@ namespace fw {
         m_model.update(gf::milliseconds(16));
       }
 
+      m_model.update_fov();
+
       m_analysis.set_step(AnalysisStep::End);
       m_analysis.print_analysis();
     });

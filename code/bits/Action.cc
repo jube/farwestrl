@@ -2,21 +2,25 @@
 
 #include <cstdint>
 
+#include <gf2/core/ConsoleOperations.h>
+
 #include "ActorData.h"
 #include "ActorState.h"
 #include "DoorState.h"
+#include "Index.h"
 #include "ItemData.h"
 #include "ItemState.h"
 #include "MapCell.h"
 #include "NetworkState.h"
+#include "Pictures.h"
 #include "Times.h"
 #include "WorldModel.h"
-
-#include <gf2/core/ConsoleOperations.h>
 
 namespace fw {
 
   namespace {
+    [[maybe_unused]] constexpr std::size_t ActionSize = sizeof(Action);
+
     /*
      * Helpers
      */
@@ -477,14 +481,8 @@ namespace fw {
 
     namespace {
 
-      bool actor_has_key_for_door(const ActorState& actor, const Location& door)
+      bool actor_has_key_for_door(const HumanComponent& human_component, const Location& door)
       {
-        if (actor.type() != ActorType::Human) {
-          return false;
-        }
-
-        const HumanComponent& human_component = actor.component.from<ActorType::Human>();
-
         auto key_iterator = std::ranges::find_if(human_component.inventory.unique_items, [&](const UniqueItemState& item) {
           if (item.type() != ItemType::Key) {
             return false;
@@ -512,11 +510,24 @@ namespace fw {
           return ActionResult::Failure;
         }
 
-        if (!actor_has_key_for_door(actor, action.door)) {
+        assert(actor.type() == ActorType::Human);
+        const HumanComponent& human_component = actor.component.from<ActorType::Human>();
+
+        if (!actor_has_key_for_door(human_component, action.door)) {
           return ActionResult::Failure;
         }
 
         door.status = new_status;
+        model.runtime.map.set_door_actions(door);
+
+        if (new_status == DoorStatus::Locked) {
+          model.state.add_message(fmt::format("<style=character>{}</> has locked a door.", human_component.name));
+        } else {
+          model.state.add_message(fmt::format("<style=character>{}</> has unlocked a door.", human_component.name));
+        }
+
+        model.update_current_task_in_queue(LockUnlockDoorTime);
+
         return ActionResult::Success;
       }
 
@@ -544,9 +555,9 @@ namespace fw {
           case DoorStatus::Locked:
             switch (direction) {
               case DoorDirection::Horizontal:
-                return { u'\u2500' /* '─' */, MapCellDecoration::HorizontalDoor };
+                return { HorizontalDoorPicture, MapCellDecoration::HorizontalDoor };
               case DoorDirection::Vertical:
-                return { u'\u2502' /* '│' */, MapCellDecoration::VerticalDoor };
+                return { VerticalDoorPicture, MapCellDecoration::VerticalDoor };
             }
         }
 
@@ -554,7 +565,7 @@ namespace fw {
       }
 
       template<typename T>
-      ActionResult compute_move_door_action(WorldModel& model, const T& action, DoorStatus expected_status, DoorStatus new_status)
+      ActionResult compute_move_door_action(WorldModel& model, ActorState& actor, const T& action, DoorStatus expected_status, DoorStatus new_status)
       {
         auto iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
 
@@ -569,24 +580,48 @@ namespace fw {
         }
 
         door.status = new_status;
+        model.runtime.map.set_door_actions(door);
+
+        FloorMap& map = model.runtime.map.from_floor(action.door.floor);
 
         auto [ picture, decoration ] = picture_decoration_from_status_direction(new_status, door.direction);
-        gf::console_write_picture(model.runtime.map.from_floor(action.door.floor).console, action.door.position, picture);
+        gf::console_write_picture(map.console, action.door.position, picture);
         model.state.map.from_floor(action.door.floor)(action.door.position).decoration = decoration;
+
+        if (new_status == DoorStatus::Open) {
+          map.background(action.door.position).properties.set(RuntimeMapCellProperty::Walkable);
+        } else {
+          map.background(action.door.position).properties.reset(RuntimeMapCellProperty::Walkable);
+        }
+
+        assert(actor.type() == ActorType::Human);
+        const HumanComponent& human_component = actor.component.from<ActorType::Human>();
+
+        if (new_status == DoorStatus::Open) {
+          model.state.add_message(fmt::format("<style=character>{}</> has opened a door.", human_component.name));
+        } else {
+          model.state.add_message(fmt::format("<style=character>{}</> has closed a door.", human_component.name));
+        }
+
+        if (model.index_of(actor) == HeroIndex) {
+          model.update_fov();
+        }
+
+        model.update_current_task_in_queue(OpenCloseDoorTime);
 
         return ActionResult::Success;
       }
 
     }
 
-    ActionResult compute_open_door_action(WorldModel& model, [[maybe_unused]] ActorState& actor, const OpenDoorAction& action)
+    ActionResult compute_open_door_action(WorldModel& model, ActorState& actor, const OpenDoorAction& action)
     {
-      return compute_move_door_action(model, action, DoorStatus::Closed, DoorStatus::Open);
+      return compute_move_door_action(model, actor, action, DoorStatus::Closed, DoorStatus::Open);
     }
 
-    ActionResult compute_close_door_action(WorldModel& model, [[maybe_unused]] ActorState& actor, const CloseDoorAction& action)
+    ActionResult compute_close_door_action(WorldModel& model, ActorState& actor, const CloseDoorAction& action)
     {
-      return compute_move_door_action(model, action, DoorStatus::Open, DoorStatus::Closed);
+      return compute_move_door_action(model, actor, action, DoorStatus::Open, DoorStatus::Closed);
     }
 
   }

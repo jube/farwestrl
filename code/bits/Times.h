@@ -13,6 +13,8 @@ namespace fw {
 
   constexpr Second MountTime = 10;
   constexpr Second DismountTime = 10;
+  constexpr Second LockUnlockDoorTime = 5;
+  constexpr Second OpenCloseDoorTime = 2;
 
   constexpr Second GrazeTime = 100;
   constexpr Second IdleTime = 100;

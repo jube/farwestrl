@@ -88,6 +88,9 @@ namespace fw {
     settings.actions.emplace("mount"_id, gf::instantaneous_action().add_keycode_control(gf::Keycode::M));
     settings.actions.emplace("reload"_id, gf::instantaneous_action().add_keycode_control(gf::Keycode::R));
 
+    settings.actions.emplace("action0"_id, gf::instantaneous_action().add_keycode_control(gf::Keycode::X));
+    settings.actions.emplace("action1"_id, gf::instantaneous_action().add_keycode_control(gf::Keycode::C));
+
     settings.actions.emplace("escape"_id, gf::instantaneous_action().add_scancode_control(gf::Scancode::Escape));
     settings.actions.emplace("go"_id, gf::instantaneous_action().add_mouse_button_control(gf::MouseButton::Left));
 
@@ -107,6 +110,8 @@ namespace fw {
 
     WorldRuntime* runtime = m_game->runtime();
     runtime->hero.action = {};
+
+    const Location hero_location = state->hero().location();
 
     gf::Vec2I orientation = { 0, 0 };
 
@@ -141,6 +146,14 @@ namespace fw {
 
     if (m_action_group.active("reload"_id)) {
       runtime->hero.action = make_action<ReloadAction>();
+    }
+
+    if (m_action_group.active("action0"_id)) {
+      runtime->hero.action = runtime->map.from_floor(hero_location.floor).action(hero_location.position).actions[0];
+    }
+
+    if (m_action_group.active("action1"_id)) {
+      runtime->hero.action = runtime->map.from_floor(hero_location.floor).action(hero_location.position).actions[1];
     }
 
     if (m_action_group.active("inventory"_id)) {

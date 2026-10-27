@@ -161,7 +161,11 @@ namespace fw {
             case MapCellDecoration::FloorDown:
             case MapCellDecoration::FloorUp:
             case MapCellDecoration::Herb:
-            case MapCellDecoration::Wall:
+            case MapCellDecoration::Dollar:
+            case MapCellDecoration::SuitHeart:
+            case MapCellDecoration::SuitClub:
+            case MapCellDecoration::SuitDiamond:
+            case MapCellDecoration::SuitSpade:
               // nothing
               break;
             case MapCellDecoration::Cactus:
@@ -179,7 +183,17 @@ namespace fw {
             case MapCellDecoration::Rock:
               color = RockColor;
               break;
-          }
+            case MapCellDecoration::Wall:
+              color = gf::Black;
+              break;
+            case MapCellDecoration::HorizontalDoor:
+            case MapCellDecoration::VerticalDoor:
+              color = gf::Gray;
+              break;
+            case MapCellDecoration::Window:
+              color = gf::gray(0.75f);
+              break;
+            }
         }
 
         image.put_pixel(position, color);
@@ -2065,7 +2079,6 @@ namespace fw {
 
     {
       ActorState hero = generate_hero(state, data, random);
-      compute_hero_fov(hero.location().position, state.map.ground);
 
       assert(state.actors.empty());
       state.actors.push_back(hero);
@@ -2073,6 +2086,10 @@ namespace fw {
       Date next_turn = state.current_date;
       next_turn.add_seconds(1);
       state.scheduler.queue.push({next_turn, 0});
+
+      const gf::Vec2I door_position = hero.location().position + gf::dirx(10);
+      state.map.ground(door_position).decoration = MapCellDecoration::HorizontalDoor;
+      state.doors.push_back({ .location = { .position = door_position, .floor = Floor::Ground }, .status = DoorStatus::Closed, .direction = DoorDirection::Horizontal });
 
     }
 

@@ -131,6 +131,16 @@ namespace fw {
     state.scheduler.queue.push(task);
   }
 
+  void WorldModel::update_fov()
+  {
+    const Location location = state.hero().location();
+    BackgroundMap& background_map = state.map.from_floor(location.floor);
+    const std::vector<gf::Vec2I> explored = compute_hero_fov(location.position, background_map);
+
+    // update minimap thanks to field of view
+    FloorMap& runtime_map = runtime.map.from_floor(location.floor);
+    runtime_map.update_minimap_explored(explored);
+  }
 
   bool WorldModel::check() const
   {
@@ -177,21 +187,14 @@ namespace fw {
 
     if (runtime.hero.action.type() == ActionType::Move) {
       if (result == ActionResult::Success) {
-        const Location new_location = hero.location();
-        BackgroundMap& state_map = state.map.from_floor(new_location.floor);
-        const std::vector<gf::Vec2I> explored = compute_hero_fov(new_location.position, state_map);
+        update_fov();
 
-        // update minimap thanks to field of view
-        FloorMap& runtime_map = runtime.map.from_floor(new_location.floor);
-        runtime_map.update_minimap_explored(explored);
-
-        if (new_location.floor != location.floor) {
+        if (hero.location().floor != location.floor) {
           runtime.hero.moves.clear();
         }
       } else {
         runtime.hero.moves.clear();
       }
-
     }
 
     runtime.hero.action = {};
