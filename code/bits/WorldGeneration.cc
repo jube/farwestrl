@@ -2080,17 +2080,25 @@ namespace fw {
     {
       ActorState hero = generate_hero(state, data, random);
 
-      assert(state.actors.empty());
-      state.actors.push_back(hero);
-
       Date next_turn = state.current_date;
       next_turn.add_seconds(1);
       state.scheduler.queue.push({next_turn, 0});
 
       const gf::Vec2I door_position = hero.location().position + gf::dirx(10);
+      const Location door_location = { .position = door_position, .floor = Floor::Ground };
       state.map.ground(door_position).decoration = MapCellDecoration::HorizontalDoor;
-      state.doors.push_back({ .location = { .position = door_position, .floor = Floor::Ground }, .status = DoorStatus::Closed, .direction = DoorDirection::Horizontal });
+      state.doors.push_back({ .location = door_location, .status = DoorStatus::Closed, .direction = DoorDirection::Horizontal });
 
+      ItemState key;
+      key.data = "Key";
+      KeyComponent key_component;
+      key_component.doors.push_back(door_location);
+      key.component = key_component;
+
+      hero.component.from<ActorType::Human>().inventory.unique_items.push_back(std::move(key));
+
+      assert(state.actors.empty());
+      state.actors.push_back(hero);
     }
 
     analysis.set_step(AnalysisStep::Actors);

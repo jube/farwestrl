@@ -29,4 +29,4 @@
   - add a key for walking continuously (like Alt), accessible with other key moves
 - Features
   - treasure maps
-  
+  - universal key (one in the whole map)

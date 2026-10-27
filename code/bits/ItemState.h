@@ -67,7 +67,7 @@ namespace fw {
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, [[maybe_unused]] gf::MaybeConst<KeyComponent, Archive>& component)
+  Archive& operator|(Archive& ar, gf::MaybeConst<KeyComponent, Archive>& component)
   {
     return ar | component.doors;
   }
