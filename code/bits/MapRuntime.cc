@@ -19,6 +19,7 @@
 #include "NetworkState.h"
 #include "Pictures.h"
 #include "Settings.h"
+#include "ThingState.h"
 #include "Utils.h"
 #include "WorldState.h"
 
@@ -730,8 +731,12 @@ namespace fw {
   void MapRuntime::bind_actions(const WorldState& state)
   {
     /*
-     * Things: TODO
+     * Things
      */
+
+    for (const ThingState& thing : state.things) {
+
+    }
 
     /*
      * Doors

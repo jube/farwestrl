@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <gf2/core/Vec2.h>
+#include <gf2/core/TypeTraits.h>
 
 #include "DataReference.h"
 #include "ItemData.h"

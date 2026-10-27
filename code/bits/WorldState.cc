@@ -82,6 +82,11 @@ namespace fw {
       assert(check_type(located_item.item));
     }
 
+    for (ThingState& thing : things) {
+      thing.data.bind_from(data.things);
+      assert(thing.data.check());
+    }
+
   }
 
 
