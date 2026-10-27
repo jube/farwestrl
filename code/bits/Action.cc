@@ -497,99 +497,96 @@ namespace fw {
         return key_iterator != human_component.inventory.unique_items.end();
       }
 
+      template<typename T>
+      ActionResult compute_key_door_action(WorldModel& model, ActorState& actor, const T& action, DoorStatus expected_status, DoorStatus new_status)
+      {
+        auto door_iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
+
+        if (door_iterator == model.state.doors.end()) {
+          return ActionResult::Failure;
+        }
+
+        DoorState& door = *door_iterator;
+
+        if (door.status != expected_status) {
+          return ActionResult::Failure;
+        }
+
+        if (!actor_has_key_for_door(actor, action.door)) {
+          return ActionResult::Failure;
+        }
+
+        door.status = new_status;
+        return ActionResult::Success;
+      }
+
     }
 
     ActionResult compute_lock_door_action(WorldModel& model, ActorState& actor, const LockDoorAction& action)
     {
-      auto door_iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
-
-      if (door_iterator == model.state.doors.end()) {
-        return ActionResult::Failure;
-      }
-
-      DoorState& door = *door_iterator;
-
-      if (door.status != DoorStatus::Open) {
-        return ActionResult::Failure;
-      }
-
-      if (!actor_has_key_for_door(actor, action.door)) {
-        return ActionResult::Failure;
-      }
-
-      door.status = DoorStatus::Locked;
-      return ActionResult::Success;
+      return compute_key_door_action(model, actor, action, DoorStatus::Closed, DoorStatus::Locked);
     }
 
     ActionResult compute_unlock_door_action(WorldModel& model, ActorState& actor, const UnlockDoorAction& action)
     {
-      auto door_iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
-
-      if (door_iterator == model.state.doors.end()) {
-        return ActionResult::Failure;
-      }
-
-      DoorState& door = *door_iterator;
-
-      if (door.status != DoorStatus::Locked) {
-        return ActionResult::Failure;
-      }
-
-      if (!actor_has_key_for_door(actor, action.door)) {
-        return ActionResult::Failure;
-      }
-
-      door.status = DoorStatus::Closed;
-      return ActionResult::Success;
+      return compute_key_door_action(model, actor, action, DoorStatus::Locked, DoorStatus::Closed);
     }
 
     // OpenDoor and CloseDoor
 
     namespace {
 
-      void change_door_picture(WorldModel& model, const Location& door, char16_t picture)
+      std::tuple<char16_t, MapCellDecoration> picture_decoration_from_status_direction(DoorStatus status, DoorDirection direction) {
+        switch (status) {
+          case DoorStatus::Open:
+            return { u' ', MapCellDecoration::None };
+          case DoorStatus::Closed:
+          case DoorStatus::Locked:
+            switch (direction) {
+              case DoorDirection::Horizontal:
+                return { u'\u2500' /* '─' */, MapCellDecoration::HorizontalDoor };
+              case DoorDirection::Vertical:
+                return { u'\u2502' /* '│' */, MapCellDecoration::VerticalDoor };
+            }
+        }
+
+        return { u'?', MapCellDecoration::None };
+      }
+
+      template<typename T>
+      ActionResult compute_move_door_action(WorldModel& model, const T& action, DoorStatus expected_status, DoorStatus new_status)
       {
-        gf::console_write_picture(model.runtime.map.from_floor(door.floor).console, door.position, picture);
+        auto iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
+
+        if (iterator == model.state.doors.end()) {
+          return ActionResult::Failure;
+        }
+
+        DoorState& door = *iterator;
+
+        if (door.status != expected_status) {
+          return ActionResult::Failure;
+        }
+
+        door.status = new_status;
+
+        auto [ picture, decoration ] = picture_decoration_from_status_direction(new_status, door.direction);
+        gf::console_write_picture(model.runtime.map.from_floor(action.door.floor).console, action.door.position, picture);
+        model.state.map.from_floor(action.door.floor)(action.door.position).decoration = decoration;
+
+        return ActionResult::Success;
       }
 
     }
 
     ActionResult compute_open_door_action(WorldModel& model, [[maybe_unused]] ActorState& actor, const OpenDoorAction& action)
     {
-      auto iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
-
-      if (iterator == model.state.doors.end()) {
-        return ActionResult::Failure;
-      }
-
-      DoorState& door = *iterator;
-
-      if (door.status != DoorStatus::Closed) {
-        return ActionResult::Failure;
-      }
-
-      door.status = DoorStatus::Open;
-      change_door_picture(model, action.door, u' ');
-      return ActionResult::Success;
+      return compute_move_door_action(model, action, DoorStatus::Closed, DoorStatus::Open);
     }
 
     ActionResult compute_close_door_action(WorldModel& model, [[maybe_unused]] ActorState& actor, const CloseDoorAction& action)
     {
-      auto iterator = std::ranges::find(model.state.doors, action.door, &DoorState::location);
-
-      if (iterator == model.state.doors.end()) {
-        return ActionResult::Failure;
-      }
-
-      DoorState& door = *iterator;
-
-      if (door.status != DoorStatus::Open) {
-        return ActionResult::Failure;
-      }
-
-      door.status = DoorStatus::Closed;
-      change_door_picture(model, action.door, door.direction == DoorDirection::Horizontal ? u'\u2500' /* '─' */ : u'\u2502' /* '│' */);
-      return ActionResult::Success;
+      return compute_move_door_action(model, action, DoorStatus::Open, DoorStatus::Closed);
     }
 
   }

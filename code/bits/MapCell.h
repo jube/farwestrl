@@ -46,6 +46,8 @@ namespace fw {
     Cliff = 0xA000,
     Wall,
     Rock,
+    HorizontalDoor,
+    VerticalDoor,
 
     // TODO: ores: gold, silver, coal, copper, iron (blocking and non-blocking version)
   };
