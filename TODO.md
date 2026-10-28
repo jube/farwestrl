@@ -27,6 +27,13 @@
     - maybe different layout: traditional (arrows + keys); arrows (arrows + 4-key actions); vi (vi keys + 4-key actions); gamepad
   - `AdventureControlScene`: add the possibility of cancelling automatic move
   - add a key for walking continuously (like Alt), accessible with other key moves
+  - maybe reduce the size of the console: 80x45 (instead of 96x54)
+    - make the visible area square: 41x41 or 45x45
+    - reorganize the whole UI
+    - reduce the hero vision range to 20 instead of 30
+    - reduce the weapon's range
 - Features
   - treasure maps
   - universal key (one in the whole map)
+- Performance
+  - Use a reduced map for moisture/altitude (and interpolate if necessary), new size: 4095

@@ -446,13 +446,13 @@
       "label": "Bed",
       "type": "bed",
       "quality": "good",
-      "display": { "picture": "=", "color": "#f3f3f3"},
+      "display": { "picture": "=", "color": "#f3f3f3"}
     },
     {
       "label": "Straw Mattress",
       "type": "bed",
       "quality": "worse",
-      "display": { "picture": "≈", "color": "#d8da48"},
+      "display": { "picture": "≈", "color": "#d8da48"}
     }
   ]
 }

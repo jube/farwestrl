@@ -40,12 +40,12 @@ namespace fw {
 
     constexpr bool Debug = true;
 
-    constexpr double WorldNoiseScale = WorldBasicSize / 256.0;
+    constexpr float WorldNoiseScale = WorldBasicSize / 256.0;
 
     constexpr int32_t WorldPaddingSize = 150;
 
-    constexpr double RiverMinMoisture = 0.2;
-    constexpr double RiverSourceMinMoisture = 0.7;
+    constexpr float RiverMinMoisture = 0.2;
+    constexpr float RiverSourceMinMoisture = 0.7;
     constexpr int RiverMouthMinDistance = 3000;
     constexpr int RiverSourceMinDistance = 1500;
     constexpr float RiverSlopeFactor = 10000.0f;
@@ -53,9 +53,9 @@ namespace fw {
     constexpr int RiverRadiusMax = RiverRadiusMin + 10;
     constexpr std::size_t RiverPart = 800;
 
-    constexpr double AltitudeThreshold = 0.55;
-    constexpr double MoistureLoThreshold = 0.45;
-    constexpr double MoistureHiThreshold = 0.55;
+    constexpr float AltitudeThreshold = 0.55;
+    constexpr float MoistureLoThreshold = 0.45;
+    constexpr float MoistureHiThreshold = 0.55;
 
     constexpr double PrairieHerbProbability = 0.2;
     constexpr double DesertCactusProbability = 0.02;
@@ -213,8 +213,8 @@ namespace fw {
      */
 
     struct RawCell {
-      double altitude;
-      double moisture;
+      float altitude;
+      float moisture;
     };
 
     using RawWorld = gf::Array2D<RawCell>;
@@ -238,18 +238,18 @@ namespace fw {
         cell.altitude = altitude_heightmap.value(position);
         cell.moisture = moisture_heightmap.value(position);
 
-        double factor = 1.0;
+        float factor = 1.0;
 
         if (position.x < WorldPaddingSize) {
-          factor *= double(position.x) / double (WorldPaddingSize);
+          factor *= static_cast<float>(position.x) / static_cast<float>(WorldPaddingSize);
         } else if (position.x >= WorldSize.x - WorldPaddingSize) {
-          factor *= double(WorldSize.x - position.x - 1) / double (WorldPaddingSize);
+          factor *= static_cast<float>(WorldSize.x - position.x - 1) / static_cast<float>(WorldPaddingSize);
         }
 
         if (position.y < WorldPaddingSize) {
-          factor *= double(position.y) / double (WorldPaddingSize);
+          factor *= static_cast<float>(position.y) / static_cast<float>(WorldPaddingSize);
         } else if (position.y >= WorldSize.y - WorldPaddingSize) {
-          factor *= double(WorldSize.y - 1 - position.y) / double (WorldPaddingSize);
+          factor *= static_cast<float>(WorldSize.y - 1 - position.y) / static_cast<float>(WorldPaddingSize);
         }
 
         cell.altitude = 1.0 - (1.0 - cell.altitude) * gf::ease_out_cubic(factor);
@@ -267,11 +267,11 @@ namespace fw {
       }
 
       const float distance = gf::euclidean_distance<float>(position, neighbor);
-      const float slope = static_cast<float>(std::abs(raw(position).altitude - raw(neighbor).altitude)) / distance;
+      const float slope = std::abs(raw(position).altitude - raw(neighbor).altitude) / distance;
 
       const float value = distance * (1 + RiverSlopeFactor * gf::square(slope));
 
-      const double moisture = raw(neighbor).moisture;
+      const float moisture = raw(neighbor).moisture;
 
       if (moisture < MoistureLoThreshold) {
         return value * 10;
@@ -297,7 +297,7 @@ namespace fw {
 
         for (;;) {
           const gf::Vec2I source = random->compute_position(area);
-          const double moisture = raw(source).moisture;
+          const float moisture = raw(source).moisture;
 
           if (moisture > RiverSourceMinMoisture) {
             return source;
@@ -392,8 +392,8 @@ namespace fw {
           // elevate humidity around the river
 
           new_raw(position).moisture = 1.0; // std::max(new_raw(position).moisture, std::min(raw(position).moisture * 1.5, 1.0));
-          const double height = new_raw(position).moisture;
-          const double factor = height / radius_square;
+          const float height = new_raw(position).moisture;
+          const float factor = height / radius_square;
 
 
           for (const gf::Vec2I neighbor : gf::neighbor_square_range(position, radius)) {
@@ -404,7 +404,7 @@ namespace fw {
             const int distance_square = gf::square_distance(position, neighbor);
 
             if (distance_square < radius_square) {
-              double moisture_offset = factor * (radius_square - distance_square);
+              float moisture_offset = factor * (radius_square - distance_square);
               new_raw(neighbor).moisture = std::max(new_raw(neighbor).moisture, raw(neighbor).moisture + moisture_offset);
             }
           }
