@@ -43,6 +43,7 @@ namespace fw {
   }
 
   constexpr std::size_t TownsCount = 5;
+
   constexpr int32_t TownsBlockSize = 6;
   constexpr int32_t TownBuildingSize = 11;
   constexpr int32_t StreetSize = 3;

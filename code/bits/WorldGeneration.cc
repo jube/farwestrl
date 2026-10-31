@@ -1072,7 +1072,7 @@ namespace fw {
       // determine if the train will ride clockwise or counterclockwise
 
       if (random->compute_bernoulli(0.5)) {
-        std::reverse(reduced_railway.begin(), reduced_railway.end());
+        std::ranges::reverse(reduced_railway);
       }
 
       // put back in map
