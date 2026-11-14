@@ -1,10 +1,10 @@
 #include "WorldGeneration_Places.h"
 #include "MapCell.h"
-#include "gf2/core/Range.h"
 
 #include <algorithm>
 
 #include <gf2/core/Direction.h>
+#include <gf2/core/Range.h>
 
 namespace fw {
 
@@ -243,18 +243,112 @@ namespace fw {
      * Building
      */
 
+    template<int32_t Size, typename Plan>
+    char compute_generic_building_part(const Plan& plan, gf::Vec2I position, gf::Direction direction)
+    {
+      assert(0 <= position.x && position.x < Size);
+      assert(0 <= position.y && position.y < Size);
+
+      char picture = '#';
+
+      switch (direction) {
+        case gf::Direction::Up:
+          picture = plan[position.y][position.x];
+          break;
+        case gf::Direction::Right:
+          picture = plan[Size - position.x - 1][position.y];
+          break;
+        case gf::Direction::Down:
+          picture = plan[Size - position.y - 1][Size - position.x - 1];
+          break;
+        case gf::Direction::Left:
+          picture = plan[position.x][Size - position.y - 1];
+          break;
+        default:
+          assert(false);
+          break;
+      }
+
+      return picture;
+    }
+
+    using TownBuildingPlan = std::array<std::string_view, TownBuildingSize>;
+
+    char compute_town_building_part(const TownBuildingPlan& plan, gf::Vec2I position, gf::Direction direction)
+    {
+      return compute_generic_building_part<TownBuildingSize>(plan, position, direction);
+    }
+
+    MapCellDecoration door_decoration(const TownBuildingPlan& plan, gf::Vec2I position, gf::Direction direction)
+    {
+      assert(compute_town_building_part(plan, position, direction) == 'D');
+      assert(0 < position.x && position.x < TownBuildingSize - 1);
+      assert(0 < position.y && position.y < TownBuildingSize - 1);
+
+      auto check_wall = [&](gf::Vec2I offset) {
+        return compute_town_building_part(plan, position + offset, direction) == '#';
+      };
+
+      if (check_wall(gf::dirx(+1))) {
+        assert(check_wall(gf::dirx(-1)));
+        return MapCellDecoration::HorizontalDoor;
+      }
+
+      assert(check_wall(gf::diry(+1)));
+      assert(check_wall(gf::diry(-1)));
+      return MapCellDecoration::VerticalDoor;
+    }
+
+    DoorState make_door(gf::Vec2I position, MapCellDecoration decoration)
+    {
+      const Location location = { .position = position, .floor = Floor::Ground };
+      const DoorDirection direction = decoration == MapCellDecoration::HorizontalDoor ? DoorDirection::Horizontal : DoorDirection::Vertical;
+      return { .location = location, .status = DoorStatus::Closed, .direction = direction };
+    }
+
+    constexpr TownBuildingPlan House2 = {{
+      "#######W###",
+      "#   #     #",
+      "W   #     #",
+      "#   #     #",
+      "##D##D#####",
+      "#     #   #",
+      "#     D   #",
+      "#     #   W",
+      "#     #   #",
+      "#   # #   #",
+      "##W##D#####",
+    }};
+
     void add_building_to_town(const Building& building, gf::Vec2I position, Place& town)
     {
       position += building.offset;
 
-      // surrounding wall
+      const TownBuildingPlan& plan = House2; // TODO
 
-      for (int i = 0; i < TownBuildingSize; ++i) {
-        town.map(position + gf::dirx(i)).decoration = MapCellDecoration::Wall;
-        town.map(position + gf::diry(i)).decoration = MapCellDecoration::Wall;
-        town.map(position + gf::dirx(i) + gf::diry(TownBuildingSize - 1)).decoration = MapCellDecoration::Wall;
-        town.map(position + gf::diry(i) + gf::dirx(TownBuildingSize - 1)).decoration = MapCellDecoration::Wall;
+      for (const gf::Vec2I offset : gf::rectangle_range(gf::RectI::from_size({ TownBuildingSize, TownBuildingSize }))) {
+        MapCell& cell = town.map(position + offset);
+        const char part = compute_town_building_part(plan, offset, building.direction);
+
+        switch (part) {
+          case '#': // wall
+            cell.decoration = MapCellDecoration::Wall;
+            break;
+          case 'W': // window
+            cell.decoration = MapCellDecoration::Window;
+            break;
+          case 'D': // door
+            cell.decoration = door_decoration(plan, offset, building.direction);
+            town.doors.emplace_back(make_door(position + offset, cell.decoration));
+            break;
+          case ' ': // nothing
+            break;
+          default:
+            assert(false);
+            break;
+        }
       }
+
     }
 
   }
