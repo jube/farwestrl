@@ -26,13 +26,14 @@
 #include "Colors.h"
 #include "Date.h"
 #include "ItemState.h"
-#include "MapBuilding.h"
+// #include "MapBuilding.h"
 #include "MapCell.h"
 #include "MapCellBiome.h"
 #include "MapState.h"
 #include "Settings.h"
 #include "Times.h"
 #include "WorldData.h"
+#include "WorldGeneration_Places.h"
 
 namespace fw {
 
@@ -60,7 +61,6 @@ namespace fw {
     constexpr double PrairieHerbProbability = 0.2;
     constexpr double DesertCactusProbability = 0.02;
     constexpr double ForestTreeProbability = 0.25;
-    constexpr double WaterWaveProbability = 0.2;
 
     constexpr float MoutainThreshold       = 0.4f;
     constexpr int MoutainSurvivalThreshold = 6;
@@ -1262,6 +1262,21 @@ namespace fw {
      * Step W. Create towns
      */
 
+    void generate_towns(WorldState& state, const WorldPlaces& places, gf::Random* random)
+    {
+      for (auto [ index, town ] : gf::enumerate(places.towns)) {
+        Place place = generate_town(random);
+
+        for (const gf::Vec2I position : place.map.position_range()) {
+          state.map.ground(position + (town.center * ReducedFactor) - TownRadius) = place.map(position);
+        }
+
+        state.things.insert(state.things.end(), place.things.begin(), place.things.end());
+        state.doors.insert(state.doors.end(), place.doors.begin(), place.doors.end());
+      }
+    }
+
+#if 0
     void generate_towns(MapState& map, const WorldPlaces& places, gf::Random* random)
     {
       std::array<BuildingType, 20> buildings = {
@@ -1451,12 +1466,15 @@ namespace fw {
 
     }
 
+#endif
+
     /*
      * Generate localities
      */
 
     void generate_localities(MapState& map, const WorldPlaces& places, [[maybe_unused]] gf::Random* random)
     {
+#if 0
       for (auto [ index, locality ] : gf::enumerate(map.localities)) {
         locality.position = to_map(places.localities[index].center);
         locality.type = places.localities[index].type;
@@ -1491,7 +1509,7 @@ namespace fw {
           }
         }
       }
-
+#endif
     }
 
     /*
@@ -1882,6 +1900,7 @@ namespace fw {
     {
       SeatMap seat_map(state.map.ground.size(), Seat::Free);
 
+#if 0
       for (const TownState& town : state.map.towns) {
         for (const gf::Vec2I offset : gf::position_range({ TownDiameter, TownDiameter })) {
           seat_map(town.position + offset) = Seat::Occupied;
@@ -1893,6 +1912,7 @@ namespace fw {
           seat_map(locality.position + offset) = Seat::Occupied;
         }
       }
+#endif
 
       constexpr gf::RectI network_area = gf::RectI::from_center_size({ 0, 0 },{ ReducedFactor, ReducedFactor });
 
@@ -2063,7 +2083,7 @@ namespace fw {
     gf::Log::info("- roads ({:g}s)", clock.elapsed_time().as_seconds());
 
     analysis.set_step(AnalysisStep::Buildings);
-    generate_towns(state.map, places, random);
+    generate_towns(state, places, random);
     generate_localities(state.map, places, random);
     gf::Log::info("- towns and localities ({:g}s)", clock.elapsed_time().as_seconds());
 
@@ -2084,18 +2104,18 @@ namespace fw {
       next_turn.add_seconds(1);
       state.scheduler.queue.push({next_turn, 0});
 
-      const gf::Vec2I door_position = hero.location().position + gf::dirx(10);
-      const Location door_location = { .position = door_position, .floor = Floor::Ground };
-      state.map.ground(door_position).decoration = MapCellDecoration::HorizontalDoor;
-      state.doors.push_back({ .location = door_location, .status = DoorStatus::Closed, .direction = DoorDirection::Horizontal });
-
-      ItemState key;
-      key.data = "Key";
-      KeyComponent key_component;
-      key_component.doors.push_back(door_location);
-      key.component = key_component;
-
-      hero.component.from<ActorType::Human>().inventory.unique_items.push_back(std::move(key));
+      // const gf::Vec2I door_position = hero.location().position + gf::dirx(10);
+      // const Location door_location = { .position = door_position, .floor = Floor::Ground };
+      // state.map.ground(door_position).decoration = MapCellDecoration::HorizontalDoor;
+      // state.doors.push_back({ .location = door_location, .status = DoorStatus::Closed, .direction = DoorDirection::Horizontal });
+      //
+      // ItemState key;
+      // key.data = "Key";
+      // KeyComponent key_component;
+      // key_component.doors.push_back(door_location);
+      // key.component = key_component;
+      //
+      // hero.component.from<ActorType::Human>().inventory.unique_items.push_back(std::move(key));
 
       assert(state.actors.empty());
       state.actors.push_back(hero);

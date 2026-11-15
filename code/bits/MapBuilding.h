@@ -7,6 +7,7 @@
 #include <string_view>
 
 namespace fw {
+#if 0
 
   using TownBuildingPlan = std::array<std::u16string_view, TownBuildingSize>;
 
@@ -26,6 +27,8 @@ namespace fw {
   };
 
   BuildingPartType building_part_type(char16_t picture);
+
+#endif
 
 }
 

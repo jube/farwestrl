@@ -507,6 +507,8 @@ namespace fw {
 
   void MapRuntime::bind_towns(const WorldState& state, gf::Random* random)
   {
+#if 0
+
     const gf::ConsoleEffect street_effect = gf::ConsoleEffect::alpha();
 
     auto compute_street_blend_color = [random]() {
@@ -583,10 +585,13 @@ namespace fw {
           }
         }
       }
-   }
+    }
+#endif
   }
 
   namespace {
+
+#if 0
 
     gf::ConsoleColorStyle building_style(BuildingPartType type)
     {
@@ -610,10 +615,12 @@ namespace fw {
       return { gf::darker(gf::Red), gf::Red };
     }
 
+#endif
   }
 
   void MapRuntime::bind_buildings(const WorldState& state)
   {
+#if 0
     // buildings
 
     for (const TownState& town : state.map.towns) {
@@ -693,7 +700,7 @@ namespace fw {
         }
       }
     }
-
+#endif
   }
 
   namespace {

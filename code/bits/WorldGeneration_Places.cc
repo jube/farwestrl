@@ -17,14 +17,9 @@ namespace fw {
    * TOWN
    */
 
-  constexpr int32_t TownsBlockSize = 6;
-  constexpr int32_t TownBuildingSize = 11;
-  constexpr int32_t StreetSize = 3;
-
-  constexpr int32_t TownRadius = (TownsBlockSize * TownBuildingSize + (TownsBlockSize - 1) * StreetSize - 1) / 2;
-  constexpr int32_t TownDiameter = 2 * TownRadius + 1;
-
-  constexpr gf::RectI Blocks = gf::RectI::from_size({ TownsBlockSize, TownsBlockSize });
+  constexpr gf::RectI TownMapSurface = gf::RectI::from_size({ TownsBlockSize, TownsBlockSize });
+  constexpr gf::RectI BuildingSurface = gf::RectI::from_size({ TownBuildingSize, TownBuildingSize });
+  constexpr gf::RectI TownSurface = gf::RectI::from_size({ TownDiameter, TownDiameter });
 
   namespace {
 
@@ -79,7 +74,7 @@ namespace fw {
       const gf::Vec2I step = gf::displacement(direction);
       gf::Vec2I current = position;
 
-      while (Blocks.contains(current)) {
+      while (TownMapSurface.contains(current)) {
         assert(map(current).type != BuildingType::Empty);
 
         if (map(current).type != BuildingType::None) {
@@ -108,7 +103,7 @@ namespace fw {
         return gf::Direction::Down;
       }
 
-      if (position.y == map.cross_north) {
+      if (position.y == map.cross_south) {
         return gf::Direction::Up;
       }
 
@@ -120,23 +115,23 @@ namespace fw {
     {
       assert(is_along_streets(map, position));
 
-      gf::RectI range = gf::RectI::from_center_size({ 0, 0 }, { 3, 3 });
+      gf::RectI range = gf::RectI::from_position_size({ 0, 0 }, { 1, 1 });
 
-      if (position.x == map.cross_west) {
-        --range.extent.x;
-      }
-
-      if (position.x == map.cross_east) {
-        ++range.offset.x;
-      }
-
-      if (position.y == map.cross_north) {
-        --range.extent.y;
-      }
-
-      if (position.y == map.cross_north) {
-        ++range.offset.y;
-      }
+      // if (position.x == map.cross_west) {
+      //   --range.extent.x;
+      // }
+      //
+      // if (position.x == map.cross_east) {
+      //   ++range.offset.x;
+      // }
+      //
+      // if (position.y == map.cross_north) {
+      //   --range.extent.y;
+      // }
+      //
+      // if (position.y == map.cross_north) {
+      //   ++range.offset.y;
+      // }
 
       return range;
     }
@@ -202,7 +197,7 @@ namespace fw {
 
       std::size_t building_index = 0;
 
-      for (const gf::Vec2I position : gf::rectangle_range(Blocks)) {
+      for (const gf::Vec2I position : gf::rectangle_range(TownMapSurface)) {
         Building& building = map(position);
 
         if (is_along_streets(map, position) && building.type == BuildingType::Empty) {
@@ -223,7 +218,7 @@ namespace fw {
 
       // compute direction and offset
 
-      for (const gf::Vec2I position : gf::rectangle_range(Blocks)) {
+      for (const gf::Vec2I position : gf::rectangle_range(TownMapSurface)) {
         Building& building = map(position);
 
         if (building.type == BuildingType::Empty || building.type == BuildingType::None) {
@@ -282,11 +277,11 @@ namespace fw {
     MapCellDecoration door_decoration(const TownBuildingPlan& plan, gf::Vec2I position, gf::Direction direction)
     {
       assert(compute_town_building_part(plan, position, direction) == 'D');
-      assert(0 < position.x && position.x < TownBuildingSize - 1);
-      assert(0 < position.y && position.y < TownBuildingSize - 1);
+      assert(0 <= position.x && position.x < TownBuildingSize);
+      assert(0 <= position.y && position.y < TownBuildingSize);
 
       auto check_wall = [&](gf::Vec2I offset) {
-        return compute_town_building_part(plan, position + offset, direction) == '#';
+        return BuildingSurface.contains(position + offset) && compute_town_building_part(plan, position + offset, direction) == '#';
       };
 
       if (check_wall(gf::dirx(+1))) {
@@ -322,7 +317,13 @@ namespace fw {
 
     void add_building_to_town(const Building& building, gf::Vec2I position, Place& town)
     {
-      position += building.offset;
+
+      if (TownSurface.contains(position + building.offset) && TownSurface.contains(position + building.offset + TownBuildingSize - 1)) {
+        position += building.offset;
+      }
+
+      assert(TownSurface.contains(position));
+      assert(TownSurface.contains(position + TownBuildingSize - 1));
 
       const TownBuildingPlan& plan = House2; // TODO
 
@@ -359,7 +360,7 @@ namespace fw {
 
     Place town(TownDiameter);
 
-    for (const gf::Vec2I building_position : gf::rectangle_range(Blocks)) {
+    for (const gf::Vec2I building_position : gf::rectangle_range(TownMapSurface)) {
       const Building& building = map(building_position);
 
       if (building.type == BuildingType::Empty || building.type == BuildingType::None) {
@@ -377,9 +378,6 @@ namespace fw {
   /*
    * LOCALITY
    */
-
-  constexpr int32_t LocalityRadius = 13;
-  constexpr int32_t LocalityDiameter = 2 * LocalityRadius + 1;
 
   Place generate_locality(LocalityType type, gf::Random* random)
   {

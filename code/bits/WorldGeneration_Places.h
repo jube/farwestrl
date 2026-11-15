@@ -18,7 +18,22 @@ namespace fw {
     std::vector<DoorState> doors;
   };
 
+  constexpr std::size_t TownsCount = 5;
+
+  constexpr int32_t TownsBlockSize = 6;
+  constexpr int32_t TownBuildingSize = 11;
+  constexpr int32_t StreetSize = 3;
+
+  constexpr int32_t TownRadius = (TownsBlockSize * TownBuildingSize + (TownsBlockSize - 1) * StreetSize - 1) / 2;
+  constexpr int32_t TownDiameter = 2 * TownRadius + 1;
+
   Place generate_town(gf::Random* random);
+
+  constexpr std::size_t LocalityPerTown = 5;
+  constexpr std::size_t LocalityCount = TownsCount * LocalityPerTown;
+
+  constexpr int32_t LocalityRadius = 13;
+  constexpr int32_t LocalityDiameter = 2 * LocalityRadius + 1;
 
   enum class LocalityType : uint8_t {
     Farm,

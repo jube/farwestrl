@@ -11,6 +11,8 @@
 #include "MapFloor.h"
 
 namespace fw {
+
+#if 0
   enum class BuildingType : uint8_t {
     Empty,
     None,
@@ -99,6 +101,8 @@ namespace fw {
     return ar | state.position | state.type | state.number | state.direction;
   }
 
+#endif
+
   using BackgroundMap = gf::Array2D<MapCell>;
 
   void clear_visible(BackgroundMap& map);
@@ -107,8 +111,8 @@ namespace fw {
   struct MapState {
     BackgroundMap ground;
     BackgroundMap underground;
-    std::array<TownState, TownsCount> towns;
-    std::array<LocalityState, LocalityCount> localities;
+    // std::array<TownState, TownsCount> towns;
+    // std::array<LocalityState, LocalityCount> localities;
 
     BackgroundMap& from_floor(Floor floor);
     const BackgroundMap& from_floor(Floor floor) const;
@@ -117,7 +121,7 @@ namespace fw {
   template<typename Archive>
   Archive& operator|(Archive& ar, gf::MaybeConst<MapState, Archive>& state)
   {
-    return ar | state.ground | state.underground | state.towns | state.localities;
+    return ar | state.ground | state.underground;
   }
 
 }

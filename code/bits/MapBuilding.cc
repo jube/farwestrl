@@ -6,6 +6,8 @@
 
 namespace fw {
 
+#if 0
+
   template<int32_t Size, typename Plan>
   char16_t compute_generic_building_part(const Plan& building, gf::Vec2I position, gf::Direction direction)
   {
@@ -426,4 +428,5 @@ namespace fw {
     return BuildingPartType::None;
   }
 
+#endif
 }
