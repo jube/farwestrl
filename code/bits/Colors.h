@@ -17,6 +17,7 @@ namespace fw {
 
   inline constexpr gf::Color RockColor = gf::gray(0.25f);
   inline constexpr gf::Color DirtColor = 0xB69F66;
+  inline constexpr gf::Color BuildingColor = 0xD0B893; // #D0B893
 
   inline constexpr gf::Color StreetColor = 0xECBD6B;
 

@@ -10,6 +10,7 @@ namespace fw {
 
   enum class ThingType {
     None,
+    BankDesk,
     Bed,
     SaloonChair,
     SaloonDesk,

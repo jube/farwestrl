@@ -33,6 +33,7 @@
     - reduce the hero vision range to 20 instead of 30
     - reduce the weapon's range
 - Features
+  - kill actors (see `WorldRuntime::set_reverse_train`), maybe and `active` boolean in `ActorState`
   - treasure maps
   - universal key (one in the whole map)
 - Performance

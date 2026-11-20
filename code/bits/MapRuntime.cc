@@ -15,7 +15,6 @@
 #include "MapCell.h"
 #include "MapCellBiome.h"
 #include "MapState.h"
-#include "MapBuilding.h"
 #include "NetworkState.h"
 #include "Pictures.h"
 #include "Settings.h"
@@ -211,6 +210,18 @@ namespace fw {
           character = generate_character({ u'!', gf::ConsoleChar::InvertedExclamationMark }, random);
           foreground_color = gf::darker(gf::Green, 0.3f);
           break;
+        case MapCellDecoration::Chair:
+          character = gf::ConsoleChar::WhiteCircle;
+          foreground_color = gf::gray(0.3f);
+          break;
+        case MapCellDecoration::SlotMachine:
+          character = u'\u039E'; /* 'Ξ' */
+          foreground_color = gf::gray(0.6f);
+          break;
+        case MapCellDecoration::Table:
+          character = gf::ConsoleChar::FullBlock;
+          foreground_color = gf::gray(0.2f);
+          break;
         case MapCellDecoration::Tree:
           character = generate_character({ u'φ', u'ψ', u'¥' }, random);
           foreground_color = gf::darker(gf::Green, 0.7f);
@@ -274,7 +285,7 @@ namespace fw {
 
             assert(neighbor_bits < std::size(BlockCharacters));
             character = BlockCharacters[neighbor_bits];
-            foreground_color = gf::darker(background_color, 0.5f);
+            foreground_color = gf::darker(background_color, 0.7f);
           }
           break;
         case MapCellDecoration::Wall:
@@ -298,17 +309,17 @@ namespace fw {
               assert(false);
             }
 
-            foreground_color = 0xC0C0C0;
+            foreground_color = 0x808080;
           }
           break;
 
         case MapCellDecoration::HorizontalDoor:
           character = HorizontalDoorPicture;
-          foreground_color = 0x808080;
+          foreground_color = 0x404040;
           break;
         case MapCellDecoration::VerticalDoor:
           character = VerticalDoorPicture;
-          foreground_color = 0x808080;
+          foreground_color = 0x404040;
           break;
         }
 
@@ -342,12 +353,15 @@ namespace fw {
             background_color = DirtColor;
             break;
           case MapCellBiome::Building:
-            background_color = gf::Black; // TODO
+            background_color = BuildingColor;
             break;
 
         }
 
-        background_color = gf::lighter(background_color, random->compute_uniform_float(0.0f, ColorLighterBound));
+        if (cell.region != MapCellBiome::Building) {
+          background_color = gf::lighter(background_color, random->compute_uniform_float(0.0f, ColorLighterBound));
+        }
+
         const auto [ character, foreground_color ] = compute_decoration(state, position, cell.decoration, background_color, random);
         gf::console_write_picture(map.console, position, character, { foreground_color, background_color });
 

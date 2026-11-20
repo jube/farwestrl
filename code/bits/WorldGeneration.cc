@@ -26,7 +26,6 @@
 #include "Colors.h"
 #include "Date.h"
 #include "ItemState.h"
-// #include "MapBuilding.h"
 #include "MapCell.h"
 #include "MapCellBiome.h"
 #include "MapState.h"
@@ -151,7 +150,7 @@ namespace fw {
             color = DirtColor;
             break;
           case MapCellBiome::Building:
-            color = StreetColor;
+            color = BuildingColor;
             break;
         }
 
@@ -171,11 +170,23 @@ namespace fw {
             case MapCellDecoration::Cactus:
               color = gf::darker(gf::Green, 0.3f);
               break;
+            case MapCellDecoration::Chair:
+              color = gf::gray(0.3f);
+              break;
+            case MapCellDecoration::SlotMachine:
+              color = gf::Gray;
+              break;
+            case MapCellDecoration::Table:
+              color = gf::gray(0.2f);
+              break;
             case MapCellDecoration::Tree:
               color = gf::darker(gf::Green, 0.7f);
               break;
             case MapCellDecoration::Water:
               color = gf::Azure;
+              break;
+            case MapCellDecoration::Window:
+              color = gf::gray(0.75f);
               break;
             case MapCellDecoration::Cliff:
               color = gf::darker(MountainColor, 0.5f);
@@ -189,9 +200,6 @@ namespace fw {
             case MapCellDecoration::HorizontalDoor:
             case MapCellDecoration::VerticalDoor:
               color = gf::Gray;
-              break;
-            case MapCellDecoration::Window:
-              color = gf::gray(0.75f);
               break;
             }
         }
@@ -1267,11 +1275,18 @@ namespace fw {
       for (auto [ index, town ] : gf::enumerate(places.towns)) {
         Place place = generate_town(random);
 
+        const gf::Vec2I town_offset = (town.center * ReducedFactor) - TownRadius;
+
         for (const gf::Vec2I position : place.map.position_range()) {
-          state.map.ground(position + (town.center * ReducedFactor) - TownRadius) = place.map(position);
+          state.map.ground(position + town_offset) = place.map(position);
         }
 
         state.things.insert(state.things.end(), place.things.begin(), place.things.end());
+
+        for (DoorState& door : place.doors) {
+          door.location.position += town_offset;
+        }
+
         state.doors.insert(state.doors.end(), place.doors.begin(), place.doors.end());
       }
     }

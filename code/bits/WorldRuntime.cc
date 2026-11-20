@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include "Index.h"
 #include "MapRuntime.h"
 #include "NetworkState.h"
 #include "Settings.h"
@@ -31,6 +32,11 @@ namespace fw {
           const gf::Vec2I neighbor_position = position + neighbor;
           assert(map.ground.reverse.valid(neighbor_position));
           ReverseMapCell& cell = map.ground.reverse(neighbor_position);
+
+          if (cell.actor_index != NoIndex) {
+            // TODO: kill the actor
+          }
+
           assert(cell.actor_index == NoIndex || train_index == NoIndex || cell.actor_index == train_index);
           cell.actor_index = train_index;
         }

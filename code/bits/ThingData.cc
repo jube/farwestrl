@@ -4,6 +4,7 @@ namespace fw {
 
   NLOHMANN_JSON_SERIALIZE_ENUM( ThingType, {
     { ThingType::None, nullptr },
+    { ThingType::BankDesk, "bank_desk" },
     { ThingType::Bed, "bed" },
     { ThingType::SaloonChair, "saloon_chair" },
     { ThingType::SaloonDesk, "saloon_desk" },

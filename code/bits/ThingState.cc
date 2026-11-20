@@ -9,6 +9,9 @@ namespace fw {
     switch (thing.data->type) {
       case ThingType::None:
         return { };
+      case ThingType::BankDesk:
+        // TODO: get money
+        break;
       case ThingType::Bed:
         // TODO: rest and sleep
         break;
@@ -18,7 +21,7 @@ namespace fw {
       case ThingType::SaloonDesk:
         // TODO: drink and talk
         break;
-    }
+      }
 
     return { };
   }

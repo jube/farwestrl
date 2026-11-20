@@ -8,8 +8,8 @@
 
 namespace fw {
 
-  Place::Place(int32_t size)
-  : map({ size, size })
+  Place::Place(int32_t size, MapCellBiome biome)
+  : map({ size, size }, { .region = biome })
   {
   }
 
@@ -91,20 +91,20 @@ namespace fw {
     {
       assert(is_along_streets(map, position));
 
-      if (position.x == map.cross_west) {
-        return gf::Direction::Right;
-      }
-
-      if (position.x == map.cross_east) {
-        return gf::Direction::Left;
-      }
-
       if (position.y == map.cross_north) {
         return gf::Direction::Down;
       }
 
+      if (position.x == map.cross_west) {
+        return gf::Direction::Right;
+      }
+
       if (position.y == map.cross_south) {
         return gf::Direction::Up;
+      }
+
+      if (position.x == map.cross_east) {
+        return gf::Direction::Left;
       }
 
       assert(false);
@@ -115,23 +115,25 @@ namespace fw {
     {
       assert(is_along_streets(map, position));
 
-      gf::RectI range = gf::RectI::from_position_size({ 0, 0 }, { 1, 1 });
+      gf::RectI range = gf::RectI::from_position_size({ -1, -1 }, { 3, 3 });
 
-      // if (position.x == map.cross_west) {
-      //   --range.extent.x;
-      // }
-      //
-      // if (position.x == map.cross_east) {
-      //   ++range.offset.x;
-      // }
-      //
-      // if (position.y == map.cross_north) {
-      //   --range.extent.y;
-      // }
-      //
-      // if (position.y == map.cross_north) {
-      //   ++range.offset.y;
-      // }
+      if (position.x == map.cross_west) {
+        --range.extent.x;
+      }
+
+      if (position.x == map.cross_east) {
+        --range.extent.x;
+        ++range.offset.x;
+      }
+
+      if (position.y == map.cross_north) {
+        --range.extent.y;
+      }
+
+      if (position.y == map.cross_south) {
+        --range.extent.y;
+        ++range.offset.y;
+      }
 
       return range;
     }
@@ -238,6 +240,28 @@ namespace fw {
      * Building
      */
 
+    char rotate_part(char part, gf::Direction direction)
+    {
+      assert(direction != gf::Direction::Center);
+      const int8_t index = static_cast<int8_t>(direction);
+      assert(0 <= index && index < 4);
+
+      switch (part) {
+        case '.':
+          return ".[^]"[index];
+        case '[':
+          return "[^]."[index];
+        case '^':
+          return "^].["[index];
+        case ']':
+          return "].[^"[index];
+        default:
+          break;
+      }
+
+      return part;
+    }
+
     template<int32_t Size, typename Plan>
     char compute_generic_building_part(const Plan& plan, gf::Vec2I position, gf::Direction direction)
     {
@@ -247,16 +271,16 @@ namespace fw {
       char picture = '#';
 
       switch (direction) {
-        case gf::Direction::Up:
+        case gf::Direction::Down:
           picture = plan[position.y][position.x];
           break;
-        case gf::Direction::Right:
+        case gf::Direction::Left:
           picture = plan[Size - position.x - 1][position.y];
           break;
-        case gf::Direction::Down:
+        case gf::Direction::Up:
           picture = plan[Size - position.y - 1][Size - position.x - 1];
           break;
-        case gf::Direction::Left:
+        case gf::Direction::Right:
           picture = plan[position.x][Size - position.y - 1];
           break;
         default:
@@ -264,7 +288,7 @@ namespace fw {
           break;
       }
 
-      return picture;
+      return rotate_part(picture, direction);
     }
 
     using TownBuildingPlan = std::array<std::string_view, TownBuildingSize>;
@@ -301,6 +325,48 @@ namespace fw {
       return { .location = location, .status = DoorStatus::Closed, .direction = direction };
     }
 
+    constexpr TownBuildingPlan Bank = {{
+      "###########",
+      "#         #",
+      "#         #",
+      "#####D#####",
+      "#         #",
+      "# TTTBTTT #",
+      "#   $^$   #",
+      "#   $ $   #",
+      "#   $ $   #",
+      "#   $ $   #",
+      "##W##D##W##",
+    }};
+
+    constexpr TownBuildingPlan Casino = {{
+      "###########",
+      "#       ]S#",
+      "# C[ h  ]S#",
+      "# C[    ]S#",
+      "# C[ c  ]S#",
+      "#       ]S#",
+      "# C[ d  ]S#",
+      "# C[    ]S#",
+      "# C[ s  ]S#",
+      "#       ]S#",
+      "##W##D##W##",
+    }};
+
+    constexpr TownBuildingPlan Church = {{
+      "###########",
+      "#         #",
+      "# j TTT j #",
+      "#         #",
+      "# ... ... #",
+      "# PPP PPP #",
+      "# ... ... #",
+      "# PPP PPP #",
+      "# ... ... #",
+      "# PPP PPP #",
+      "#####D#####",
+    }};
+
     constexpr TownBuildingPlan House2 = {{
       "#######W###",
       "#   #     #",
@@ -315,6 +381,51 @@ namespace fw {
       "##W##D#####",
     }};
 
+    constexpr TownBuildingPlan Template = {{
+      "###########",
+      "#         #",
+      "#         #",
+      "#         #",
+      "#         #",
+      "#         #",
+      "#         #",
+      "#         #",
+      "#         #",
+      "#         #",
+      "#####D#####",
+    }};
+
+    const TownBuildingPlan& compute_basic_town_building_plan(BuildingType type)
+    {
+      switch (type) {
+      case BuildingType::Empty:
+      case BuildingType::None:
+        assert(false);
+        break;
+      case BuildingType::Bank:
+        return Bank;
+      case BuildingType::Casino:
+        return Casino;
+      case BuildingType::Church:
+        return Church;
+      case BuildingType::ClothShop:
+      case BuildingType::FoodShop:
+      case BuildingType::Hotel:
+      case BuildingType::House1:
+      case BuildingType::House2:
+        return House2;
+      case BuildingType::House3:
+      case BuildingType::MarshalOffice:
+      case BuildingType::Restaurant:
+      case BuildingType::Saloon:
+      case BuildingType::School:
+      case BuildingType::WeaponShop:
+        break;
+      }
+
+      return Template;
+    }
+
     void add_building_to_town(const Building& building, gf::Vec2I position, Place& town)
     {
 
@@ -325,24 +436,68 @@ namespace fw {
       assert(TownSurface.contains(position));
       assert(TownSurface.contains(position + TownBuildingSize - 1));
 
-      const TownBuildingPlan& plan = House2; // TODO
+      const TownBuildingPlan& plan = compute_basic_town_building_plan(building.type);
 
       for (const gf::Vec2I offset : gf::rectangle_range(gf::RectI::from_size({ TownBuildingSize, TownBuildingSize }))) {
-        MapCell& cell = town.map(position + offset);
+        const gf::Vec2I cell_position = position + offset;
+
+        MapCell& cell = town.map(cell_position);
+        cell.region = MapCellBiome::Building;
+
         const char part = compute_town_building_part(plan, offset, building.direction);
 
         switch (part) {
           case '#': // wall
             cell.decoration = MapCellDecoration::Wall;
             break;
-          case 'W': // window
-            cell.decoration = MapCellDecoration::Window;
+          case 'B': // bank desk
+            cell.decoration = MapCellDecoration::Table;
+            // TODO: thing
+            break;
+          case 'C': // blackjack table (card)
+            cell.decoration = MapCellDecoration::Table;
+            // TODO: thing
             break;
           case 'D': // door
             cell.decoration = door_decoration(plan, offset, building.direction);
-            town.doors.emplace_back(make_door(position + offset, cell.decoration));
+            town.doors.emplace_back(make_door(cell_position, cell.decoration));
+            break;
+          case 'P': // prayer chair
+            cell.decoration = MapCellDecoration::Chair;
+            // TODO: thing
+            break;
+          case 'S': // slot machines
+            cell.decoration = MapCellDecoration::SlotMachine;
+            // TODO: thing
+            break;
+          case 'T': // table
+            cell.decoration = MapCellDecoration::Table;
+            break;
+          case 'W': // window
+            cell.decoration = MapCellDecoration::Window;
+            break;
+          case '$': // dollar
+            cell.decoration = MapCellDecoration::Dollar;
+            break;
+          case 'c':
+            cell.decoration = MapCellDecoration::SuitClub;
+            break;
+          case 'd':
+            cell.decoration = MapCellDecoration::SuitDiamond;
+            break;
+          case 'h':
+            cell.decoration = MapCellDecoration::SuitHeart;
+            break;
+          case 's':
+            cell.decoration = MapCellDecoration::SuitSpade;
             break;
           case ' ': // nothing
+            break;
+          case '^':
+          case '.':
+          case ']':
+          case '[':
+            // action positions, nothing to do
             break;
           default:
             assert(false);

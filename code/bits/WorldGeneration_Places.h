@@ -11,7 +11,7 @@
 namespace fw {
 
   struct Place {
-    Place(int32_t size);
+    Place(int32_t size, MapCellBiome biome = MapCellBiome::Prairie);
 
     gf::Array2D<MapCell> map;
     std::vector<ThingState> things;
