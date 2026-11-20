@@ -4,11 +4,12 @@
 #include <vector>
 
 #include "Date.h"
+#include "Dollar.h"
 
 namespace fw {
 
   struct Installment {
-    int32_t amount;
+    Dollar amount;
     Date due_date;
     // TODO: lender
   };

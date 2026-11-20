@@ -5,12 +5,13 @@
 
 #include <vector>
 
+#include "Dollar.h"
 #include "ItemState.h"
 
 namespace fw {
 
   struct InventoryState {
-    int32_t cash = 0;
+    Dollar cash = 0;
     std::vector<InventoryItemState> items;
     std::vector<UniqueItemState> unique_items;
   };

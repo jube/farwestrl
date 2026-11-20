@@ -341,15 +341,15 @@ namespace fw {
 
     constexpr TownBuildingPlan Casino = {{
       "###########",
-      "#       ]S#",
-      "# C[ h  ]S#",
-      "# C[    ]S#",
-      "# C[ c  ]S#",
-      "#       ]S#",
-      "# C[ d  ]S#",
-      "# C[    ]S#",
-      "# C[ s  ]S#",
-      "#       ]S#",
+      "#       ]M#",
+      "# C[ h  ]M#",
+      "# C[    ]M#",
+      "# C[ c  ]M#",
+      "#       ]M#",
+      "# C[ d  ]M#",
+      "# C[    ]M#",
+      "# C[ s  ]M#",
+      "#       ]M#",
       "##W##D##W##",
     }};
 
@@ -364,6 +364,20 @@ namespace fw {
       "# PPP PPP #",
       "# ... ... #",
       "# PPP PPP #",
+      "#####D#####",
+    }};
+
+    constexpr TownBuildingPlan ClothShop = {{
+      "###########",
+      "#    #    #",
+      "#    #    #",
+      "#    #    #",
+      "#         #",
+      "#         #",
+      "#  TTSTT  #",
+      "#    ^    #",
+      "#         #",
+      "#         #",
       "#####D#####",
     }};
 
@@ -409,6 +423,7 @@ namespace fw {
       case BuildingType::Church:
         return Church;
       case BuildingType::ClothShop:
+        return ClothShop;
       case BuildingType::FoodShop:
       case BuildingType::Hotel:
       case BuildingType::House1:
@@ -462,12 +477,16 @@ namespace fw {
             cell.decoration = door_decoration(plan, offset, building.direction);
             town.doors.emplace_back(make_door(cell_position, cell.decoration));
             break;
+          case 'M': // slot machines
+            cell.decoration = MapCellDecoration::SlotMachine;
+            // TODO: thing
+            break;
           case 'P': // prayer chair
             cell.decoration = MapCellDecoration::Chair;
             // TODO: thing
             break;
-          case 'S': // slot machines
-            cell.decoration = MapCellDecoration::SlotMachine;
+          case 'S': // shop desk
+            cell.decoration = MapCellDecoration::Table;
             // TODO: thing
             break;
           case 'T': // table

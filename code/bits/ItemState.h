@@ -7,12 +7,13 @@
 #include <gf2/core/TypeTraits.h>
 
 #include "DataReference.h"
+#include "Dollar.h"
 #include "ItemData.h"
 #include "Location.h"
 
 namespace fw {
 
-  struct InventoryItemState {
+  struct GenericItemState {
     DataReference<ItemData> data;
     int16_t count = 0;
 
@@ -20,10 +21,12 @@ namespace fw {
   };
 
   template<typename Archive>
-  Archive& operator|(Archive& ar, gf::MaybeConst<InventoryItemState, Archive>& state)
+  Archive& operator|(Archive& ar, gf::MaybeConst<GenericItemState, Archive>& state)
   {
     return ar | state.data | state.count;
   }
+
+  using InventoryItemState = GenericItemState;
 
   struct ContainerComponent {
     std::vector<InventoryItemState> content;
@@ -109,6 +112,29 @@ namespace fw {
 
   using EquippedItemState = ItemState;
   using UniqueItemState = ItemState;
+
+
+  struct ShopUniqueItemState {
+    UniqueItemState item;
+    Dollar price;
+  };
+
+  struct ShopGenericItemState {
+    GenericItemState item;
+    Dollar price;
+  };
+
+  template<typename Archive>
+  Archive& operator|(Archive& ar, gf::MaybeConst<ShopGenericItemState, Archive>& state)
+  {
+    return ar | state.item | state.price;
+  }
+
+  template<typename Archive>
+  Archive& operator|(Archive& ar, gf::MaybeConst<ShopUniqueItemState, Archive>& state)
+  {
+    return ar | state.item | state.price;
+  }
 
 }
 
