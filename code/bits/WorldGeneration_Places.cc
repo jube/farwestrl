@@ -1,10 +1,13 @@
 #include "WorldGeneration_Places.h"
-#include "MapCell.h"
 
 #include <algorithm>
 
 #include <gf2/core/Direction.h>
 #include <gf2/core/Range.h>
+
+#include "MapCell.h"
+#include "ThingData.h"
+#include "ThingGeneration.h"
 
 namespace fw {
 
@@ -248,13 +251,13 @@ namespace fw {
 
       switch (part) {
         case '.':
-          return ".[^]"[index];
-        case '[':
-          return "[^]."[index];
-        case '^':
           return "^].["[index];
-        case ']':
+        case '[':
           return "].[^"[index];
+        case '^':
+          return ".[^]"[index];
+        case ']':
+          return "[^]."[index];
         default:
           break;
       }
@@ -323,6 +326,28 @@ namespace fw {
       const Location location = { .position = position, .floor = Floor::Ground };
       const DoorDirection direction = decoration == MapCellDecoration::HorizontalDoor ? DoorDirection::Horizontal : DoorDirection::Vertical;
       return { .location = location, .status = DoorStatus::Closed, .direction = direction };
+    }
+
+    gf::Direction thing_direction(const TownBuildingPlan& plan, gf::Vec2I position, gf::Direction direction)
+    {
+      if (compute_town_building_part(plan, position + gf::diry(-1), direction) == '.') {
+        return gf::Direction::Up;
+      }
+
+      if (compute_town_building_part(plan, position + gf::diry(+1), direction) == '^') {
+        return gf::Direction::Down;
+      }
+
+      if (compute_town_building_part(plan, position + gf::dirx(-1), direction) == ']') {
+        return gf::Direction::Left;
+      }
+
+      if (compute_town_building_part(plan, position + gf::dirx(+1), direction) == '[') {
+        return gf::Direction::Right;
+      }
+
+      assert(false);
+      return gf::Direction::Center;
     }
 
     constexpr TownBuildingPlan Bank = {{
@@ -441,7 +466,7 @@ namespace fw {
       return Template;
     }
 
-    void add_building_to_town(const Building& building, gf::Vec2I position, Place& town)
+    void add_building_to_town(const Building& building, gf::Vec2I position, Place& town, const WorldData& data, gf::Random* random)
     {
 
       if (TownSurface.contains(position + building.offset) && TownSurface.contains(position + building.offset + TownBuildingSize - 1)) {
@@ -455,6 +480,13 @@ namespace fw {
 
       for (const gf::Vec2I offset : gf::rectangle_range(gf::RectI::from_size({ TownBuildingSize, TownBuildingSize }))) {
         const gf::Vec2I cell_position = position + offset;
+        const Location cell_location = { .position = cell_position, .floor = Floor::Ground };
+
+        auto add_thing = [&](ThingType type, ThingQuality quality) {
+          const gf::Direction direction = thing_direction(plan, offset, building.direction);
+          ThingState thing = generate_thing(type, quality, cell_location, direction, data, random);
+          town.things.emplace_back(thing);
+        };
 
         MapCell& cell = town.map(cell_position);
         cell.region = MapCellBiome::Building;
@@ -466,28 +498,23 @@ namespace fw {
             cell.decoration = MapCellDecoration::Wall;
             break;
           case 'B': // bank desk
-            cell.decoration = MapCellDecoration::Table;
-            // TODO: thing
+            add_thing(ThingType::BankDesk, ThingQuality::Good);
             break;
           case 'C': // blackjack table (card)
-            cell.decoration = MapCellDecoration::Table;
-            // TODO: thing
+            add_thing(ThingType::BlackjackTable, ThingQuality::Best);
             break;
           case 'D': // door
             cell.decoration = door_decoration(plan, offset, building.direction);
             town.doors.emplace_back(make_door(cell_position, cell.decoration));
             break;
           case 'M': // slot machines
-            cell.decoration = MapCellDecoration::SlotMachine;
-            // TODO: thing
+            add_thing(ThingType::SlotMachine, ThingQuality::Best);
             break;
           case 'P': // prayer chair
-            cell.decoration = MapCellDecoration::Chair;
-            // TODO: thing
+            add_thing(ThingType::PrayerChair, ThingQuality::Good);
             break;
           case 'S': // shop desk
-            cell.decoration = MapCellDecoration::Table;
-            // TODO: thing
+            add_thing(ThingType::ShopDesk, ThingQuality::Good);
             break;
           case 'T': // table
             cell.decoration = MapCellDecoration::Table;
@@ -506,6 +533,9 @@ namespace fw {
             break;
           case 'h':
             cell.decoration = MapCellDecoration::SuitHeart;
+            break;
+          case 'j':
+            cell.decoration = MapCellDecoration::Dollar;
             break;
           case 's':
             cell.decoration = MapCellDecoration::SuitSpade;
@@ -528,7 +558,7 @@ namespace fw {
 
   }
 
-  Place generate_town(gf::Random* random)
+  Place generate_town(const WorldData& data, gf::Random* random)
   {
     TownMap map = generate_town_map(random);
 
@@ -542,7 +572,7 @@ namespace fw {
       }
 
       const gf::Vec2I town_position = building_position * (TownBuildingSize  + StreetSize);
-      add_building_to_town(building, town_position, town);
+      add_building_to_town(building, town_position, town, data, random);
     }
 
     return town;
@@ -553,7 +583,7 @@ namespace fw {
    * LOCALITY
    */
 
-  Place generate_locality(LocalityType type, gf::Random* random)
+  Place generate_locality(LocalityType type, const WorldData& data, gf::Random* random)
   {
     Place locality(LocalityDiameter);
 

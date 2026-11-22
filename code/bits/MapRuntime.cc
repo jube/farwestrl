@@ -186,6 +186,10 @@ namespace fw {
           character = generate_character({ u'.', u',', u'`', u'\'' /*, gf::ConsoleChar::SquareRoot */ }, random);
           foreground_color = gf::darker(background_color, 0.1f);
           break;
+        case MapCellDecoration::Cross:
+          character = u'┼';
+          foreground_color = gf::darker(background_color, 0.25f);
+          break;
         case MapCellDecoration::Dollar:
           character = u'$';
           foreground_color = gf::darker(background_color, 0.25f);
@@ -209,14 +213,6 @@ namespace fw {
         case MapCellDecoration::Cactus:
           character = generate_character({ u'!', gf::ConsoleChar::InvertedExclamationMark }, random);
           foreground_color = gf::darker(gf::Green, 0.3f);
-          break;
-        case MapCellDecoration::Chair:
-          character = gf::ConsoleChar::WhiteCircle;
-          foreground_color = gf::gray(0.3f);
-          break;
-        case MapCellDecoration::SlotMachine:
-          character = u'\u039E'; /* 'Ξ' */
-          foreground_color = gf::gray(0.6f);
           break;
         case MapCellDecoration::Table:
           character = gf::ConsoleChar::FullBlock;
@@ -756,7 +752,7 @@ namespace fw {
      */
 
     for (const ThingState& thing : state.things) {
-      const gf::Vec2I position = thing.location.position + gf::displacement(thing.orientation);
+      const gf::Vec2I position = thing.location.position + gf::displacement(thing.direction);
       from_floor(thing.location.floor).action(position).actions = actions_from_thing(thing);
     }
 

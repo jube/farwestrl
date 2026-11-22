@@ -6,8 +6,12 @@ namespace fw {
     { ThingType::None, nullptr },
     { ThingType::BankDesk, "bank_desk" },
     { ThingType::Bed, "bed" },
+    { ThingType::BlackjackTable, "blackjack_table" },
+    { ThingType::PrayerChair, "prayer_chair" },
     { ThingType::SaloonChair, "saloon_chair" },
     { ThingType::SaloonDesk, "saloon_desk" },
+    { ThingType::ShopDesk, "shop_desk" },
+    { ThingType::SlotMachine, "slot_machine" },
   })
 
   NLOHMANN_JSON_SERIALIZE_ENUM( ThingQuality, {

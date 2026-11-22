@@ -12,8 +12,12 @@ namespace fw {
     None,
     BankDesk,
     Bed,
+    BlackjackTable,
+    PrayerChair,
     SaloonChair,
     SaloonDesk,
+    ShopDesk,
+    SlotMachine,
   };
 
   enum class ThingQuality {

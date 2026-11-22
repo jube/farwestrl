@@ -436,23 +436,77 @@
 
     {
       "label": "Key",
-      "display": { "picture": "⌈", "color": "#808080"},
+      "display": { "picture": "⌈", "color": "#808080" },
       "image": "Key.txt",
       "type": "key"
     }
   ],
   "things": [
     {
+      "label": "Bank Desk",
+      "type": "bank_desk",
+      "quality": "good",
+      "display": { "picture": "\u2588", "color": "#404040" }
+    },
+    {
       "label": "Bed",
       "type": "bed",
       "quality": "good",
-      "display": { "picture": "=", "color": "#f3f3f3"}
+      "display": { "picture": "=", "color": "#f3f3f3" }
     },
     {
       "label": "Straw Mattress",
       "type": "bed",
       "quality": "worse",
-      "display": { "picture": "≈", "color": "#d8da48"}
+      "display": { "picture": "≈", "color": "#d8da48" }
+    },
+    {
+      "label": "Blackjack Table",
+      "type": "blackjack_table",
+      "quality": "best",
+      "display": { "picture": "█", "color": "#404040" }
+    },
+    {
+      "label": "Illegal Blackjack Table",
+      "type": "blackjack_table",
+      "quality": "worse",
+      "display": { "picture": "█", "color": "#404040" }
+    },
+    {
+      "label": "Prayer Chair",
+      "type": "prayer_chair",
+      "quality": "good",
+      "display": { "picture": "·", "color": "#404040" }
+    },
+    {
+      "label": "Saloon Chair",
+      "type": "saloon_chair",
+      "quality": "good",
+      "display": { "picture": "·", "color": "#404040" }
+    },
+    {
+      "label": "Saloon Desk",
+      "type": "saloon_desk",
+      "quality": "good",
+      "display": { "picture": "█", "color": "#404040" }
+    },
+    {
+      "label": "Shop Desk",
+      "type": "shop_desk",
+      "quality": "good",
+      "display": { "picture": "█", "color": "#404040" }
+    },
+    {
+      "label": "Slot Machine",
+      "type": "slot_machine",
+      "quality": "best",
+      "display": { "picture": "Ξ", "color": "#404040" }
+    },
+    {
+      "label": "Illegal Slot Machine",
+      "type": "slot_machine",
+      "quality": "worse",
+      "display": { "picture": "Ξ", "color": "#404040" }
     }
   ]
 }

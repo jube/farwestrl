@@ -160,6 +160,7 @@ namespace fw {
             case MapCellDecoration::FloorDown:
             case MapCellDecoration::FloorUp:
             case MapCellDecoration::Herb:
+            case MapCellDecoration::Cross:
             case MapCellDecoration::Dollar:
             case MapCellDecoration::SuitHeart:
             case MapCellDecoration::SuitClub:
@@ -169,12 +170,6 @@ namespace fw {
               break;
             case MapCellDecoration::Cactus:
               color = gf::darker(gf::Green, 0.3f);
-              break;
-            case MapCellDecoration::Chair:
-              color = gf::gray(0.3f);
-              break;
-            case MapCellDecoration::SlotMachine:
-              color = gf::Gray;
               break;
             case MapCellDecoration::Table:
               color = gf::gray(0.2f);
@@ -1270,10 +1265,10 @@ namespace fw {
      * Step W. Create towns
      */
 
-    void generate_towns(WorldState& state, const WorldPlaces& places, gf::Random* random)
+    void generate_towns(WorldState& state, const WorldPlaces& places, const WorldData& data, gf::Random* random)
     {
       for (auto [ index, town ] : gf::enumerate(places.towns)) {
-        Place place = generate_town(random);
+        Place place = generate_town(data, random);
 
         const gf::Vec2I town_offset = (town.center * ReducedFactor) - TownRadius;
 
@@ -2098,7 +2093,7 @@ namespace fw {
     gf::Log::info("- roads ({:g}s)", clock.elapsed_time().as_seconds());
 
     analysis.set_step(AnalysisStep::Buildings);
-    generate_towns(state, places, random);
+    generate_towns(state, places, data, random);
     generate_localities(state.map, places, random);
     gf::Log::info("- towns and localities ({:g}s)", clock.elapsed_time().as_seconds());
 

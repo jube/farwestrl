@@ -9,6 +9,7 @@
 #include "ThingState.h"
 
 namespace fw {
+  struct WorldData;
 
   struct Place {
     Place(int32_t size, MapCellBiome biome = MapCellBiome::Prairie);
@@ -27,7 +28,7 @@ namespace fw {
   constexpr int32_t TownRadius = (TownsBlockSize * TownBuildingSize + (TownsBlockSize - 1) * StreetSize - 1) / 2;
   constexpr int32_t TownDiameter = 2 * TownRadius + 1;
 
-  Place generate_town(gf::Random* random);
+  Place generate_town(const WorldData& data, gf::Random* random);
 
   constexpr std::size_t LocalityPerTown = 5;
   constexpr std::size_t LocalityCount = TownsCount * LocalityPerTown;
@@ -41,7 +42,7 @@ namespace fw {
     Village, // native vilage
   };
 
-  Place generate_locality(LocalityType type, gf::Random* random);
+  Place generate_locality(LocalityType type, const WorldData& data, gf::Random* random);
 
 }
 
