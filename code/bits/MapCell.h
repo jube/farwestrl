@@ -38,6 +38,7 @@ namespace fw {
     // not walkable and transparent
 
     Cactus = 0x4000,
+    RoundTable,
     Table,
     Tree,
     Water,
@@ -50,6 +51,7 @@ namespace fw {
     Rock,
     HorizontalDoor,
     VerticalDoor,
+    OpaqueWindow,
 
     // TODO: ores: gold, silver, coal, copper, iron (blocking and non-blocking version)
   };

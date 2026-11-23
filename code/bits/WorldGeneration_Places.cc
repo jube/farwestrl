@@ -251,13 +251,13 @@ namespace fw {
 
       switch (part) {
         case '.':
-          return "^].["[index];
-        case '[':
-          return "].[^"[index];
+          return "^>.<"[index];
+        case '<':
+          return ">.<^"[index];
         case '^':
-          return ".[^]"[index];
-        case ']':
-          return "[^]."[index];
+          return ".<^>"[index];
+        case '>':
+          return "<^>."[index];
         default:
           break;
       }
@@ -338,11 +338,11 @@ namespace fw {
         return gf::Direction::Down;
       }
 
-      if (compute_town_building_part(plan, position + gf::dirx(-1), direction) == ']') {
+      if (compute_town_building_part(plan, position + gf::dirx(-1), direction) == '>') {
         return gf::Direction::Left;
       }
 
-      if (compute_town_building_part(plan, position + gf::dirx(+1), direction) == '[') {
+      if (compute_town_building_part(plan, position + gf::dirx(+1), direction) == '<') {
         return gf::Direction::Right;
       }
 
@@ -358,23 +358,23 @@ namespace fw {
       "#         #",
       "# TTTBTTT #",
       "#   $^$   #",
-      "#   $ $   #",
+      "O   $ $   O",
       "#   $ $   #",
       "#   $ $   #",
       "##W##D##W##",
     }};
 
     constexpr TownBuildingPlan Casino = {{
-      "###########",
-      "#       ]M#",
-      "# C[ h  ]M#",
-      "# C[    ]M#",
-      "# C[ c  ]M#",
-      "#       ]M#",
-      "# C[ d  ]M#",
-      "# C[    ]M#",
-      "# C[ s  ]M#",
-      "#       ]M#",
+      "#####O#####",
+      "#       >M#",
+      "# C< h  >M#",
+      "# C<    >M#",
+      "# C< c  >M#",
+      "O       >M#",
+      "# C< d  >M#",
+      "# C<    >M#",
+      "# C< s  >M#",
+      "#       >M#",
       "##W##D##W##",
     }};
 
@@ -389,7 +389,7 @@ namespace fw {
       "# PPP PPP #",
       "# ... ... #",
       "# PPP PPP #",
-      "#####D#####",
+      "##W##D##W##",
     }};
 
     constexpr TownBuildingPlan ClothShop = {{
@@ -400,24 +400,108 @@ namespace fw {
       "#         #",
       "#         #",
       "#  TTSTT  #",
-      "#    ^    #",
+      "W    ^    W",
       "#         #",
       "#         #",
+      "##W##D##W##",
+    }};
+
+    constexpr TownBuildingPlan FoodShop = {{
+      "###########",
+      "#         #",
+      "##        #",
+      "#         #",
+      "#         #",
+      "W         W",
+      "#         #",
+      "#  .      #",
+      "# TST     #",
+      "#         #",
+      "##W##D##W##",
+    }};
+
+    constexpr TownBuildingPlan Hotel = {{
+      "###########",
+      "# Z # # Z #",
+      "# ^ # # ^ #",
+      "O   # D   O",
+      "#   D #   #",
+      "##### #####",
+      "#   #     #",
+      "O   D   T #",
+      "# . #  >H #",
+      "# Z #   T #",
       "#####D#####",
     }};
 
+    constexpr TownBuildingPlan House1 = {{
+      "###O#######",
+      "# Z  # #  #",
+      "# ^  D #  #",
+      "###### D  O",
+      "#    D #  #",
+      "O    # #  #",
+      "###### ####",
+      "#         #",
+      "#         #",
+      "#         #",
+      "###O#D#O###",
+    }};
+
     constexpr TownBuildingPlan House2 = {{
-      "#######W###",
-      "#   #     #",
-      "W   #     #",
+      "#######O###",
+      "# Z #     #",
+      "O ^ #     O",
       "#   #     #",
       "##D##D#####",
       "#     #   #",
       "#     D   #",
-      "#     #   W",
+      "#     #   O",
       "#     #   #",
       "#   # #   #",
+      "##O##D#####",
+    }};
+
+    constexpr TownBuildingPlan House3 = {{
+      "###########",
+      "#     # Z #",
+      "O     # ^ #",
+      "#     #   O",
+      "###D###   #",
+      "#     #   #",
+      "#     ##D##",
+      "O         #",
+      "#         #",
+      "#         #",
+      "#####D##O##",
+    }};
+
+    constexpr TownBuildingPlan MarshalOffice = {{
+      "###D#######",
+      "#         #",
+      "O         O",
+      "#         #",
+      "###D#######",
+      "#      D  #",
+      "W   TL #  #",
+      "# T  ^ ####",
+      "# L<   D  #",
+      "#      #  #",
       "##W##D#####",
+    }};
+
+    constexpr TownBuildingPlan Saloon = {{
+      "###########",
+      "#       # #",
+      "#TTATAT # #",
+      "#  ^ ^    #",
+      "#a< >a. >a#",
+      "#T  aRa  T#",
+      "Wa< ^a< >aW",
+      "# >a. .a< #",
+      "# aRa aRa #",
+      "# ^a< >a^ #",
+      "##W##D##W##",
     }};
 
     constexpr TownBuildingPlan Template = {{
@@ -450,14 +534,21 @@ namespace fw {
       case BuildingType::ClothShop:
         return ClothShop;
       case BuildingType::FoodShop:
+        return FoodShop;
       case BuildingType::Hotel:
+        return Hotel;
       case BuildingType::House1:
+        return House1;
       case BuildingType::House2:
         return House2;
       case BuildingType::House3:
+        return House3;
       case BuildingType::MarshalOffice:
+        return MarshalOffice;
       case BuildingType::Restaurant:
+        return Template; // TODO
       case BuildingType::Saloon:
+        return Saloon;
       case BuildingType::School:
       case BuildingType::WeaponShop:
         break;
@@ -497,6 +588,9 @@ namespace fw {
           case '#': // wall
             cell.decoration = MapCellDecoration::Wall;
             break;
+          case 'A': // saloon desk (alcohol)
+            add_thing(ThingType::SaloonDesk, ThingQuality::Good);
+            break;
           case 'B': // bank desk
             add_thing(ThingType::BankDesk, ThingQuality::Good);
             break;
@@ -507,11 +601,23 @@ namespace fw {
             cell.decoration = door_decoration(plan, offset, building.direction);
             town.doors.emplace_back(make_door(cell_position, cell.decoration));
             break;
+          case 'H': // hotel desk
+            add_thing(ThingType::HotelDesk, ThingQuality::Good);
+            break;
+          case 'L': // marshal desk (law)
+            add_thing(ThingType::MarshalDesk, ThingQuality::Good);
+            break;
           case 'M': // slot machines
             add_thing(ThingType::SlotMachine, ThingQuality::Best);
             break;
+          case 'O': // opaque window
+            cell.decoration = MapCellDecoration::OpaqueWindow;
+            break;
           case 'P': // prayer chair
             add_thing(ThingType::PrayerChair, ThingQuality::Good);
+            break;
+          case 'R': // round table
+            cell.decoration = MapCellDecoration::RoundTable;
             break;
           case 'S': // shop desk
             add_thing(ThingType::ShopDesk, ThingQuality::Good);
@@ -522,30 +628,36 @@ namespace fw {
           case 'W': // window
             cell.decoration = MapCellDecoration::Window;
             break;
+          case 'Z': // bed (zzzz)
+            add_thing(ThingType::Bed, ThingQuality::Good);
+            break;
           case '$': // dollar
             cell.decoration = MapCellDecoration::Dollar;
             break;
-          case 'c':
+          case 'a': // saloon chair (alcohol)
+            add_thing(ThingType::SaloonChair, ThingQuality::Good);
+            break;
+          case 'c': // club
             cell.decoration = MapCellDecoration::SuitClub;
             break;
-          case 'd':
+          case 'd': // diamond
             cell.decoration = MapCellDecoration::SuitDiamond;
             break;
-          case 'h':
+          case 'h': // heart
             cell.decoration = MapCellDecoration::SuitHeart;
             break;
-          case 'j':
-            cell.decoration = MapCellDecoration::Dollar;
+          case 'j': // Jesus
+            cell.decoration = MapCellDecoration::Cross;
             break;
-          case 's':
+          case 's': // spade
             cell.decoration = MapCellDecoration::SuitSpade;
             break;
           case ' ': // nothing
             break;
           case '^':
           case '.':
-          case ']':
-          case '[':
+          case '>':
+          case '<':
             // action positions, nothing to do
             break;
           default:

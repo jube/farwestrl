@@ -187,7 +187,7 @@ namespace fw {
           foreground_color = gf::darker(background_color, 0.1f);
           break;
         case MapCellDecoration::Cross:
-          character = u'┼';
+          character = u'†';
           foreground_color = gf::darker(background_color, 0.25f);
           break;
         case MapCellDecoration::Dollar:
@@ -213,6 +213,10 @@ namespace fw {
         case MapCellDecoration::Cactus:
           character = generate_character({ u'!', gf::ConsoleChar::InvertedExclamationMark }, random);
           foreground_color = gf::darker(gf::Green, 0.3f);
+          break;
+        case MapCellDecoration::RoundTable:
+          character = u'⊗';
+          foreground_color = gf::gray(0.2f);
           break;
         case MapCellDecoration::Table:
           character = gf::ConsoleChar::FullBlock;
@@ -294,6 +298,7 @@ namespace fw {
           break;
 
         case MapCellDecoration::Window:
+        case MapCellDecoration::OpaqueWindow:
           {
             const uint8_t neighbor_bits = compute_neighbor_bits<MapCellDecoration, &MapCell::decoration>(state, position, MapCellDecoration::Wall);
 

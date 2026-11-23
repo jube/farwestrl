@@ -171,6 +171,7 @@ namespace fw {
             case MapCellDecoration::Cactus:
               color = gf::darker(gf::Green, 0.3f);
               break;
+            case MapCellDecoration::RoundTable:
             case MapCellDecoration::Table:
               color = gf::gray(0.2f);
               break;
@@ -181,6 +182,7 @@ namespace fw {
               color = gf::Azure;
               break;
             case MapCellDecoration::Window:
+            case MapCellDecoration::OpaqueWindow:
               color = gf::gray(0.75f);
               break;
             case MapCellDecoration::Cliff:

@@ -13,6 +13,8 @@ namespace fw {
     BankDesk,
     Bed,
     BlackjackTable,
+    HotelDesk,
+    MarshalDesk,
     PrayerChair,
     SaloonChair,
     SaloonDesk,

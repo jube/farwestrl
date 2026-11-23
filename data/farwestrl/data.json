@@ -473,6 +473,18 @@
       "display": { "picture": "█", "color": "#404040" }
     },
     {
+      "label": "Hotel Desk",
+      "type": "hotel_desk",
+      "quality": "good",
+      "display": { "picture": "█", "color": "#404040" }
+    },
+    {
+      "label": "Marshal Desk",
+      "type": "marshal_desk",
+      "quality": "good",
+      "display": { "picture": "█", "color": "#404040" }
+    },
+    {
       "label": "Prayer Chair",
       "type": "prayer_chair",
       "quality": "good",
