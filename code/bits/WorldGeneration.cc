@@ -44,8 +44,8 @@ namespace fw {
 
     constexpr int32_t WorldPaddingSize = 150;
 
-    constexpr float RiverMinMoisture = 0.2;
-    constexpr float RiverSourceMinMoisture = 0.7;
+    constexpr float RiverMinMoisture = 0.2f;
+    constexpr float RiverSourceMinMoisture = 0.7f;
     constexpr int RiverMouthMinDistance = 3000;
     constexpr int RiverSourceMinDistance = 1500;
     constexpr float RiverSlopeFactor = 10000.0f;
@@ -53,9 +53,9 @@ namespace fw {
     constexpr int RiverRadiusMax = RiverRadiusMin + 10;
     constexpr std::size_t RiverPart = 800;
 
-    constexpr float AltitudeThreshold = 0.55;
-    constexpr float MoistureLoThreshold = 0.45;
-    constexpr float MoistureHiThreshold = 0.55;
+    constexpr float AltitudeThreshold = 0.55f;
+    constexpr float MoistureLoThreshold = 0.45f;
+    constexpr float MoistureHiThreshold = 0.55f;
 
     constexpr double PrairieHerbProbability = 0.2;
     constexpr double DesertCactusProbability = 0.02;
@@ -257,7 +257,7 @@ namespace fw {
           factor *= static_cast<float>(WorldSize.y - 1 - position.y) / static_cast<float>(WorldPaddingSize);
         }
 
-        cell.altitude = 1.0 - (1.0 - cell.altitude) * gf::ease_out_cubic(factor);
+        cell.altitude = 1.0f - (1.0f - cell.altitude) * gf::ease_out_cubic(factor);
       }
 
       return raw;

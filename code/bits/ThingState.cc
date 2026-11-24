@@ -18,6 +18,12 @@ namespace fw {
       case ThingType::BlackjackTable:
         // TODO: play blackjack
         break;
+      case ThingType::HotelDesk:
+        // TODO:
+        break;
+      case ThingType::MarshalDesk:
+        // TODO:
+        break;
       case ThingType::PrayerChair:
         // TODO: pray
         break;
@@ -31,7 +37,7 @@ namespace fw {
         // TODO: buy things
         break;
       case ThingType::SlotMachine:
-        // play slot machine
+        // TODO: play slot machine
         break;
     }
 
